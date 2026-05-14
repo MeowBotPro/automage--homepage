@@ -3,14 +3,27 @@
 import { useRef, useEffect, useState, useCallback } from 'react';
 import { gsap, safeContext } from '@/lib/gsap';
 import {
-  ClipboardPenLine,
-  BotMessageSquare,
-  UserRoundCheck,
-  FilePenLine,
-  BadgeCheck,
-  Workflow,
+  FileText,
+  Shield,
+  CheckCircle,
+  GitBranch,
+  Send,
+  ScanLine,
+  Eye,
+  Sparkles,
+  Target,
+  Users,
+  AlertTriangle,
+  CheckSquare,
   type LucideIcon,
 } from 'lucide-react';
+
+/* ── Inspector Data ── */
+interface InspectorData {
+  input: string[];
+  output: string[];
+  status: string;
+}
 
 /* ── Flow Step ── */
 interface FlowStep {
@@ -21,22 +34,71 @@ interface FlowStep {
   title: string;
   text: string;
   angle: number;
+  inspector: InspectorData;
 }
 
 const STEPS: FlowStep[] = [
-  { id: 'staff', label: 'Staff', Icon: ClipboardPenLine, iconType: 'staff', title: 'Staff 提交日报', text: '今天提交了 23 条一线记录', angle: 0 },
-  { id: 'ai', label: 'AI', Icon: BotMessageSquare, iconType: 'ai', title: 'AI 自动汇总', text: '识别 4 个风险、2 个依赖、1 个异常', angle: 60 },
-  { id: 'manager', label: 'Manager', Icon: UserRoundCheck, iconType: 'manager', title: 'Manager 审阅确认', text: '审阅通过 3 条，标记 1 条需补充', angle: 120 },
-  { id: 'dream', label: 'Dream', Icon: FilePenLine, iconType: 'draft', title: 'Dream 生成草案', text: '生成 A/B 两个决策选项', angle: 180 },
-  { id: 'boss', label: 'Boss', Icon: BadgeCheck, iconType: 'boss', title: 'Boss 确认决策', text: '选择 B，并设定优先级', angle: 240 },
-  { id: 'task', label: 'Task', Icon: Workflow, iconType: 'workflow', title: '任务自动回流', text: '自动生成 5 个任务，分配到 3 人', angle: 300 },
+  {
+    id: 'staff', label: 'Staff', Icon: FileText, iconType: 'staff',
+    title: 'Staff 提交日报', text: '今天提交了 23 条一线记录', angle: 0,
+    inspector: {
+      input: ['一线信息 23 条', '覆盖 5 个项目线'],
+      output: ['信号已录入系统', '等待 AI 处理'],
+      status: '信息捕获完成',
+    },
+  },
+  {
+    id: 'ai', label: 'AI', Icon: ScanLine, iconType: 'ai',
+    title: 'AI 自动汇总', text: '识别 4 个风险、2 个依赖、1 个异常', angle: 60,
+    inspector: {
+      input: ['23 条原始信号', '上下文：项目历史 + 团队状态'],
+      output: ['4 个风险识别', '2 个依赖关系', '1 个异常标记'],
+      status: '语义压缩完成',
+    },
+  },
+  {
+    id: 'manager', label: 'Manager', Icon: Eye, iconType: 'manager',
+    title: 'Manager 审阅确认', text: '审阅通过 3 条，标记 1 条需补充', angle: 120,
+    inspector: {
+      input: ['AI 汇总报告', '风险优先级排序'],
+      output: ['3 条审阅通过', '1 条标记补充'],
+      status: '人工校验完成',
+    },
+  },
+  {
+    id: 'dream', label: 'Dream', Icon: Sparkles, iconType: 'draft',
+    title: 'Dream 生成草案', text: '生成 A/B 两个决策选项', angle: 180,
+    inspector: {
+      input: ['审阅确认的情报', 'Boss 决策偏好模型'],
+      output: ['方案 A：延期 + 资源增补', '方案 B：范围调整 + 优先级重排'],
+      status: '决策草案就绪',
+    },
+  },
+  {
+    id: 'boss', label: 'Boss', Icon: CheckCircle, iconType: 'boss',
+    title: 'Boss 确认决策', text: '选择 B，并设定优先级', angle: 240,
+    inspector: {
+      input: ['A/B 两个方案', '优先级：High', '截止时间：本周五'],
+      output: ['确认方案 B', '设定交付优先级'],
+      status: '决策锁定',
+    },
+  },
+  {
+    id: 'task', label: 'Task', Icon: GitBranch, iconType: 'workflow',
+    title: '任务自动回流', text: '自动生成 5 个任务，分配到 3 人', angle: 300,
+    inspector: {
+      input: ['Boss 确认方案 B', '优先级：High', '截止时间：本周五'],
+      output: ['任务 01：同步客户延期风险', '任务 02：补充项目依赖说明', '任务 03：更新交付计划'],
+      status: '闭环完成，一线信息回到一线',
+    },
+  },
 ];
 
 /* ── Orbit geometry ── */
-const LOOP_RADIUS = 180;
-const CENTER = 250;
-const SVG_SIZE = 500;
-const SLOT_SIZE = 44; // fixed foreignObject size for slot-based positioning
+const LOOP_RADIUS = 230;
+const CENTER = 320;
+const SVG_SIZE = 640;
+const SLOT_SIZE = 52;
 
 function nodePosition(angleDeg: number): { x: number; y: number } {
   const rad = ((angleDeg - 90) * Math.PI) / 180;
@@ -53,6 +115,47 @@ function buildCirclePath(): string {
 
 const CIRCLE_PATH_D = buildCirclePath();
 
+/* ── Background nodes (decorative) ── */
+interface BgNodeDef {
+  label: string;
+  Icon: LucideIcon;
+  top: string;
+  left: string;
+}
+
+const BG_NODES: BgNodeDef[] = [
+  { label: 'Sales', Icon: Send, top: '16%', left: '8%' },
+  { label: 'Support', Icon: Users, top: '22%', left: '82%' },
+  { label: 'Project', Icon: Target, top: '52%', left: '4%' },
+  { label: 'Finance', Icon: Shield, top: '72%', left: '86%' },
+  { label: 'Risk', Icon: AlertTriangle, top: '85%', left: '14%' },
+  { label: 'Delivery', Icon: CheckSquare, top: '40%', left: '90%' },
+];
+
+/* ── Signal particles (decorative) ── */
+interface SignalParticleDef {
+  top: string;
+  left: string;
+  delay: string;
+  tx: string;
+  ty: string;
+}
+
+const SIGNAL_PARTICLES: SignalParticleDef[] = [
+  { top: '20%', left: '14%', delay: '0s', tx: '18vw', ty: '8vh' },
+  { top: '26%', left: '80%', delay: '1.2s', tx: '-22vw', ty: '6vh' },
+  { top: '56%', left: '10%', delay: '2.4s', tx: '20vw', ty: '-12vh' },
+  { top: '76%', left: '82%', delay: '0.8s', tx: '-20vw', ty: '-18vh' },
+  { top: '88%', left: '20%', delay: '3.2s', tx: '16vw', ty: '-24vh' },
+];
+
+/* ── Stats data ── */
+const STATS = [
+  { value: '23', label: 'Signals captured' },
+  { value: '4', label: 'Risks compressed' },
+  { value: '5', label: 'Tasks assigned' },
+];
+
 /* ── Component ── */
 export default function InfoLoopSection() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -60,7 +163,6 @@ export default function InfoLoopSection() {
   const particleRef = useRef<SVGCircleElement>(null);
   const trail1Ref = useRef<SVGCircleElement>(null);
   const trail2Ref = useRef<SVGCircleElement>(null);
-  const circleRefs = useRef<(SVGCircleElement | null)[]>([]);
   const glowRefs = useRef<(SVGCircleElement | null)[]>([]);
   const innerRefs = useRef<(HTMLDivElement | null)[]>([]);
   const labelRefs = useRef<(SVGTextElement | null)[]>([]);
@@ -153,25 +255,22 @@ export default function InfoLoopSection() {
 
         tl.call(() => setActiveIndex(i), undefined, startTime);
 
-        // Scale inner node (slot-based: structural size stays fixed)
         if (innerRefs.current[i]) {
-          tl.to(innerRefs.current[i], { scale: 1.15, duration: 0.3, ease: 'power2.out' }, startTime);
+          tl.to(innerRefs.current[i], { scale: 1.18, duration: 0.3, ease: 'power2.out' }, startTime);
           if (i > 0 && innerRefs.current[i - 1]) {
             tl.to(innerRefs.current[i - 1], { scale: 1, duration: 0.3, ease: 'power2.out' }, startTime);
           }
         }
 
-        // Glow pulse
         if (glowRefs.current[i]) {
           tl.fromTo(
             glowRefs.current[i],
-            { attr: { r: 20 }, opacity: 0.4 },
-            { attr: { r: 32 }, opacity: 0, duration: 0.6, ease: 'power2.out' },
+            { attr: { r: 24 }, opacity: 0.45 },
+            { attr: { r: 38 }, opacity: 0, duration: 0.6, ease: 'power2.out' },
             startTime,
           );
         }
 
-        // Label opacity
         if (labelRefs.current[i]) {
           tl.to(labelRefs.current[i], { opacity: 1, duration: 0.3 }, startTime);
           if (i > 0 && labelRefs.current[i - 1]) {
@@ -186,7 +285,7 @@ export default function InfoLoopSection() {
       // All nodes pulse
       innerRefs.current.forEach((node) => {
         if (!node) return;
-        tl.to(node, { scale: 1.1, duration: 0.15, yoyo: true, repeat: 1 }, 6);
+        tl.to(node, { scale: 1.12, duration: 0.15, yoyo: true, repeat: 1 }, 6);
       });
 
       // Loop-back path draws
@@ -223,6 +322,7 @@ export default function InfoLoopSection() {
   }, [activeIndex, prefersReducedMotion]);
 
   const currentStep = STEPS[activeIndex];
+  const currentInspector = currentStep.inspector;
 
   return (
     <section
@@ -234,43 +334,116 @@ export default function InfoLoopSection() {
         paddingTop: 'calc(var(--space-section) + 60px)',
         paddingBottom: 'var(--space-section)',
         minHeight: '100vh',
+        position: 'relative',
+        overflow: 'hidden',
       }}
     >
-      <div style={{ maxWidth: 1000, margin: '0 auto', padding: '0 24px' }}>
-        {/* Title */}
-        <h2
-          className="font-semibold text-center"
+      {/* ═══ Background: Organizational Nodes ═══ */}
+      {BG_NODES.map((node) => {
+        const NodeIcon = node.Icon;
+        return (
+          <div
+            key={node.label}
+            className="pointer-events-none"
+            aria-hidden="true"
+            style={{
+              position: 'absolute',
+              top: node.top,
+              left: node.left,
+              display: 'flex',
+              alignItems: 'center',
+              gap: 6,
+              color: 'rgba(147,197,253,0.12)',
+              border: '1px solid rgba(96,165,250,0.06)',
+              background: 'rgba(15,23,42,0.2)',
+              borderRadius: 999,
+              padding: '5px 10px',
+              fontSize: 11,
+              fontWeight: 500,
+              letterSpacing: '0.02em',
+            }}
+          >
+            <NodeIcon size={12} strokeWidth={1.6} style={{ opacity: 0.7 }} />
+            {node.label}
+          </div>
+        );
+      })}
+
+      {/* ═══ Background: Signal Particles ═══ */}
+      {SIGNAL_PARTICLES.map((sp, i) => (
+        <div
+          key={i}
+          className="loop-signal-particle pointer-events-none"
+          aria-hidden="true"
           style={{
-            fontSize: 'clamp(2rem, 4vw, 3rem)',
-            color: 'var(--color-text-on-dark)',
-            lineHeight: 1.2,
-            marginBottom: 16,
+            position: 'absolute',
+            top: sp.top,
+            left: sp.left,
+            width: 4,
+            height: 4,
+            borderRadius: 999,
+            background: 'rgba(96,165,250,0.6)',
+            boxShadow: '0 0 10px rgba(96,165,250,0.4)',
+            animation: `loop-particle-drift 7s ${sp.delay} ease-in-out infinite`,
+            ['--tx' as string]: sp.tx,
+            ['--ty' as string]: sp.ty,
+            opacity: 0,
           }}
-        >
-          信息如何在你的组织中流动
-        </h2>
-        <p
-          className="text-center"
-          style={{
-            fontSize: '1.125rem',
-            color: 'var(--color-text-on-dark-muted)',
-            marginBottom: 48,
-          }}
-        >
-          六个节点，一个闭环
-        </p>
+        />
+      ))}
+
+      <div style={{ maxWidth: 1160, margin: '0 auto', padding: '0 24px', position: 'relative', zIndex: 1 }}>
+        {/* ── Title ── */}
+        <div style={{ maxWidth: 720, margin: '0 auto 72px', textAlign: 'center' }}>
+          <span
+            style={{
+              display: 'inline-block',
+              fontSize: '0.75rem',
+              fontWeight: 600,
+              letterSpacing: '0.14em',
+              textTransform: 'uppercase',
+              color: 'rgba(147,197,253,0.6)',
+              marginBottom: 16,
+            }}
+          >
+            INFORMATION LOOP
+          </span>
+          <h2
+            className="font-semibold"
+            style={{
+              fontSize: 'clamp(2rem, 4.2vw, 3.25rem)',
+              color: 'var(--color-text-on-dark)',
+              lineHeight: 1.15,
+              marginBottom: 20,
+              letterSpacing: '-0.03em',
+            }}
+          >
+            信息如何在你的组织中流动
+          </h2>
+          <p
+            style={{
+              fontSize: '1.0625rem',
+              lineHeight: 1.75,
+              color: 'rgba(148,163,184,0.72)',
+              maxWidth: 640,
+              margin: '0 auto',
+            }}
+          >
+            从一线记录，到管理判断，再到任务回流，AutoMage 把组织里的每一次输入变成可追踪的决策闭环。
+          </p>
+        </div>
 
         {/* ═══ Desktop: Orbit + Inspector ═══ */}
         <div
-          className="desktop-flow items-center justify-center"
+          className="loop-desktop items-center justify-center"
           style={{
-            gap: 72,
-            maxWidth: 1040,
+            gap: 80,
+            maxWidth: 1120,
             margin: '0 auto',
           }}
         >
-          {/* SVG Orbit */}
-          <div style={{ width: 'clamp(300px, 28vw, 380px)', flexShrink: 0, aspectRatio: '1' }}>
+          {/* ── SVG Orbit ── */}
+          <div style={{ width: '100%', aspectRatio: '1', flexShrink: 0 }}>
             <svg
               ref={svgRef}
               width="100%"
@@ -285,7 +458,7 @@ export default function InfoLoopSection() {
                 stroke="var(--color-loop-path)"
                 strokeWidth={2}
                 fill="none"
-                opacity={0.3}
+                opacity={0.35}
               />
 
               {/* Loop-back dashed path */}
@@ -302,7 +475,7 @@ export default function InfoLoopSection() {
               {/* Motion path (invisible) */}
               <path d={CIRCLE_PATH_D} fill="none" stroke="transparent" data-loop-circle />
 
-              {/* Nodes — slot-based: fixed foreignObject, GSAP scales inner div */}
+              {/* ── Nodes ── */}
               {STEPS.map((step, i) => {
                 const pos = nodePosition(step.angle);
                 const isActive = i === activeIndex;
@@ -315,12 +488,12 @@ export default function InfoLoopSection() {
                       ref={(el) => { glowRefs.current[i] = el; }}
                       cx={pos.x}
                       cy={pos.y}
-                      r={20}
+                      r={24}
                       fill="var(--color-loop-node-glow)"
                       opacity={0}
                     />
 
-                    {/* Slot: fixed-size foreignObject, position never changes */}
+                    {/* Slot */}
                     <foreignObject
                       x={pos.x - SLOT_SIZE / 2}
                       y={pos.y - SLOT_SIZE / 2}
@@ -334,9 +507,9 @@ export default function InfoLoopSection() {
                         data-active={isActive}
                         data-done={isDone}
                         style={{
-                          width: 40,
-                          height: 40,
-                          margin: 2, // center 40px in 44px slot
+                          width: 48,
+                          height: 48,
+                          margin: 2,
                           borderRadius: '999px',
                           display: 'flex',
                           alignItems: 'center',
@@ -344,7 +517,7 @@ export default function InfoLoopSection() {
                           position: 'relative',
                           transformOrigin: 'center center',
                           background: isActive
-                            ? 'radial-gradient(circle at 35% 20%, rgba(147,197,253,0.28), transparent 42%), linear-gradient(180deg, rgba(30,64,175,0.55), rgba(15,23,42,0.92))'
+                            ? 'radial-gradient(circle at 35% 20%, rgba(147,197,253,0.3), transparent 42%), linear-gradient(180deg, rgba(30,64,175,0.6), rgba(15,23,42,0.92))'
                             : 'var(--node-bg)',
                           border: `1px solid ${isActive
                             ? 'var(--node-border-active)'
@@ -352,13 +525,13 @@ export default function InfoLoopSection() {
                               ? 'var(--node-border-done)'
                               : 'var(--node-border)'}`,
                           boxShadow: isActive
-                            ? '0 0 0 1px rgba(147,197,253,0.18), 0 0 0 8px rgba(59,130,246,0.08), 0 18px 48px rgba(37,99,235,0.28), inset 0 1px 0 rgba(255,255,255,0.16)'
+                            ? '0 0 0 1px rgba(147,197,253,0.18), 0 0 0 10px rgba(59,130,246,0.08), 0 20px 56px rgba(37,99,235,0.28), inset 0 1px 0 rgba(255,255,255,0.16)'
                             : 'inset 0 1px 0 rgba(255,255,255,0.06), 0 10px 28px rgba(0,0,0,0.18)',
                           transition: 'background 300ms ease, border-color 300ms ease, box-shadow 300ms ease',
                         }}
                       >
                         <StepIcon
-                          size={isActive ? 20 : 18}
+                          size={isActive ? 22 : 20}
                           strokeWidth={1.85}
                           style={{
                             color: isActive
@@ -376,9 +549,9 @@ export default function InfoLoopSection() {
                     <text
                       ref={(el) => { labelRefs.current[i] = el; }}
                       x={pos.x}
-                      y={pos.y + 30}
+                      y={pos.y + 36}
                       textAnchor="middle"
-                      fontSize={12}
+                      fontSize={13}
                       fontWeight={isActive ? 700 : 400}
                       fill="var(--color-text-on-dark)"
                       opacity={0.65}
@@ -391,63 +564,151 @@ export default function InfoLoopSection() {
               })}
 
               {/* Particle */}
-              <circle ref={particleRef} r={6} fill="var(--color-loop-particle)" />
-              <circle ref={trail1Ref} r={4} fill="var(--color-loop-particle)" />
-              <circle ref={trail2Ref} r={2} fill="var(--color-loop-particle)" />
+              <circle ref={particleRef} r={7} fill="var(--color-loop-particle)" />
+              <circle ref={trail1Ref} r={5} fill="var(--color-loop-particle)" />
+              <circle ref={trail2Ref} r={3} fill="var(--color-loop-particle)" />
             </svg>
           </div>
 
-          {/* Inspector Panel */}
+          {/* ── Inspector Panel ── */}
           <div
             ref={inspectorRef}
             role="status"
             aria-live="polite"
             style={{
-              width: 360,
-              minHeight: 220,
-              background: 'linear-gradient(180deg, rgba(15,23,42,0.78), rgba(15,23,42,0.56))',
+              width: 440,
+              minHeight: 320,
+              background:
+                'radial-gradient(circle at 20% 0%, rgba(59,130,246,0.12), transparent 42%), linear-gradient(180deg, rgba(15,23,42,0.86), rgba(15,23,42,0.62))',
               border: '1px solid rgba(148,163,184,0.16)',
-              borderRadius: 24,
+              borderRadius: 28,
               padding: 28,
               flexShrink: 0,
-              boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06), 0 28px 80px rgba(0,0,0,0.18)',
+              boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06), 0 32px 90px rgba(0,0,0,0.24)',
             }}
           >
-            {/* Header */}
-            <div className="flex items-center gap-3" style={{ marginBottom: 20 }}>
+            {/* ── Header ── */}
+            <div className="flex items-center gap-3" style={{ marginBottom: 24 }}>
               <div
                 style={{
-                  width: 44,
-                  height: 44,
+                  width: 48,
+                  height: 48,
                   borderRadius: '999px',
-                  background: 'var(--node-bg)',
-                  border: '1px solid var(--node-border)',
+                  background:
+                    'radial-gradient(circle at 35% 20%, rgba(147,197,253,0.2), transparent 42%), linear-gradient(180deg, rgba(30,64,175,0.4), rgba(15,23,42,0.85))',
+                  border: '1px solid rgba(96,165,250,0.35)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   flexShrink: 0,
-                  boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06)',
+                  boxShadow: '0 0 0 1px rgba(147,197,253,0.1), inset 0 1px 0 rgba(255,255,255,0.1)',
                 }}
               >
-                <currentStep.Icon size={20} strokeWidth={1.85} style={{ color: 'var(--node-icon-color-done)' }} />
+                <currentStep.Icon size={22} strokeWidth={1.85} style={{ color: '#93c5fd' }} />
               </div>
-              <span style={{ fontSize: '1.125rem', fontWeight: 600, color: 'var(--color-text-on-dark)' }}>
-                {currentStep.title}
-              </span>
+              <div>
+                <span style={{ fontSize: '1.125rem', fontWeight: 600, color: 'var(--color-text-on-dark)', display: 'block', lineHeight: 1.3 }}>
+                  {currentStep.title}
+                </span>
+                <span style={{ fontSize: '0.8125rem', color: 'rgba(147,197,253,0.6)', marginTop: 2, display: 'block' }}>
+                  {currentStep.text}
+                </span>
+              </div>
             </div>
 
-            {/* Data */}
-            <p style={{ fontSize: '0.875rem', color: 'var(--color-text-on-dark-muted)', lineHeight: 1.65, marginBottom: 24 }}>
-              {currentStep.text}
-            </p>
+            {/* ── Data Sections ── */}
+            {/* Input */}
+            <div style={{ marginBottom: 20 }}>
+              <div style={{
+                fontSize: '0.6875rem',
+                fontWeight: 600,
+                letterSpacing: '0.1em',
+                textTransform: 'uppercase',
+                color: 'rgba(148,163,184,0.5)',
+                marginBottom: 8,
+              }}>
+                Input
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                {currentInspector.input.map((item, idx) => (
+                  <div key={idx} className="flex items-center gap-2.5">
+                    <div style={{
+                      width: 5,
+                      height: 5,
+                      borderRadius: 999,
+                      background: 'rgba(96,165,250,0.5)',
+                      flexShrink: 0,
+                    }} />
+                    <span style={{ fontSize: '0.8125rem', color: 'rgba(226,232,240,0.8)', lineHeight: 1.5 }}>
+                      {item}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
 
-            {/* Progress dots */}
-            <div className="flex items-center gap-2">
+            {/* Divider */}
+            <div style={{ height: 1, background: 'rgba(148,163,184,0.1)', marginBottom: 20 }} />
+
+            {/* Output */}
+            <div style={{ marginBottom: 20 }}>
+              <div style={{
+                fontSize: '0.6875rem',
+                fontWeight: 600,
+                letterSpacing: '0.1em',
+                textTransform: 'uppercase',
+                color: 'rgba(148,163,184,0.5)',
+                marginBottom: 8,
+              }}>
+                Output
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                {currentInspector.output.map((item, idx) => (
+                  <div key={idx} className="flex items-center gap-2.5">
+                    <div style={{
+                      width: 5,
+                      height: 5,
+                      borderRadius: 999,
+                      background: 'rgba(59,130,246,0.6)',
+                      flexShrink: 0,
+                    }} />
+                    <span style={{ fontSize: '0.8125rem', color: 'rgba(226,232,240,0.8)', lineHeight: 1.5 }}>
+                      {item}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Divider */}
+            <div style={{ height: 1, background: 'rgba(148,163,184,0.1)', marginBottom: 20 }} />
+
+            {/* Status */}
+            <div
+              style={{
+                padding: '10px 14px',
+                background: isComplete
+                  ? 'rgba(34,197,94,0.1)'
+                  : 'rgba(59,130,246,0.08)',
+                border: `1px solid ${isComplete
+                  ? 'rgba(34,197,94,0.2)'
+                  : 'rgba(59,130,246,0.12)'}`,
+                borderRadius: 12,
+                fontSize: '0.8125rem',
+                color: isComplete ? 'var(--color-signal-success)' : 'rgba(147,197,253,0.8)',
+                fontWeight: 500,
+              }}
+            >
+              {currentInspector.status}
+            </div>
+
+            {/* ── Progress Dots ── */}
+            <div className="flex items-center gap-2" style={{ marginTop: 24 }}>
               {STEPS.map((step, i) => (
                 <div
                   key={step.id}
                   style={{
-                    width: i === activeIndex ? 24 : 8,
+                    width: i === activeIndex ? 28 : 8,
                     height: 8,
                     borderRadius: 'var(--radius-full)',
                     background: i === activeIndex
@@ -461,32 +722,44 @@ export default function InfoLoopSection() {
                 />
               ))}
             </div>
-
-            {/* Completion */}
-            {isComplete && (
-              <div
-                style={{
-                  marginTop: 16,
-                  padding: '12px 16px',
-                  background: 'rgba(34, 197, 94, 0.1)',
-                  border: '1px solid rgba(34, 197, 94, 0.2)',
-                  borderRadius: 'var(--radius-md)',
-                  fontSize: '0.8125rem',
-                  color: 'var(--color-signal-success)',
-                }}
-              >
-                闭环完成 — 信息从一线回到一线
-              </div>
-            )}
           </div>
         </div>
 
-        {/* ═══ Mobile: Timeline ═══ */}
+        {/* ═══ Stats Row ═══ */}
         <div
-          className="mobile-flow flex-col items-center"
-          style={{ position: 'relative', gap: 32 }}
+          className="loop-stats items-center justify-center"
+          style={{
+            marginTop: 72,
+            gap: 48,
+            display: 'flex',
+          }}
         >
-          {/* Info flow main line */}
+          {STATS.map((stat) => (
+            <div key={stat.label} className="flex items-baseline gap-2">
+              <span style={{
+                fontSize: 'clamp(1.5rem, 2vw, 2rem)',
+                fontWeight: 700,
+                color: 'var(--color-brand-accent)',
+                lineHeight: 1,
+              }}>
+                {stat.value}
+              </span>
+              <span style={{
+                fontSize: '0.875rem',
+                color: 'rgba(148,163,184,0.6)',
+              }}>
+                {stat.label}
+              </span>
+            </div>
+          ))}
+        </div>
+
+        {/* ═══ Mobile: Timeline + Inspector ═══ */}
+        <div
+          className="loop-mobile flex-col items-center"
+          style={{ position: 'relative', gap: 28 }}
+        >
+          {/* Info flow line */}
           <div
             className="pointer-events-none"
             aria-hidden="true"
@@ -509,7 +782,7 @@ export default function InfoLoopSection() {
               top: 28,
               width: 5,
               height: 5,
-              borderRadius: '999px',
+              borderRadius: 999,
               background: '#60a5fa',
               boxShadow: '0 0 16px rgba(96,165,250,0.9)',
               animation: 'loop-signal-flow 5s ease-in-out infinite',
@@ -562,13 +835,12 @@ export default function InfoLoopSection() {
                       transition: 'color 300ms ease',
                     }}
                   />
-                  {/* AI scan overlay */}
                   {step.iconType === 'ai' && isActive && (
                     <div
                       style={{
                         position: 'absolute',
                         inset: 6,
-                        borderRadius: '999px',
+                        borderRadius: 999,
                         background: 'linear-gradient(180deg, transparent, rgba(147,197,253,0.2), transparent)',
                         animation: 'loop-node-scan 2.4s ease-in-out infinite',
                         pointerEvents: 'none',
@@ -599,15 +871,80 @@ export default function InfoLoopSection() {
               </div>
             );
           })}
+
+          {/* ── Mobile Inspector ── */}
+          <div
+            style={{
+              marginTop: 20,
+              padding: 20,
+              background: 'linear-gradient(180deg, rgba(15,23,42,0.82), rgba(15,23,42,0.6))',
+              border: '1px solid rgba(148,163,184,0.14)',
+              borderRadius: 20,
+              width: '100%',
+              maxWidth: 360,
+            }}
+          >
+            <div className="flex items-center gap-2.5" style={{ marginBottom: 16 }}>
+              <currentStep.Icon size={18} strokeWidth={1.85} style={{ color: '#93c5fd' }} />
+              <span style={{ fontSize: '0.9375rem', fontWeight: 600, color: 'var(--color-text-on-dark)' }}>
+                {currentStep.title}
+              </span>
+            </div>
+
+            <div style={{ marginBottom: 12 }}>
+              <div style={{ fontSize: '0.625rem', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(148,163,184,0.5)', marginBottom: 6 }}>
+                Input
+              </div>
+              {currentInspector.input.map((item, idx) => (
+                <div key={idx} className="flex items-center gap-2" style={{ marginBottom: 3 }}>
+                  <div style={{ width: 4, height: 4, borderRadius: 999, background: 'rgba(96,165,250,0.5)', flexShrink: 0 }} />
+                  <span style={{ fontSize: '0.75rem', color: 'rgba(226,232,240,0.75)' }}>{item}</span>
+                </div>
+              ))}
+            </div>
+
+            <div style={{ height: 1, background: 'rgba(148,163,184,0.08)', marginBottom: 12 }} />
+
+            <div style={{ marginBottom: 12 }}>
+              <div style={{ fontSize: '0.625rem', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(148,163,184,0.5)', marginBottom: 6 }}>
+                Output
+              </div>
+              {currentInspector.output.map((item, idx) => (
+                <div key={idx} className="flex items-center gap-2" style={{ marginBottom: 3 }}>
+                  <div style={{ width: 4, height: 4, borderRadius: 999, background: 'rgba(59,130,246,0.6)', flexShrink: 0 }} />
+                  <span style={{ fontSize: '0.75rem', color: 'rgba(226,232,240,0.75)' }}>{item}</span>
+                </div>
+              ))}
+            </div>
+
+            <div style={{ height: 1, background: 'rgba(148,163,184,0.08)', marginBottom: 12 }} />
+
+            <div style={{
+              padding: '8px 12px',
+              background: isComplete ? 'rgba(34,197,94,0.1)' : 'rgba(59,130,246,0.08)',
+              border: `1px solid ${isComplete ? 'rgba(34,197,94,0.2)' : 'rgba(59,130,246,0.12)'}`,
+              borderRadius: 10,
+              fontSize: '0.75rem',
+              color: isComplete ? 'var(--color-signal-success)' : 'rgba(147,197,253,0.8)',
+              fontWeight: 500,
+            }}>
+              {currentInspector.status}
+            </div>
+          </div>
         </div>
 
-        {/* Responsive visibility — show desktop at >= 1024px, hide mobile */}
+        {/* ── Responsive ── */}
         <style>{`
-          .desktop-flow { display: none; }
-          .mobile-flow { display: flex; }
+          .loop-desktop { display: none; }
+          .loop-mobile { display: none; }
+          .loop-stats { display: none; }
           @media (min-width: 1024px) {
-            .desktop-flow { display: flex; }
-            .mobile-flow { display: none; }
+            .loop-desktop { display: grid; grid-template-columns: clamp(420px, 34vw, 560px) 440px; }
+            .loop-stats { display: flex; }
+          }
+          @media (max-width: 1023px) {
+            .loop-mobile { display: flex; flex-direction: column; }
+            .loop-stats { display: none; }
           }
         `}</style>
       </div>
