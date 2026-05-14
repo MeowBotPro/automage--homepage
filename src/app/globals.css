@@ -247,18 +247,15 @@ body::-webkit-scrollbar {
 
 /* Brand mark: boot signal glow (one-time, after GSAP sets eyes visible) */
 .am-brand-mark {
-  transition: box-shadow 0.3s ease;
+  transition: filter 0.3s ease;
 }
 .am-brand-mark.am-booted {
   animation: signal-boot 1.6s ease-in-out both;
 }
 
-/* Brand mark: subtle hover glow on the medallion */
+/* Brand mark: subtle hover intensify the halo */
 .am-command-header:hover .am-brand-mark {
-  box-shadow:
-    inset 0 0 0 1px rgba(255,255,255,.12),
-    0 10px 30px rgba(15,23,42,.16),
-    0 0 12px rgba(96,165,250,.18);
+  filter: brightness(1.15);
 }
 
 /* CTA primary arrow hover */

@@ -32,33 +32,37 @@ const STATUS_MAP: Record<string, StatusState> = {
   footer:   { label: 'Loop closed',    color: '#22C55E' },
 };
 
-/* ── Brand Mark: 34×34 dark medallion with Colink logo ── */
-function BrandMark({ isDark }: { isDark: boolean }) {
+/* ── Brand Mark: bare icon with subtle halo ── */
+function BrandMark() {
   return (
     <span
       className="am-brand-mark"
       style={{
-        width: 34,
-        height: 34,
-        borderRadius: 12,
+        position: 'relative',
+        width: 33,
+        height: 33,
         display: 'grid',
         placeItems: 'center',
         flexShrink: 0,
-        background: isDark
-          ? 'linear-gradient(180deg, rgba(15,23,42,.98), rgba(30,41,59,.92))'
-          : 'radial-gradient(circle at 50% 45%, rgba(96,165,250,.28), transparent 60%), linear-gradient(180deg, rgba(15,23,42,.98), rgba(30,41,59,.92))',
-        boxShadow: isDark
-          ? 'inset 0 0 0 1px rgba(255,255,255,.12)'
-          : 'inset 0 0 0 1px rgba(255,255,255,.12), 0 8px 24px rgba(15,23,42,.18)',
-        transition: 'box-shadow 0.3s',
       }}
     >
+      <span
+        aria-hidden="true"
+        style={{
+          position: 'absolute',
+          inset: -9,
+          borderRadius: 999,
+          background: 'radial-gradient(circle, rgba(96,165,250,0.18), transparent 70%)',
+          filter: 'blur(4px)',
+          pointerEvents: 'none',
+        }}
+      />
       <svg
         viewBox="0 0 416.99 407.84"
         fill="none"
         className="am-logo-colink"
         aria-hidden="true"
-        style={{ width: 21, height: 21 }}
+        style={{ width: 30, height: 30, position: 'relative', zIndex: 1, opacity: 0.95 }}
       >
         <path
           fill="#F8FAFC"
@@ -244,17 +248,17 @@ export default function CommandHeader() {
           href="/"
           data-boot="logo"
           style={{
-            display: 'flex', alignItems: 'center', gap: 11,
+            display: 'flex', alignItems: 'center', gap: 10,
             flexShrink: 0, textDecoration: 'none', color: 'inherit',
-            minWidth: 210,
+            paddingLeft: 4, minWidth: 140,
             opacity: reducedMotion ? 1 : 0,
           }}
         >
-          <BrandMark isDark={isDark} />
+          <BrandMark />
           <span
             data-boot="name"
             style={{
-              fontWeight: 760, fontSize: 18, letterSpacing: '-0.035em',
+              fontWeight: 700, fontSize: 21, letterSpacing: '-0.02em',
               lineHeight: 1, color: '#FFFFFF',
               fontFamily: 'var(--font-sans)',
               opacity: reducedMotion ? 1 : 0,
@@ -283,7 +287,7 @@ export default function CommandHeader() {
                   position: 'relative', background: 'none', border: 'none',
                   cursor: 'pointer', padding: '7px 12px',
                   fontSize: 13, fontWeight: 560,
-                  color: isActive ? 'rgba(248,250,252,0.96)' : 'rgba(248,250,252,0.58)',
+                  color: isActive ? 'rgba(248,250,252,0.96)' : 'rgba(248,250,252,0.72)',
                   fontFamily: 'var(--font-sans)', letterSpacing: '-0.01em',
                   borderRadius: 999,
                   transition: 'color 0.2s, background 0.2s',
@@ -296,7 +300,7 @@ export default function CommandHeader() {
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.color = isActive
-                    ? 'rgba(248,250,252,0.96)' : 'rgba(248,250,252,0.58)';
+                    ? 'rgba(248,250,252,0.96)' : 'rgba(248,250,252,0.72)';
                   e.currentTarget.style.background = 'none';
                 }}
               >
@@ -311,11 +315,12 @@ export default function CommandHeader() {
           data-boot="status"
           className="hidden md:flex items-center"
           style={{
-            marginLeft: 16, gap: 7, padding: '4px 11px', borderRadius: 999,
+            marginLeft: 16, gap: 6, padding: '3px 10px', borderRadius: 999,
             fontSize: 11, fontWeight: 500,
             fontFamily: 'var(--font-mono, var(--font-sans))', letterSpacing: '-0.01em',
-            color: 'rgba(248,250,252,0.58)',
-            background: 'rgba(255,255,255,0.06)',
+            color: 'rgba(191,219,254,0.88)',
+            background: 'rgba(59,130,246,0.08)',
+            border: '1px solid rgba(96,165,250,0.14)',
             whiteSpace: 'nowrap',
             opacity: reducedMotion ? 1 : 0,
             transition: 'color 0.3s', flexShrink: 0,
@@ -360,7 +365,7 @@ export default function CommandHeader() {
             onClick={() => handleNavClick('section-beta')}
             style={{
               background: '#FFFFFF', color: '#0F172A',
-              border: 'none', borderRadius: 10, padding: '7px 20px',
+              border: 'none', borderRadius: 999, padding: '7px 18px',
               fontSize: 13, fontWeight: 700, cursor: 'pointer',
               fontFamily: 'var(--font-sans)', whiteSpace: 'nowrap',
               display: 'flex', alignItems: 'center', gap: 4,
