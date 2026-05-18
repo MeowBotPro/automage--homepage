@@ -27,7 +27,7 @@ const STATUS_MAP: Record<string, StatusState> = {
   hero:     { label: 'Signal intake',  color: '#60A5FA' },
   compare:  { label: 'Compressing',    color: '#2563EB' },
   loop:     { label: 'Loop active',    color: '#60A5FA' },
-  security: { label: 'Human gate',     color: '#A78BFA' },
+  security: { label: 'Human gate',     color: 'var(--color-brand-accent-alt)' },
   faq:      { label: 'Decision manual', color: '#3B82F6' },
   footer:   { label: 'Loop closed',    color: '#22C55E' },
 };
