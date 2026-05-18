@@ -335,32 +335,32 @@ export default function ValueCardsSection() {
           .am-mini-diagram .am-data-line,
           .am-mini-diagram .am-audit-path {
             fill: none;
-            stroke: #60a5fa;
+            stroke: var(--color-glyph-stroke);
             stroke-width: 2;
             stroke-linecap: round;
             stroke-linejoin: round;
           }
 
           .am-mini-diagram .am-data-line {
-            stroke: #93c5fd;
+            stroke: var(--color-glyph-stroke-light);
           }
 
           .am-mini-diagram .am-node {
-            fill: #60a5fa;
+            fill: var(--color-glyph-stroke);
           }
 
           .am-mini-diagram .input {
-            fill: #93c5fd;
+            fill: var(--color-glyph-stroke-light);
           }
 
           .am-mini-diagram .output,
           .am-mini-diagram .checkpoint {
-            fill: #2563eb;
+            fill: var(--color-glyph-stroke-deep);
           }
 
           .am-mini-diagram .am-core {
             fill: rgba(37, 99, 235, 0.08);
-            stroke: #2563eb;
+            stroke: var(--color-glyph-stroke-deep);
             stroke-width: 1.5;
           }
 
@@ -368,25 +368,25 @@ export default function ValueCardsSection() {
           .am-mini-diagram .am-check,
           .am-mini-diagram .am-brief-line {
             fill: none;
-            stroke: #2563eb;
+            stroke: var(--color-glyph-stroke-deep);
             stroke-width: 2;
             stroke-linecap: round;
             stroke-linejoin: round;
           }
 
           .am-mini-diagram .am-core-dot {
-            fill: #2563eb;
+            fill: var(--color-glyph-stroke-deep);
           }
 
           .am-mini-diagram .am-brief {
-            fill: #dbeafe;
-            stroke: #2563eb;
+            fill: var(--color-glyph-fill);
+            stroke: var(--color-glyph-stroke-deep);
             stroke-width: 1.5;
           }
 
           .am-mini-diagram .am-seal-bg {
-            fill: #dbeafe;
-            stroke: #2563eb;
+            fill: var(--color-glyph-fill);
+            stroke: var(--color-glyph-stroke-deep);
             stroke-width: 1.5;
           }
 
