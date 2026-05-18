@@ -577,7 +577,7 @@ Logo 启动动画（页面加载时触发）：
 | 禁止项 | 原因 | 替代方案 |
 |--------|------|---------|
 | **FontAwesome / Material Icons** | 通用图标库丧失品牌辨识度 | 使用自定义 SVG Glyph 系统 |
-| **Lucide / Heroicons / Phosphor** | 同上 | 同上 |
+| **Lucide / Heroicons / Phosphor** 用于品牌标识 | 品牌标识 Glyph 必须使用自定义 SVG | 品牌标识 Glyph（AILogo, HumanLogo, PolicyGate 等）必须使用自定义 SVG。功能性 UI 图标允许使用 lucide-react |
 | **通用 SaaS 图标** (火箭/齿轮/拼图/灯泡) | 与竞品 (飞书/钉钉/Notion) 混淆 | 使用代码中已有的 Glyph: AILogo, PolicyGate, ExecutionLedger |
 | **Emoji 作为图标** | 与"精密"和"权威"调性冲突 | 使用自定义 SVG |
 | **位图图标** (PNG/JPG) | 违反"零位图"原则 | 使用 inline SVG |
@@ -586,7 +586,7 @@ Logo 启动动画（页面加载时触发）：
 
 | 禁止项 | 原因 | 替代方案 |
 |--------|------|---------|
-| **装饰性粒子雨/雪花** | 纯装饰动画违反"每个动画必须传达信息流语义" | 使用有路径约束的 Particle Flow (沿贝塞尔曲线运动) |
+| **装饰性粒子雨/雪花** | 纯装饰动画违反"每个动画必须传达信息流语义" | 使用有路径约束的 Particle Flow (沿贝塞尔曲线运动)。例外：背景装饰粒子（如 InfoLoopSection 的 SIGNAL_PARTICLES）允许使用 CSS 漂浮动画，但必须有 reduced-motion 回退 |
 | **循环弹跳 (bounce)** | 违反"克制"调性 | 使用 `power2.out` 或 `sine.inOut` |
 | **弹性效果 (elastic)** | 过于活泼，破坏信任感 | 使用 `power2.out` 或 `back.out(2.5)` (仅限品牌标识) |
 | **闪烁/抖动 (flash/shake)** | 破坏"精密"和"信任"调性 | StatusDot 的 `pulse` 除外（表达系统活跃状态） |
