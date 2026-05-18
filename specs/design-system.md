@@ -484,24 +484,26 @@ Glyph 专用色阶（蓝色光谱）：
 
 以下操作需在代码层面执行以完成设计规范与代码的同步：
 
-| # | 操作 | 涉及文件 | 优先级 |
-|---|------|---------|--------|
-| 1 | 更新 `design-tokens.json` 的 duration 值: fast=150ms, normal=300ms, slow=500ms | `design-tokens.json` | CRITICAL |
-| 2 | 新增 `instant: 80ms`, `crawl: 1000ms` 到 `design-tokens.json` | `design-tokens.json` | CRITICAL |
-| 3 | 将 `--duration-instant: 80ms` 和 `--duration-crawl: 1000ms` 新增到 `globals.css` | `globals.css` L80-L82 区域 | CRITICAL |
-| 4 | 新增 `fontFamily.console` 到 `design-tokens.json` | `design-tokens.json` | WARNING |
-| 5 | 新增 `Noto Sans SC` 到 `design-tokens.json` 的 `fontFamily.sans` | `design-tokens.json` | WARNING |
-| 6 | 废弃 `--ease-default`，统一使用 `--ease-out` | `tokens.css` | WARNING |
-| 7 | 将排版阶梯 (text-xs ~ text-4xl, leading-*) 从 `tokens.css` 合并到 `globals.css` | `globals.css` | WARNING |
-| 8 | 将 Loop Rail 和 Gate 组件 tokens 从 `tokens.css` 合并到 `globals.css` | `globals.css` | WARNING |
-| 9 | 废弃 `--space-block`，用 `--space-16` 替代 | `globals.css` | WARNING |
-| 10 | 将 SecuritySection 的 `#A78BFA` 替换为 `var(--color-gate-human)` 或 `var(--color-brand-accent-alt)` | `SecuritySection.tsx` | WARNING |
-| 11 | 将 StorySection 的 macOS 窗口色统一到 HeroSection 版本 | `StorySection.tsx` | WARNING |
-| 12 | 新增 Glyph 专用 tokens (`--color-glyph-*`) 到 `globals.css` | `globals.css` | WARNING |
-| 13 | 新增 Window Chrome tokens (`--color-chrome-*`) 到 `globals.css` | `globals.css` | INFO |
-| 14 | 新增 `--color-brand-eye` 到 `globals.css` | `globals.css` | INFO |
-| 15 | 批量替换组件中的硬编码颜色为 CSS variable 引用 | 各组件文件 | WARNING |
-| 16 | 重新生成 `tokens.css` 以与 `globals.css` 保持同步 | `tokens.css` | CRITICAL |
+| # | 操作 | 涉及文件 | 优先级 | 状态 |
+|---|------|---------|--------|------|
+| 1 | 更新 `design-tokens.json` 的 duration 值: fast=150ms, normal=300ms, slow=500ms | `design-tokens.json` | CRITICAL | DONE |
+| 2 | 新增 `instant: 80ms`, `crawl: 1000ms` 到 `design-tokens.json` | `design-tokens.json` | CRITICAL | DONE |
+| 3 | 将 `--duration-instant: 80ms` 和 `--duration-crawl: 1000ms` 新增到 `globals.css` | `globals.css` L80-L82 区域 | CRITICAL | DONE |
+| 4 | 新增 `fontFamily.console` 到 `design-tokens.json` | `design-tokens.json` | WARNING | DONE |
+| 5 | 新增 `Noto Sans SC` 到 `design-tokens.json` 的 `fontFamily.sans` | `design-tokens.json` | WARNING | DONE |
+| 6 | 废弃 `--ease-default`，统一使用 `--ease-out` | `tokens.css` | WARNING | |
+| 7 | 将排版阶梯 (text-xs ~ text-4xl, leading-*) 从 `tokens.css` 合并到 `globals.css` | `globals.css` | WARNING | |
+| 8 | 将 Loop Rail 和 Gate 组件 tokens 从 `tokens.css` 合并到 `globals.css` | `globals.css` | WARNING | |
+| 9 | 废弃 `--space-block`，用 `--space-16` 替代 | `globals.css` | WARNING | DONE |
+| 10 | 将 SecuritySection 的 `#A78BFA` 替换为 `var(--color-gate-human)` 或 `var(--color-brand-accent-alt)` | `SecuritySection.tsx` | WARNING | DONE |
+| 11 | 将 StorySection 的 macOS 窗口色统一到 HeroSection 版本 | `StorySection.tsx` | WARNING | DONE |
+| 12 | 新增 Glyph 专用 tokens (`--color-glyph-*`) 到 `globals.css` | `globals.css` | WARNING | DONE |
+| 13 | 新增 Window Chrome tokens (`--color-chrome-*`) 到 `globals.css` | `globals.css` | INFO | DONE |
+| 14 | 新增 `--color-brand-eye` 到 `globals.css` | `globals.css` | INFO | DONE |
+| 15 | 批量替换组件中的硬编码颜色为 CSS variable 引用 | 各组件文件 | WARNING | |
+| 16 | 重新生成 `tokens.css` 以与 `globals.css` 保持同步 | `tokens.css` | CRITICAL | |
+| 17 | 接受 lucide-react 用于功能性 UI 图标（品牌 Glyph 仍用自定义 SVG） | `specs/04-illustration-style.md` | INFO | |
+| 18 | 接受背景装饰粒子动画（需有 reduced-motion 回退） | `specs/04-illustration-style.md` | INFO | |
 
 ### B. 硬编码颜色统一方案
 
