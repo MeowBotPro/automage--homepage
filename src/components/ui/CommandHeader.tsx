@@ -24,12 +24,12 @@ interface StatusState {
 }
 
 const STATUS_MAP: Record<string, StatusState> = {
-  hero:     { label: 'Signal intake',  color: '#60A5FA' },
-  compare:  { label: 'Compressing',    color: '#2563EB' },
-  loop:     { label: 'Loop active',    color: '#60A5FA' },
+  hero:     { label: 'Signal intake',  color: 'var(--color-brand-accent)' },
+  compare:  { label: 'Compressing',    color: 'var(--color-brand-accent)' },
+  loop:     { label: 'Loop active',    color: 'var(--color-brand-accent)' },
   security: { label: 'Human gate',     color: 'var(--color-brand-accent-alt)' },
-  faq:      { label: 'Decision manual', color: '#3B82F6' },
-  footer:   { label: 'Loop closed',    color: '#22C55E' },
+  faq:      { label: 'Decision manual', color: 'var(--color-brand-accent)' },
+  footer:   { label: 'Loop closed',    color: 'var(--color-signal-success)' },
 };
 
 /* ── Brand Mark: bare icon with subtle halo ── */
@@ -239,7 +239,7 @@ export default function CommandHeader() {
           boxShadow: isScrolled
             ? '0 18px 60px rgba(15,23,42,0.16), inset 0 1px 0 rgba(255,255,255,0.08)'
             : 'inset 0 1px 0 rgba(255,255,255,0.08)',
-          color: '#FFFFFF',
+          color: 'var(--color-text-on-dark)',
           transition: 'box-shadow 0.4s',
         }}
       >
@@ -259,7 +259,7 @@ export default function CommandHeader() {
             data-boot="name"
             style={{
               fontWeight: 700, fontSize: 21, letterSpacing: '-0.02em',
-              lineHeight: 1, color: '#FFFFFF',
+              lineHeight: 1, color: 'var(--color-text-on-dark)',
               fontFamily: 'var(--font-sans)',
               opacity: reducedMotion ? 1 : 0,
             }}
@@ -350,7 +350,7 @@ export default function CommandHeader() {
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.borderColor = 'rgba(255,255,255,0.35)';
-              e.currentTarget.style.color = '#F8FAFC';
+              e.currentTarget.style.color = 'var(--color-text-on-dark)';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)';
@@ -364,7 +364,7 @@ export default function CommandHeader() {
             className="am-cta-primary"
             onClick={() => handleNavClick('section-beta')}
             style={{
-              background: '#FFFFFF', color: '#0F172A',
+              background: '#FFFFFF', color: 'var(--color-surface-dark)',
               border: 'none', borderRadius: 999, padding: '7px 18px',
               fontSize: 13, fontWeight: 700, cursor: 'pointer',
               fontFamily: 'var(--font-sans)', whiteSpace: 'nowrap',
@@ -416,7 +416,7 @@ export default function CommandHeader() {
                 key={i}
                 style={{
                   display: 'block', width: 20, height: 1.5,
-                  backgroundColor: '#F8FAFC', borderRadius: 1,
+                  backgroundColor: 'var(--color-text-on-dark)', borderRadius: 1,
                   transition: 'transform 0.3s, opacity 0.3s',
                   transform: s.transform, opacity: s.opacity,
                 }}
@@ -458,13 +458,13 @@ export default function CommandHeader() {
           <div style={{ marginBottom: 20 }}>
             <div style={{
               fontSize: 11, letterSpacing: '0.08em', textTransform: 'uppercase',
-              color: '#64748B', fontWeight: 600, fontFamily: 'var(--font-sans)', marginBottom: 8,
+              color: 'var(--color-text-tertiary)', fontWeight: 600, fontFamily: 'var(--font-sans)', marginBottom: 8,
             }}>
               AutoMage Command
             </div>
             <div style={{
               display: 'flex', alignItems: 'center', gap: 8,
-              fontSize: 12, color: '#64748B',
+              fontSize: 12, color: 'var(--color-text-tertiary)',
               fontFamily: 'var(--font-mono, var(--font-sans))',
             }}>
               <StatusDot color={status.color} />
@@ -494,7 +494,7 @@ export default function CommandHeader() {
                   }}
                 >
                   <span style={{
-                    fontSize: 10, fontWeight: 600, color: '#94A3B8',
+                    fontSize: 10, fontWeight: 600, color: 'var(--color-text-on-dark-muted)',
                     fontFamily: 'var(--font-mono, var(--font-sans))', minWidth: 20,
                   }}>
                     {String(i + 1).padStart(2, '0')}
@@ -502,13 +502,13 @@ export default function CommandHeader() {
                   <div>
                     <div style={{
                       fontSize: 15, fontWeight: isActive ? 600 : 450,
-                      color: isActive ? '#0F172A' : '#334155',
+                      color: isActive ? 'var(--color-surface-dark)' : 'var(--color-text-secondary)',
                       fontFamily: 'var(--font-sans)', lineHeight: 1.3,
                     }}>
                       {item.label}
                     </div>
                     <div style={{
-                      fontSize: 12, color: '#94A3B8',
+                      fontSize: 12, color: 'var(--color-text-on-dark-muted)',
                       fontFamily: 'var(--font-sans)', marginTop: 2,
                     }}>
                       {item.sublabel}
@@ -528,12 +528,12 @@ export default function CommandHeader() {
               border: '1px solid rgba(148,163,184,0.3)',
               borderRadius: 10, padding: '10px 0',
               fontSize: 14, fontWeight: 500, cursor: 'pointer',
-              color: '#334155', fontFamily: 'var(--font-sans)',
+              color: 'var(--color-text-secondary)', fontFamily: 'var(--font-sans)',
             }}>
               预约演示
             </button>
             <button onClick={() => handleNavClick('section-beta')} style={{
-              flex: 1, background: '#0F172A', color: '#F8FAFC',
+              flex: 1, background: 'var(--color-surface-dark)', color: 'var(--color-text-on-dark)',
               border: 'none', borderRadius: 10, padding: '10px 0',
               fontSize: 14, fontWeight: 600, cursor: 'pointer',
               fontFamily: 'var(--font-sans)',
@@ -544,7 +544,7 @@ export default function CommandHeader() {
 
           <div style={{
             marginTop: 16, textAlign: 'center',
-            fontSize: 11, color: '#94A3B8',
+            fontSize: 11, color: 'var(--color-text-on-dark-muted)',
             fontFamily: 'var(--font-mono, var(--font-sans))',
           }}>
             &bull; Human approval required
