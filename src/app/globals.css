@@ -6,6 +6,7 @@
   --color-brand-accent: #3B82F6;
   --color-brand-accent-alt: #6366F1;
   --color-brand-cyan: #38BDF8;
+  --color-brand-eye: #60A5FA;
 
   /* ── Text ── */
   --color-text-primary: #0F172A;
@@ -93,6 +94,20 @@
   --duration-fast: 150ms;
   --duration-normal: 300ms;
   --duration-slow: 500ms;
+  --duration-instant: 80ms;
+  --duration-crawl: 1000ms;
+
+  /* ── SVG Glyph System ── */
+  --color-glyph-fill: #DBEAFE;
+  --color-glyph-fill-subtle: #EFF6FF;
+  --color-glyph-stroke: #60A5FA;
+  --color-glyph-stroke-light: #93C5FD;
+  --color-glyph-stroke-deep: #2563EB;
+
+  /* ── Window Chrome (macOS metaphor) ── */
+  --color-chrome-close: #EF4444;
+  --color-chrome-minimize: #EAB308;
+  --color-chrome-maximize: #22C55E;
 
   /* ── Component Tokens ── */
   --ticker-layer1-speed: 35s;
