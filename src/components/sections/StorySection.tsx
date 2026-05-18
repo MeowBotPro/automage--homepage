@@ -183,13 +183,13 @@ export default function StorySection() {
               }}
             >
               <span
-                style={{ width: 8, height: 8, borderRadius: '50%', background: '#ff5f57' }}
+                style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--color-chrome-close)' }}
               />
               <span
-                style={{ width: 8, height: 8, borderRadius: '50%', background: '#febc2e' }}
+                style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--color-chrome-minimize)' }}
               />
               <span
-                style={{ width: 8, height: 8, borderRadius: '50%', background: '#28c840' }}
+                style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--color-chrome-maximize)' }}
               />
             </div>
             {/* Content area */}

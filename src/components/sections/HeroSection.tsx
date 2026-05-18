@@ -89,9 +89,9 @@ function SignalConsole() {
       {/* Top bar */}
       <div className="flex items-center justify-between mb-5">
         <div className="flex items-center gap-2">
-          <span style={{ width: 10, height: 10, borderRadius: '50%', background: '#EF4444' }} />
-          <span style={{ width: 10, height: 10, borderRadius: '50%', background: '#EAB308' }} />
-          <span style={{ width: 10, height: 10, borderRadius: '50%', background: '#22C55E' }} />
+          <span style={{ width: 10, height: 10, borderRadius: '50%', background: 'var(--color-chrome-close)' }} />
+          <span style={{ width: 10, height: 10, borderRadius: '50%', background: 'var(--color-chrome-minimize)' }} />
+          <span style={{ width: 10, height: 10, borderRadius: '50%', background: 'var(--color-chrome-maximize)' }} />
         </div>
         <span style={{ fontSize: '0.75rem', color: 'var(--color-text-on-dark-muted)', fontFamily: 'var(--font-console)', letterSpacing: '0.02em' }}>
           Decision Console
