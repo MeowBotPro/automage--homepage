@@ -87,7 +87,7 @@ export default function PageParticles() {
           data-pp={i + 1}
           d={d}
           fill="none"
-          stroke="#3B82F6"
+          style={{ stroke: 'var(--color-brand-accent)' }}
           strokeWidth={1}
           opacity={0.06}
         />

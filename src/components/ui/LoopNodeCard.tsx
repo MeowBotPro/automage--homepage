@@ -80,7 +80,7 @@ function ApprovalCheck() {
         />
         <path
           d="M18 28L25 35L38 22"
-          stroke="#3B82F6"
+          style={{ stroke: 'var(--color-brand-accent)' }}
           strokeWidth="2.5"
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -168,7 +168,7 @@ function TaskCards() {
         >
           <div
             className="w-1.5 h-1.5 rounded-full flex-shrink-0"
-            style={{ background: '#3B82F6' }}
+            style={{ background: 'var(--color-brand-accent)' }}
           />
           <div
             className="h-[2px] rounded-full"
@@ -291,7 +291,7 @@ export default function LoopNodeCard({ node, className = '', dark = false }: Loo
       <p
         style={{
           fontSize: '1rem',
-          color: dark ? '#94A3B8' : 'var(--color-text-tertiary)',
+          color: dark ? 'var(--color-text-on-dark-muted)' : 'var(--color-text-tertiary)',
           lineHeight: 1.65,
         }}
       >
