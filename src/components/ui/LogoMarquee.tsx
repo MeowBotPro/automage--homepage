@@ -18,11 +18,11 @@ const SIGNAL_FLOW: SignalChipData[] = [
 ];
 
 const CHIP_COLORS: Record<string, string> = {
-  input: '#22C55E',
-  ai: '#3B82F6',
-  review: '#F59E0B',
-  decision: '#6366F1',
-  task: '#22C55E',
+  input: 'var(--color-signal-success)',
+  ai: 'var(--color-brand-accent)',
+  review: 'var(--color-signal-warning)',
+  decision: 'var(--color-brand-accent-alt)',
+  task: 'var(--color-signal-success)',
 };
 
 /* ── Signal Chip ── */
@@ -62,7 +62,7 @@ function Arrow() {
       style={{ flexShrink: 0, opacity: 0.3 }}
       aria-hidden="true"
     >
-      <path d="M0 5H14M11 1L15 5L11 9" stroke="#94A3B8" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M0 5H14M11 1L15 5L11 9" style={{ stroke: 'var(--color-text-on-dark-muted)' }} strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
