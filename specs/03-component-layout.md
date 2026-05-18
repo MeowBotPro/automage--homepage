@@ -16,7 +16,7 @@
 | 1 | HeroSection | `section-hero` | `max-w-7xl` (1280px) | light | Signal |
 | 2 | LogoMarquee | — | `min(1120px, calc(100vw - 48px))` | dark（`--color-surface-deep`） | — |
 | 3 | CompareSection | `section-compare` | 1100px | light | Compress |
-| 4 | InfoLoopSection | `section-loop` | 1000px | dark（`--color-surface-deep`） | Review |
+| 4 | InfoLoopSection | `section-loop` | 1160px（外容器，桌面端内部 flow 1120px） | dark（`--color-surface-deep`） | Review |
 | 5 | ValueCardsSection | `section-value` | 1100px | light | Decide |
 | 6 | MetricsBar | `section-metrics` | 1200px | light | — |
 | 7 | StorySection | — | — | light | — |
