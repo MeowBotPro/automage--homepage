@@ -37,6 +37,13 @@
   --color-loop-node-inactive: rgba(59, 130, 246, 0.15);
   --color-loop-node-glow: rgba(59, 130, 246, 0.3);
 
+  /* ── Loop Rail (sizing) ── */
+  --loop-rail-width: 48px;
+  --loop-rail-path-width: 2px;
+  --loop-rail-node-radius: 6px;
+  --loop-rail-node-radius-active: 10px;
+  --loop-rail-particle-radius: 4px;
+
   /* ── Flow Node Tokens (glass-morphism) ── */
   --node-size: 40px;
   --node-size-active: 46px;
@@ -64,6 +71,12 @@
   --color-gate-unlocked: #22C55E;
   --color-gate-locked: rgba(100, 116, 139, 0.3);
 
+  /* ── Gate (sizing) ── */
+  --gate-stage-gap: 48px;
+  --gate-width: 64px;
+  --gate-height: 80px;
+  --gate-key-width: 32px;
+
   /* ── Shadow ── */
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.06);
@@ -76,9 +89,23 @@
   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
   --font-console: var(--font-jetbrains-mono), 'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace;
 
+  /* ── Typography Scale ── */
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: clamp(1.75rem, 3.5vw, 2.5rem);
+  --text-3xl: clamp(2rem, 4vw, 3rem);
+  --text-4xl: clamp(2.5rem, 5vw, 4rem);
+  --leading-tight: 1.1;
+  --leading-snug: 1.2;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.65;
+  --leading-loose: 1.75;
+
   /* ── Spacing ── */
   --space-section: 140px;
-  --space-block: 64px;
   --space-element: 24px;
 
   /* ── Radius ── */
