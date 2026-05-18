@@ -386,7 +386,7 @@ FlowNavigation 使用 ScrollTrigger（非 IntersectionObserver）检测 section 
 | 运动模式 | `repeat: -1, yoyo: true`（来回循环） |
 | 速度 | 3 秒单程 |
 | 缓动 | `sine.inOut` |
-| 尾迹 | 2 个 circle，r=3 和 r=2，opacity 0.2 和 0.1 |
+| 尾迹 | 2 个 circle，r=3 和 r=2，opacity 0.3 和 0.2 |
 | 尾迹延迟 | `(i + 1) * 0.15` 秒 |
 
 > **证据来源**: `FlowNavigation.tsx` L149-L167: 粒子和尾迹动画配置；L228-L249: 粒子和尾迹 SVG 元素。
