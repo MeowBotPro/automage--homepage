@@ -637,18 +637,18 @@ box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
 
 **总修复操作清单**:
 
-1. [ ] 更新 `design-tokens.json` 的 duration 值: fast=150ms, normal=300ms, slow=500ms
-2. [ ] 新增 instant=80ms, crawl=1000ms 到 design-tokens.json
-3. [ ] 新增 `fontFamily.console` 到 design-tokens.json
-4. [ ] 新增 `Noto Sans SC` 到 design-tokens.json 的 fontFamily.sans
-5. [ ] 废弃 `--ease-default`，统一使用 `--ease-out`
-6. [ ] 将排版阶梯 (text-xs ~ text-4xl, leading-*) 从 tokens.css 合并到 globals.css
-7. [ ] 将 Loop Rail 和 Gate 组件 tokens 从 tokens.css 合并到 globals.css
-8. [ ] 废弃 `--space-block`，用 `--space-16` 替代
-9. [ ] 将 SecuritySection 的 `#A78BFA` 替换为 `var(--color-gate-human)` 或 `var(--color-brand-accent-alt)`
-10. [ ] 将 StorySection 的 macOS 窗口色统一到 HeroSection 版本
-11. [ ] 新增 Glyph 专用 tokens (`--color-glyph-*`) 到 globals.css
-12. [ ] 新增 Window Chrome tokens (`--color-chrome-*`) 到 globals.css
-13. [ ] 新增 `--color-brand-eye` 到 globals.css
-14. [ ] 批量替换组件中的硬编码颜色为 CSS variable 引用
-15. [ ] 重新生成 tokens.css 以与 globals.css 保持同步
+- [x] 1. 更新 `design-tokens.json` 的 duration 值: fast=150ms, normal=300ms, slow=500ms
+- [x] 2. 新增 instant=80ms, crawl=1000ms 到 design-tokens.json
+- [x] 3. 新增 `fontFamily.console` 到 design-tokens.json
+- [x] 4. 新增 `Noto Sans SC` 到 design-tokens.json 的 fontFamily.sans
+- [x] 5. 废弃 `--ease-default`，统一使用 `--ease-out`
+- [ ] 6. 将排版阶梯 (text-xs ~ text-4xl, leading-*) 从 tokens.css 合并到 globals.css
+- [ ] 7. 将 Loop Rail 和 Gate 组件 tokens 从 tokens.css 合并到 globals.css
+- [ ] 8. 废弃 `--space-block`，用 `--space-16` 替代
+- [x] 9. 将 SecuritySection 的 `#A78BFA` 替换为 `var(--color-gate-human)` 或 `var(--color-brand-accent-alt)`
+- [x] 10. 将 StorySection 的 macOS 窗口色统一到 HeroSection 版本
+- [x] 11. 新增 Glyph 专用 tokens (`--color-glyph-*`) 到 globals.css
+- [x] 12. 新增 Window Chrome tokens (`--color-chrome-*`) 到 globals.css
+- [x] 13. 新增 `--color-brand-eye` 到 globals.css
+- [ ] 14. 批量替换组件中的硬编码颜色为 CSS variable 引用
+- [ ] 15. 重新生成 tokens.css 以与 globals.css 保持同步
