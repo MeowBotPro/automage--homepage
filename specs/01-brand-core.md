@@ -165,6 +165,21 @@ Signal -> Compress -> Review -> Decide -> Execute -> Learn
 > - `globals.css` L36: `--color-loop-particle: #38BDF8` -- Loop 轨道粒子颜色
 > - `InfoLoopSection.tsx` L407-414: 光点粒子和尾迹均使用 `var(--color-loop-particle)`（即 Cyan）
 
+### Accent Alt: #6366F1 -- 辅助高亮 / 极少量视觉分层
+
+| 属性 | 值 |
+|------|-----|
+| HEX | `#6366F1` |
+| OKLCH | `oklch(0.50 0.20 280)` |
+| CSS 变量 | `--color-brand-accent-alt` |
+| 语义 | 靛蓝，谨慎辅助高亮，极少量视觉分层。仅用于 LogoMarquee decision 节点等少量场景 |
+| 使用场景 | LogoMarquee decision 节点、极少量视觉分层 |
+| 禁止场景 | 不作主色、不作大面积背景、不替代 brand-accent |
+
+> **证据来源**:
+> - `globals.css` L7: `--color-brand-accent-alt: #6366F1`
+> - `LogoMarquee.tsx` decision 节点使用此色
+
 ### Dark Surface: #0F172A / #0B1628 -- 系统内部 / 技术面 / 仪表盘
 
 | 属性 | 值 |
