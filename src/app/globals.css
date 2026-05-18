@@ -33,6 +33,8 @@
   --color-loop-path-active: rgba(59, 130, 246, 0.4);
   --color-loop-particle: #38BDF8;
   --color-loop-particle-trail: rgba(59, 130, 246, 0.3);
+  --color-loop-node-active: #3B82F6;
+  --color-loop-node-inactive: rgba(59, 130, 246, 0.15);
   --color-loop-node-glow: rgba(59, 130, 246, 0.3);
 
   /* ── Flow Node Tokens (glass-morphism) ── */
