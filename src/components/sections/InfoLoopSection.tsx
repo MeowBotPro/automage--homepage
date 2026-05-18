@@ -603,7 +603,7 @@ export default function InfoLoopSection() {
                   boxShadow: '0 0 0 1px rgba(147,197,253,0.1), inset 0 1px 0 rgba(255,255,255,0.1)',
                 }}
               >
-                <currentStep.Icon size={22} strokeWidth={1.85} style={{ color: '#93c5fd' }} />
+                <currentStep.Icon size={22} strokeWidth={1.85} style={{ color: 'var(--color-glyph-stroke-light)' }} />
               </div>
               <div>
                 <span style={{ fontSize: '1.125rem', fontWeight: 600, color: 'var(--color-text-on-dark)', display: 'block', lineHeight: 1.3 }}>
@@ -781,7 +781,7 @@ export default function InfoLoopSection() {
               width: 5,
               height: 5,
               borderRadius: 999,
-              background: '#60a5fa',
+              background: 'var(--color-glyph-stroke)',
               boxShadow: '0 0 16px rgba(96,165,250,0.9)',
               animation: 'loop-signal-flow 5s ease-in-out infinite',
             }}
@@ -860,7 +860,7 @@ export default function InfoLoopSection() {
                   </p>
                   <p style={{
                     fontSize: '0.8125rem',
-                    color: isActive ? '#93C5FD' : 'var(--color-text-on-dark-muted)',
+                    color: isActive ? 'var(--color-glyph-stroke-light)' : 'var(--color-text-on-dark-muted)',
                     transition: 'color 300ms ease',
                     marginTop: 2,
                   }}>
