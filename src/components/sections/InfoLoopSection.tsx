@@ -338,59 +338,58 @@ export default function InfoLoopSection() {
         overflow: 'hidden',
       }}
     >
-      {/* ═══ Background: Organizational Nodes ═══ */}
-      {BG_NODES.map((node) => {
-        const NodeIcon = node.Icon;
-        return (
+      {/* ═══ Background: Organizational Nodes + Signal Particles ═══ */}
+      <div className="loop-bg-decor" aria-hidden="true">
+        {BG_NODES.map((node) => {
+          const NodeIcon = node.Icon;
+          return (
+            <div
+              key={node.label}
+              className="pointer-events-none"
+              style={{
+                position: 'absolute',
+                top: node.top,
+                left: node.left,
+                display: 'flex',
+                alignItems: 'center',
+                gap: 6,
+                color: 'rgba(147,197,253,0.12)',
+                border: '1px solid rgba(96,165,250,0.06)',
+                background: 'rgba(15,23,42,0.2)',
+                borderRadius: 999,
+                padding: '5px 10px',
+                fontSize: 11,
+                fontWeight: 500,
+                letterSpacing: '0.02em',
+              }}
+            >
+              <NodeIcon size={12} strokeWidth={1.6} style={{ opacity: 0.7 }} />
+              {node.label}
+            </div>
+          );
+        })}
+
+        {SIGNAL_PARTICLES.map((sp, i) => (
           <div
-            key={node.label}
+            key={i}
             className="pointer-events-none"
-            aria-hidden="true"
             style={{
               position: 'absolute',
-              top: node.top,
-              left: node.left,
-              display: 'flex',
-              alignItems: 'center',
-              gap: 6,
-              color: 'rgba(147,197,253,0.12)',
-              border: '1px solid rgba(96,165,250,0.06)',
-              background: 'rgba(15,23,42,0.2)',
+              top: sp.top,
+              left: sp.left,
+              width: 4,
+              height: 4,
               borderRadius: 999,
-              padding: '5px 10px',
-              fontSize: 11,
-              fontWeight: 500,
-              letterSpacing: '0.02em',
+              background: 'rgba(96,165,250,0.6)',
+              boxShadow: '0 0 10px rgba(96,165,250,0.4)',
+              animation: `loop-particle-drift 7s ${sp.delay} ease-in-out infinite`,
+              ['--tx' as string]: sp.tx,
+              ['--ty' as string]: sp.ty,
+              opacity: 0,
             }}
-          >
-            <NodeIcon size={12} strokeWidth={1.6} style={{ opacity: 0.7 }} />
-            {node.label}
-          </div>
-        );
-      })}
-
-      {/* ═══ Background: Signal Particles ═══ */}
-      {SIGNAL_PARTICLES.map((sp, i) => (
-        <div
-          key={i}
-          className="loop-signal-particle pointer-events-none"
-          aria-hidden="true"
-          style={{
-            position: 'absolute',
-            top: sp.top,
-            left: sp.left,
-            width: 4,
-            height: 4,
-            borderRadius: 999,
-            background: 'rgba(96,165,250,0.6)',
-            boxShadow: '0 0 10px rgba(96,165,250,0.4)',
-            animation: `loop-particle-drift 7s ${sp.delay} ease-in-out infinite`,
-            ['--tx' as string]: sp.tx,
-            ['--ty' as string]: sp.ty,
-            opacity: 0,
-          }}
-        />
-      ))}
+          />
+        ))}
+      </div>
 
       <div style={{ maxWidth: 1160, margin: '0 auto', padding: '0 24px', position: 'relative', zIndex: 1 }}>
         {/* ── Title ── */}
@@ -435,7 +434,7 @@ export default function InfoLoopSection() {
 
         {/* ═══ Desktop: Orbit + Inspector ═══ */}
         <div
-          className="loop-desktop items-center justify-center"
+          className="desktop-flow items-center justify-center"
           style={{
             gap: 80,
             maxWidth: 1120,
@@ -731,7 +730,6 @@ export default function InfoLoopSection() {
           style={{
             marginTop: 72,
             gap: 48,
-            display: 'flex',
           }}
         >
           {STATS.map((stat) => (
@@ -754,12 +752,12 @@ export default function InfoLoopSection() {
           ))}
         </div>
 
-        {/* ═══ Mobile: Timeline + Inspector ═══ */}
+        {/* ═══ Mobile: Timeline ═══ */}
         <div
-          className="loop-mobile flex-col items-center"
-          style={{ position: 'relative', gap: 28 }}
+          className="mobile-flow flex-col items-center"
+          style={{ position: 'relative', gap: 32 }}
         >
-          {/* Info flow line */}
+          {/* Info flow main line */}
           <div
             className="pointer-events-none"
             aria-hidden="true"
@@ -801,7 +799,7 @@ export default function InfoLoopSection() {
                   style={{
                     width: isActive ? 48 : 44,
                     height: isActive ? 48 : 44,
-                    borderRadius: '999px',
+                    borderRadius: 999,
                     background: isActive
                       ? 'radial-gradient(circle at 35% 20%, rgba(147,197,253,0.28), transparent 42%), linear-gradient(180deg, rgba(30,64,175,0.55), rgba(15,23,42,0.92))'
                       : 'var(--node-bg)',
@@ -835,6 +833,7 @@ export default function InfoLoopSection() {
                       transition: 'color 300ms ease',
                     }}
                   />
+                  {/* AI scan overlay */}
                   {step.iconType === 'ai' && isActive && (
                     <div
                       style={{
@@ -871,80 +870,19 @@ export default function InfoLoopSection() {
               </div>
             );
           })}
-
-          {/* ── Mobile Inspector ── */}
-          <div
-            style={{
-              marginTop: 20,
-              padding: 20,
-              background: 'linear-gradient(180deg, rgba(15,23,42,0.82), rgba(15,23,42,0.6))',
-              border: '1px solid rgba(148,163,184,0.14)',
-              borderRadius: 20,
-              width: '100%',
-              maxWidth: 360,
-            }}
-          >
-            <div className="flex items-center gap-2.5" style={{ marginBottom: 16 }}>
-              <currentStep.Icon size={18} strokeWidth={1.85} style={{ color: '#93c5fd' }} />
-              <span style={{ fontSize: '0.9375rem', fontWeight: 600, color: 'var(--color-text-on-dark)' }}>
-                {currentStep.title}
-              </span>
-            </div>
-
-            <div style={{ marginBottom: 12 }}>
-              <div style={{ fontSize: '0.625rem', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(148,163,184,0.5)', marginBottom: 6 }}>
-                Input
-              </div>
-              {currentInspector.input.map((item, idx) => (
-                <div key={idx} className="flex items-center gap-2" style={{ marginBottom: 3 }}>
-                  <div style={{ width: 4, height: 4, borderRadius: 999, background: 'rgba(96,165,250,0.5)', flexShrink: 0 }} />
-                  <span style={{ fontSize: '0.75rem', color: 'rgba(226,232,240,0.75)' }}>{item}</span>
-                </div>
-              ))}
-            </div>
-
-            <div style={{ height: 1, background: 'rgba(148,163,184,0.08)', marginBottom: 12 }} />
-
-            <div style={{ marginBottom: 12 }}>
-              <div style={{ fontSize: '0.625rem', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(148,163,184,0.5)', marginBottom: 6 }}>
-                Output
-              </div>
-              {currentInspector.output.map((item, idx) => (
-                <div key={idx} className="flex items-center gap-2" style={{ marginBottom: 3 }}>
-                  <div style={{ width: 4, height: 4, borderRadius: 999, background: 'rgba(59,130,246,0.6)', flexShrink: 0 }} />
-                  <span style={{ fontSize: '0.75rem', color: 'rgba(226,232,240,0.75)' }}>{item}</span>
-                </div>
-              ))}
-            </div>
-
-            <div style={{ height: 1, background: 'rgba(148,163,184,0.08)', marginBottom: 12 }} />
-
-            <div style={{
-              padding: '8px 12px',
-              background: isComplete ? 'rgba(34,197,94,0.1)' : 'rgba(59,130,246,0.08)',
-              border: `1px solid ${isComplete ? 'rgba(34,197,94,0.2)' : 'rgba(59,130,246,0.12)'}`,
-              borderRadius: 10,
-              fontSize: '0.75rem',
-              color: isComplete ? 'var(--color-signal-success)' : 'rgba(147,197,253,0.8)',
-              fontWeight: 500,
-            }}>
-              {currentInspector.status}
-            </div>
-          </div>
         </div>
 
-        {/* ── Responsive ── */}
+        {/* Responsive visibility — show desktop at >= 1024px, hide mobile */}
         <style>{`
-          .loop-desktop { display: none; }
-          .loop-mobile { display: none; }
+          .desktop-flow { display: none; }
+          .mobile-flow { display: flex; }
           .loop-stats { display: none; }
+          .loop-bg-decor { display: none; }
           @media (min-width: 1024px) {
-            .loop-desktop { display: grid; grid-template-columns: clamp(420px, 34vw, 560px) 440px; }
+            .desktop-flow { display: grid; grid-template-columns: clamp(420px, 34vw, 560px) 440px; }
+            .mobile-flow { display: none; }
             .loop-stats { display: flex; }
-          }
-          @media (max-width: 1023px) {
-            .loop-mobile { display: flex; flex-direction: column; }
-            .loop-stats { display: none; }
+            .loop-bg-decor { display: block; }
           }
         `}</style>
       </div>
