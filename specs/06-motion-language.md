@@ -79,6 +79,8 @@ Lenis 滚动引擎提供平滑的滚动体验：
 
 ## 6.3 时长阶梯 Duration Scale
 
+> **时长体系说明**: 以下 duration token 适用于 CSS transition 和单次 GSAP 入场动画。CSS @keyframes 循环动画（如 Glyph 轨道旋转 5s、指纹绘制 2.8s）的时长由各 Glyph 组件自行定义（见 `04-illustration-style.md` 4.5.3），不受此阶梯约束。
+
 ### 6.3.1 CSS Duration Token（统一后）
 
 以 `globals.css` 为准，与品牌"克制"和"精密"调性一致：
