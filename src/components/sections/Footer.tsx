@@ -277,10 +277,10 @@ export default function Footer() {
         suppressHydrationWarning
       >
         {PATH_D_LIST.map((d, i) => (
-          <path key={i} d={d} fill="none" stroke="#3B82F6" strokeWidth={1} opacity={0.06} data-net-path={i} />
+          <path key={i} d={d} fill="none" style={{ stroke: 'var(--color-brand-accent)' }} strokeWidth={1} opacity={0.06} data-net-path={i} />
         ))}
         {NET_NODES.map((node, i) => (
-          <circle key={i} cx={node.x} cy={node.y} r={3} fill="#3B82F6" opacity={0.08} />
+          <circle key={i} cx={node.x} cy={node.y} r={3} style={{ fill: 'var(--color-brand-accent)' }} opacity={0.08} />
         ))}
       </svg>
 
@@ -294,7 +294,7 @@ export default function Footer() {
             fontFamily: 'var(--font-console)',
             fontSize: '0.75rem',
             letterSpacing: '0.12em',
-            color: '#60A5FA',
+            color: 'var(--color-glyph-stroke)',
             textTransform: 'uppercase',
             marginBottom: 12,
           }}
@@ -318,7 +318,7 @@ export default function Footer() {
           style={{
             marginTop: 20,
             fontSize: '1rem',
-            color: '#94A3B8',
+            color: 'var(--color-text-on-dark-muted)',
             lineHeight: 1.7,
             maxWidth: 480,
             marginLeft: 'auto',
@@ -338,7 +338,7 @@ export default function Footer() {
             className="font-medium cursor-pointer"
             style={{
               background: '#FFFFFF',
-              color: '#0F172A',
+              color: 'var(--color-surface-dark)',
               padding: '14px 36px',
               borderRadius: 'var(--radius-md)',
               transition: 'transform 200ms ease, background 200ms ease, box-shadow 200ms ease',
@@ -354,7 +354,7 @@ export default function Footer() {
             className="font-medium cursor-pointer"
             style={{
               background: 'transparent',
-              color: '#FFFFFF',
+              color: 'var(--color-text-on-dark)',
               padding: '14px 36px',
               borderRadius: 'var(--radius-md)',
               border: '1px solid rgba(255,255,255,0.2)',
@@ -388,7 +388,7 @@ export default function Footer() {
             cx={RING_CX}
             cy={RING_CY}
             r={RING_R}
-            stroke="#3B82F6"
+            style={{ stroke: 'var(--color-brand-accent)' }}
             strokeWidth={1.5}
             opacity={0.25}
             fill="none"
@@ -405,7 +405,7 @@ export default function Footer() {
                 cx={node.x}
                 cy={node.y}
                 r={8}
-                fill="#3B82F6"
+                style={{ fill: 'var(--color-brand-accent)' }}
                 opacity={0}
               />
               <circle
@@ -413,14 +413,14 @@ export default function Footer() {
                 cx={node.x}
                 cy={node.y}
                 r={0}
-                fill="#60A5FA"
+                style={{ fill: 'var(--color-glyph-stroke)' }}
                 opacity={0}
               />
               <text
                 x={node.x}
                 y={node.y + (node.y > RING_CY ? 32 : -22)}
                 textAnchor="middle"
-                fill="#94A3B8"
+                style={{ fill: 'var(--color-text-on-dark-muted)' }}
                 fontSize="11"
                 fontFamily="var(--font-console)"
                 letterSpacing="0.04em"
@@ -436,7 +436,7 @@ export default function Footer() {
             cx={RING_CX}
             cy={RING_CY - RING_R}
             r={5}
-            fill="#3B82F6"
+            style={{ fill: 'var(--color-brand-accent)' }}
             opacity={0}
           />
         </svg>
@@ -469,7 +469,7 @@ export default function Footer() {
                 fontFamily: 'var(--font-console)',
                 fontSize: '0.7rem',
                 letterSpacing: '0.06em',
-                color: '#64748B',
+                color: 'var(--color-text-tertiary)',
                 marginBottom: 10,
               }}
             >
@@ -490,8 +490,8 @@ export default function Footer() {
                   padding: '3px 0',
                 }}
               >
-                <span style={{ color: '#64748B' }}>{key}</span>
-                <span style={{ color: '#3B82F6' }}>{val}</span>
+                <span style={{ color: 'var(--color-text-tertiary)' }}>{key}</span>
+                <span style={{ color: 'var(--color-brand-accent)' }}>{val}</span>
               </div>
             ))}
           </div>
@@ -520,15 +520,15 @@ export default function Footer() {
                   key={label}
                   href="#"
                   className="cursor-pointer footer-link"
-                  style={{ color: '#64748B', fontSize: '0.8rem', transition: 'color 200ms ease' }}
-                  onMouseEnter={(e) => { e.currentTarget.style.color = '#FFFFFF'; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.color = '#64748B'; }}
+                  style={{ color: 'var(--color-text-tertiary)', fontSize: '0.8rem', transition: 'color 200ms ease' }}
+                  onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--color-text-on-dark)'; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--color-text-tertiary)'; }}
                 >
                   {label}
                 </a>
               ))}
             </div>
-            <span className="footer-link" style={{ color: '#64748B', fontSize: '0.8rem' }}>
+            <span className="footer-link" style={{ color: 'var(--color-text-tertiary)', fontSize: '0.8rem' }}>
               &copy; 2026 AutoMage. All rights reserved.
             </span>
           </div>
