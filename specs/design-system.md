@@ -513,7 +513,7 @@ Glyph 专用色阶（蓝色光谱）：
 | `#334155` | `var(--color-text-secondary)` | -- | 已有 |
 | `#64748B` | `var(--color-text-tertiary)` | -- | 已有 |
 | `#94A3B8` | `var(--color-text-on-dark-muted)` | -- | 已有 |
-| `#F8FAFC` | `var(--color-text-on-dark)` | -- | 已有 |
+| `#F8FAFC` | `var(--color-text-on-dark)` (近似: 实际 #F8FAFC, token #F1F5F9) | -- | 已有 |
 | `#F1F5F9` | `var(--color-text-on-dark)` | -- | 已有 |
 | `#1E3A5F` | `var(--color-brand-primary)` | -- | 已有 |
 | `#3B82F6` | `var(--color-brand-accent)` | -- | 已有 |
@@ -529,7 +529,7 @@ Glyph 专用色阶（蓝色光谱）：
 | `#EF4444` | `var(--color-signal-risk)` | -- | 已有 |
 | `#A78BFA` | 废弃 | 改用 `--color-gate-human` 或 `--color-brand-accent-alt` | 待修复 |
 | `#475569` | `var(--color-text-tertiary)` 或新建 `--color-flow-node-stroke` | -- | 待决定 |
-| `#E2E8F0` | `var(--color-surface-elevated)` | -- | 已有 |
+| `#E2E8F0` | (无精确匹配，保留原值) | -- | 已有 |
 | `#FFFFFF` | `var(--color-surface-card)` | -- | 已有 |
 | `#EF4444` (chrome) | -- | `--color-chrome-close` | 待建 |
 | `#EAB308` (chrome) | -- | `--color-chrome-minimize` | 待建 |
