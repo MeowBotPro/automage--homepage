@@ -61,6 +61,8 @@
 | `none` (linear) | `linear` | 匀速运动 | 粒子沿路径移动、ScrollTrigger scrub |
 | `power1.in` | 轻度 `--ease-in` | 轻度加速进入 | Footer 信号光点出现 |
 
+> **注意**: 上表为"语义近似"映射，即视觉效果相似、用途相同。`sine.inOut` 的精确公式为 `cubic-bezier(0.37, 0, 0.63, 1)`，`power2.inOut` 为 `cubic-bezier(0.45, 0, 0.55, 1)`，与 CSS `--ease-in-out` 的 `cubic-bezier(0.65, 0, 0.35, 1)` 数学上不等价。CSS 动画应使用 CSS token，GSAP 动画使用 GSAP 缓动名。
+
 ### 6.2.3 Lenis 滚动缓动
 
 Lenis 滚动引擎提供平滑的滚动体验：
