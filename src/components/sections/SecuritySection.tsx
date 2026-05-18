@@ -370,14 +370,14 @@ export default function SecuritySection() {
             font-family: var(--font-console, ui-monospace, SFMono-Regular, Menlo, monospace);
             font-size: 13px;
             font-weight: 700;
-            color: #0f172a;
+            color: var(--color-surface-dark);
             line-height: 1;
           }
 
           .am-role-desc {
             margin-top: 4px;
             font-size: 12px;
-            color: #64748b;
+            color: var(--color-text-tertiary);
             white-space: nowrap;
           }
 
@@ -426,7 +426,7 @@ export default function SecuritySection() {
             font-size: 9px;
             letter-spacing: 0.08em;
             text-transform: uppercase;
-            color: #94a3b8;
+            color: var(--color-text-on-dark-muted);
           }
 
           /* ── Shared Logo Animations ── */
