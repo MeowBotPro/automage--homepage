@@ -31,6 +31,8 @@ Signal -> Compress -> Review -> Decide -> Execute -> Learn
 > **证据来源**: `design-tokens.json` L151-L159 定义了 `loopRail.nodes` 的 6 个节点（Signal/Compress/Review/Decide/Execute/Learn），每个节点映射到页面的一个 section。
 >
 > **代码落地**: `InfoLoopSection.tsx` L17-L23 定义了 6 个 `LOOP_NODES`（Staff/AI/Manager/Dream/Boss/Task），以圆形路径动画实现信息流动叙事。
+>
+> **命名说明**: 概念节点名称（Signal/Compress/Review/Decide/Execute/Learn）用于品牌叙事和对外文档，代码变量名（Staff/AI/Manager/Dream/Boss/Task）为技术实现层。两者的映射关系通过 `design-tokens.json` 的 `loopRail.nodes` 配置。
 
 ---
 
