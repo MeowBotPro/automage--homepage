@@ -248,7 +248,7 @@ export default function CompareSection() {
                     padding: '2px 8px',
                     borderRadius: 'var(--radius-full)',
                     background: d.riskColor,
-                    color: '#fff',
+                    color: 'var(--color-text-on-dark)',
                     fontWeight: 600,
                   }}
                 >
@@ -335,7 +335,7 @@ export default function CompareSection() {
             >
               <div className="flex items-center justify-between mb-1">
                 <span style={{ fontWeight: 600, fontSize: '0.875rem' }}>{d.owner}</span>
-                <span style={{ fontSize: '0.6875rem', padding: '2px 6px', borderRadius: 'var(--radius-full)', background: d.riskColor, color: '#fff' }}>{d.risk}</span>
+                <span style={{ fontSize: '0.6875rem', padding: '2px 6px', borderRadius: 'var(--radius-full)', background: d.riskColor, color: 'var(--color-text-on-dark)' }}>{d.risk}</span>
               </div>
               <p style={{ fontSize: '0.8125rem', color: 'var(--color-text-tertiary)' }}>{d.action}</p>
             </div>

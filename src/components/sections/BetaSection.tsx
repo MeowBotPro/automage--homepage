@@ -270,7 +270,7 @@ export default function BetaSection() {
               style={{
                 width: '100%',
                 background: 'var(--color-brand-primary)',
-                color: '#fff',
+                color: 'var(--color-text-on-dark)',
                 padding: '14px 48px',
                 borderRadius: 'var(--radius-md)',
                 border: 'none',

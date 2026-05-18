@@ -187,7 +187,7 @@ function SignalConsole() {
                 padding: '2px 8px',
                 borderRadius: 'var(--radius-full)',
                 background: i === pipelineIndex ? 'var(--color-brand-accent)' : 'rgba(255,255,255,0.06)',
-                color: i === pipelineIndex ? '#fff' : 'var(--color-text-on-dark-muted)',
+                color: i === pipelineIndex ? 'var(--color-text-on-dark)' : 'var(--color-text-on-dark-muted)',
                 transition: 'all 300ms ease',
                 fontWeight: i === pipelineIndex ? 600 : 400,
               }}
@@ -309,7 +309,7 @@ export default function HeroSection() {
             <span
               ref={gradientRef}
               style={{
-                background: 'linear-gradient(135deg, #1E3A5F 0%, #3B82F6 100%)',
+                background: 'linear-gradient(135deg, var(--color-brand-primary) 0%, var(--color-brand-accent) 100%)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 backgroundClip: 'text',
