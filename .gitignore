@@ -42,3 +42,7 @@ next-env.d.ts
 
 # workflow
 .workflow/
+
+# local sqlite data
+/data/*.sqlite
+/data/*.sqlite-*
