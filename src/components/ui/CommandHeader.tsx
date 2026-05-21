@@ -61,8 +61,8 @@ function BrandMark() {
       <Image
         src="/automage-logo.svg"
         alt=""
-        width={30}
-        height={34}
+        width={32}
+        height={32}
         className="am-logo-colink"
         aria-hidden="true"
         style={{ position: 'relative', zIndex: 1, opacity: 0.95 }}
@@ -212,9 +212,7 @@ export default function CommandHeader() {
           display: 'flex',
           alignItems: 'center',
           padding: '0 16px',
-          background: isDark
-            ? 'rgba(15, 23, 42, 0.78)'
-            : 'rgba(15, 23, 42, 0.78)',
+          background: 'rgba(55, 65, 81, 0.88)',
           backdropFilter: 'blur(22px)',
           WebkitBackdropFilter: 'blur(22px)',
           border: `1px solid ${isDark ? 'rgba(255,255,255,0.10)' : 'rgba(255,255,255,0.10)'}`,
@@ -230,7 +228,7 @@ export default function CommandHeader() {
           href="/"
           data-boot="logo"
           style={{
-            display: 'flex', alignItems: 'center', gap: 10,
+            display: 'flex', alignItems: 'center', gap: 8,
             flexShrink: 0, textDecoration: 'none', color: 'inherit',
             paddingLeft: 4, minWidth: 140,
             opacity: reducedMotion ? 1 : 0,
@@ -241,7 +239,7 @@ export default function CommandHeader() {
             data-boot="name"
             style={{
               fontWeight: 700, fontSize: 21, letterSpacing: '-0.02em',
-              lineHeight: 1, color: 'var(--color-text-on-dark)',
+              lineHeight: 1, color: '#F8FAFC',
               fontFamily: 'var(--font-sans)',
               opacity: reducedMotion ? 1 : 0,
             }}
@@ -269,7 +267,7 @@ export default function CommandHeader() {
                   position: 'relative', background: 'none', border: 'none',
                   cursor: 'pointer', padding: '7px 12px',
                   fontSize: 13, fontWeight: 560,
-                  color: isActive ? 'rgba(248,250,252,0.96)' : 'rgba(248,250,252,0.72)',
+                  color: isActive ? '#F8FAFC' : '#CBD5E1',
                   fontFamily: 'var(--font-sans)', letterSpacing: '-0.01em',
                   borderRadius: 999,
                   transition: 'color 0.2s, background 0.2s',
@@ -277,12 +275,12 @@ export default function CommandHeader() {
                   opacity: reducedMotion ? 1 : 0,
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.color = 'rgba(248,250,252,0.96)';
+                  e.currentTarget.style.color = '#F8FAFC';
                   e.currentTarget.style.background = 'rgba(255,255,255,0.06)';
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.color = isActive
-                    ? 'rgba(248,250,252,0.96)' : 'rgba(248,250,252,0.72)';
+                    ? '#F8FAFC' : '#CBD5E1';
                   e.currentTarget.style.background = 'none';
                 }}
               >
