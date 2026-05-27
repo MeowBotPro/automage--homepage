@@ -1,0 +1,56 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model BetaApplication {
+  id               String   @id @default(uuid()) @db.Uuid
+  publicId         String   @unique @map("public_id")
+  occupation       String
+  workBackground   String?  @map("work_background")
+  useCase          String   @map("use_case")
+  contact          String
+  inviteCode       String?  @map("invite_code")
+  inviteCodeValid  Boolean  @default(false) @map("invite_code_valid")
+  inviteCodeStatus String   @default("none") @map("invite_code_status")
+  priorityLevel    String   @default("medium") @map("priority_level")
+  priorityReason   String?  @map("priority_reason")
+  reviewStatus     String   @default("new") @map("review_status")
+  reviewerNote     String?  @map("reviewer_note")
+  source           String?  @default("landing_page")
+  meta             Json?
+  createdAt        DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@index([createdAt], map: "idx_beta_applications_created_at")
+  @@index([occupation], map: "idx_beta_applications_occupation")
+  @@index([useCase], map: "idx_beta_applications_use_case")
+  @@index([inviteCode], map: "idx_beta_applications_invite_code")
+  @@index([inviteCodeValid], map: "idx_beta_applications_invite_code_valid")
+  @@index([inviteCodeStatus], map: "idx_beta_applications_invite_code_status")
+  @@index([priorityLevel], map: "idx_beta_applications_priority_level")
+  @@index([reviewStatus], map: "idx_beta_applications_review_status")
+  @@index([source], map: "idx_beta_applications_source")
+  @@map("beta_applications")
+}
+
+model InviteCode {
+  id        String    @id @default(uuid()) @db.Uuid
+  code      String    @unique
+  isActive  Boolean   @default(true) @map("is_active")
+  maxUses   Int?      @map("max_uses")
+  usedCount Int       @default(0) @map("used_count")
+  expiresAt DateTime? @map("expires_at") @db.Timestamptz(6)
+  label     String?
+  note      String?
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@index([isActive], map: "idx_invite_codes_is_active")
+  @@index([expiresAt], map: "idx_invite_codes_expires_at")
+  @@map("invite_codes")
+}
