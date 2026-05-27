@@ -1,16 +1,13 @@
-import Database from 'better-sqlite3';
-import { mkdirSync } from 'node:fs';
-import path from 'node:path';
 import { randomBytes } from 'node:crypto';
+import { Prisma } from '@/generated/prisma/client';
+import type { InviteCodeModel } from '@/generated/prisma/models/InviteCode';
+import { prisma } from '@/lib/server/prisma';
 import {
   normalizeBetaApplicationInput,
   serializeBetaApplicationRecord,
   type BetaApplicationRecord,
+  type InviteCodeStatus,
 } from '@/lib/server/beta-application-schema';
-
-const DEFAULT_DB_PATH = path.join(process.cwd(), 'data', 'beta-applications.sqlite');
-
-let database: Database.Database | null = null;
 
 export type CreateBetaApplicationParams = {
   payload: unknown;
@@ -19,140 +16,220 @@ export type CreateBetaApplicationParams = {
   referrer: string | null;
 };
 
-export function createBetaApplication({
+type InviteValidationResult = {
+  status: InviteCodeStatus;
+  valid: boolean;
+  priorityLevel: 'high' | 'medium';
+  priorityReason: string | null;
+};
+
+export async function createBetaApplication({
   payload,
   requestId,
   userAgent,
   referrer,
 }: CreateBetaApplicationParams) {
   const normalized = normalizeBetaApplicationInput(payload);
-  const db = getDatabase();
-  const submittedAt = new Date().toISOString();
   const publicId = generatePublicId();
-  const meta = JSON.stringify({
-    raw_payload: normalized.raw_payload,
+  const now = new Date();
+  const meta: Prisma.InputJsonObject = {
+    raw_payload: toInputJsonValue(normalized.raw_payload),
     request_id: requestId,
-    normalized_aliases: normalized.normalized_aliases,
     user_agent: userAgent,
     referrer,
+  };
+
+  const record = await prisma.$transaction(async (tx) => {
+    const invite = normalized.invite_code
+      ? await validateInviteCode(tx, normalized.invite_code, now)
+      : {
+          status: 'none',
+          valid: false,
+          priorityLevel: 'medium',
+          priorityReason: null,
+        } satisfies InviteValidationResult;
+
+    return tx.betaApplication.create({
+      data: {
+        publicId,
+        occupation: normalized.occupation,
+        workBackground: normalized.work_background,
+        useCase: normalized.use_case,
+        contact: normalized.contact,
+        inviteCode: normalized.invite_code,
+        inviteCodeValid: invite.valid,
+        inviteCodeStatus: invite.status,
+        priorityLevel: invite.priorityLevel,
+        priorityReason: invite.priorityReason,
+        reviewStatus: 'new',
+        source: normalized.source,
+        meta,
+      },
+    });
   });
 
-  const result = db
-    .prepare(
-      `INSERT INTO beta_applications (
-        public_id,
-        name,
-        company_name,
-        contact,
-        team_size,
-        review_status,
-        slot_status,
-        source,
-        submitted_at,
-        meta
-      ) VALUES (
-        @public_id,
-        @name,
-        @company_name,
-        @contact,
-        @team_size,
-        'pending',
-        'unassigned',
-        @source,
-        @submitted_at,
-        @meta
-      )`,
-    )
-    .run({
-      public_id: publicId,
-      name: normalized.name,
-      company_name: normalized.company_name,
-      contact: normalized.contact,
-      team_size: normalized.team_size,
-      source: normalized.source,
-      submitted_at: submittedAt,
-      meta,
-    });
-
-  const record = db
-    .prepare(
-      `SELECT
-        id,
-        public_id,
-        name,
-        company_name,
-        contact,
-        team_size,
-        review_status,
-        slot_status,
-        source,
-        submitted_at
-      FROM beta_applications
-      WHERE id = ?`,
-    )
-    .get(result.lastInsertRowid) as BetaApplicationRecord | undefined;
-
-  if (!record) {
-    throw new Error('Failed to load created beta application');
-  }
-
   return {
-    record: serializeBetaApplicationRecord(record),
+    record: serializeBetaApplicationRecord(toBetaApplicationRecord(record)),
   };
 }
 
-function getDatabase() {
-  if (database) {
-    return database;
+async function validateInviteCode(
+  tx: Prisma.TransactionClient,
+  code: string,
+  now: Date,
+): Promise<InviteValidationResult> {
+  const inviteCode = await tx.inviteCode.findUnique({
+    where: { code },
+  });
+
+  const status = getInviteCodeStatus(inviteCode, now);
+  if (status !== 'valid') {
+    return {
+      status,
+      valid: false,
+      priorityLevel: 'medium',
+      priorityReason: `invalid_invite_code:${status}`,
+    };
   }
 
-  const configuredPath = process.env.BETA_DB_PATH;
-  const resolvedPath = configuredPath
-    ? path.resolve(configuredPath)
-    : DEFAULT_DB_PATH;
-  mkdirSync(path.dirname(resolvedPath), { recursive: true });
+  const update = await tx.inviteCode.updateMany({
+    where: {
+      id: inviteCode!.id,
+      isActive: true,
+      AND: [
+        {
+          OR: [
+            { expiresAt: null },
+            { expiresAt: { gt: now } },
+          ],
+        },
+        {
+          OR: [
+            { maxUses: null },
+            { usedCount: { lt: inviteCode!.maxUses ?? 0 } },
+          ],
+        },
+      ],
+    },
+    data: {
+      usedCount: { increment: 1 },
+      updatedAt: now,
+    },
+  });
 
-  const db = new Database(resolvedPath);
-  db.pragma('journal_mode = WAL');
-  db.pragma('foreign_keys = ON');
-  db.pragma('user_version = 1');
+  if (update.count === 1) {
+    return {
+      status: 'valid',
+      valid: true,
+      priorityLevel: 'high',
+      priorityReason: 'valid_invite_code',
+    };
+  }
 
-  db.exec(`
-    CREATE TABLE IF NOT EXISTS beta_applications (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      public_id TEXT NOT NULL UNIQUE,
-      name TEXT NOT NULL,
-      company_name TEXT NOT NULL,
-      contact TEXT NOT NULL,
-      team_size TEXT,
-      review_status TEXT NOT NULL DEFAULT 'pending',
-      slot_status TEXT NOT NULL DEFAULT 'unassigned',
-      source TEXT NOT NULL DEFAULT 'landing_page',
-      submitted_at TEXT NOT NULL,
-      meta TEXT
+  const latestInviteCode = await tx.inviteCode.findUnique({
+    where: { code },
+  });
+  const latestStatus = getInviteCodeStatus(latestInviteCode, now);
+
+  return {
+    status: latestStatus === 'valid' ? 'exhausted' : latestStatus,
+    valid: false,
+    priorityLevel: 'medium',
+    priorityReason: `invalid_invite_code:${latestStatus === 'valid' ? 'exhausted' : latestStatus}`,
+  };
+}
+
+function getInviteCodeStatus(inviteCode: InviteCodeModel | null, now: Date): InviteCodeStatus {
+  if (!inviteCode) {
+    return 'not_found';
+  }
+
+  if (!inviteCode.isActive) {
+    return 'inactive';
+  }
+
+  if (inviteCode.expiresAt && inviteCode.expiresAt <= now) {
+    return 'expired';
+  }
+
+  if (inviteCode.maxUses !== null && inviteCode.usedCount >= inviteCode.maxUses) {
+    return 'exhausted';
+  }
+
+  return 'valid';
+}
+
+function toBetaApplicationRecord(record: {
+  id: string;
+  publicId: string;
+  occupation: string;
+  workBackground: string | null;
+  useCase: string;
+  contact: string;
+  inviteCode: string | null;
+  inviteCodeValid: boolean;
+  inviteCodeStatus: string;
+  priorityLevel: string;
+  priorityReason: string | null;
+  reviewStatus: string;
+  reviewerNote: string | null;
+  source: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+}): BetaApplicationRecord {
+  return {
+    id: record.id,
+    public_id: record.publicId,
+    occupation: record.occupation,
+    work_background: record.workBackground,
+    use_case: record.useCase,
+    contact: record.contact,
+    invite_code: record.inviteCode,
+    invite_code_valid: record.inviteCodeValid,
+    invite_code_status: toInviteCodeStatus(record.inviteCodeStatus),
+    priority_level: record.priorityLevel,
+    priority_reason: record.priorityReason,
+    review_status: record.reviewStatus,
+    reviewer_note: record.reviewerNote,
+    source: record.source,
+    created_at: record.createdAt.toISOString(),
+    updated_at: record.updatedAt.toISOString(),
+  };
+}
+
+function toInviteCodeStatus(status: string): InviteCodeStatus {
+  if (
+    status === 'none' ||
+    status === 'valid' ||
+    status === 'not_found' ||
+    status === 'inactive' ||
+    status === 'expired' ||
+    status === 'exhausted'
+  ) {
+    return status;
+  }
+
+  return 'none';
+}
+
+function toInputJsonValue(value: unknown): Prisma.InputJsonValue | null {
+  if (value === null || typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+    return value;
+  }
+
+  if (Array.isArray(value)) {
+    return value.map((entry) => entry === undefined ? null : toInputJsonValue(entry));
+  }
+
+  if (typeof value === 'object') {
+    return Object.fromEntries(
+      Object.entries(value as Record<string, unknown>)
+        .filter(([, entry]) => entry !== undefined)
+        .map(([key, entry]) => [key, toInputJsonValue(entry)]),
     );
+  }
 
-    CREATE INDEX IF NOT EXISTS idx_beta_applications_public_id
-      ON beta_applications(public_id);
-
-    CREATE INDEX IF NOT EXISTS idx_beta_applications_submitted_at
-      ON beta_applications(submitted_at);
-
-    CREATE INDEX IF NOT EXISTS idx_beta_applications_company_name
-      ON beta_applications(company_name);
-
-    CREATE INDEX IF NOT EXISTS idx_beta_applications_contact
-      ON beta_applications(contact);
-
-    CREATE INDEX IF NOT EXISTS idx_beta_applications_review_status
-      ON beta_applications(review_status);
-
-    CREATE INDEX IF NOT EXISTS idx_beta_applications_source
-      ON beta_applications(source);
-  `);
-
-  database = db;
-  return db;
+  return String(value);
 }
 
 function generatePublicId() {

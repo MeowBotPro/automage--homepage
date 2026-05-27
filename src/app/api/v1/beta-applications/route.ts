@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
 
   try {
     const requestId = request.headers.get('x-request-id') ?? crypto.randomUUID();
-    const data = createBetaApplication({
+    const data = await createBetaApplication({
       payload,
       requestId,
       userAgent: request.headers.get('user-agent'),

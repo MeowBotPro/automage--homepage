@@ -29,88 +29,56 @@ const trimmedOptionalString = (max: number) =>
   z.preprocess(emptyStringToUndefined, z.string().trim().max(max).optional());
 
 const rawBetaApplicationSchema = z.object({
-  name: trimmedRequiredString(128, '请输入姓名'),
-  company_name: trimmedOptionalString(256),
-  company: trimmedOptionalString(256),
-  contact: trimmedOptionalString(64),
-  phone_or_wechat: trimmedOptionalString(64),
-  mobile_or_wechat: trimmedOptionalString(64),
-  phone: trimmedOptionalString(64),
-  wechat: trimmedOptionalString(64),
-  team_size: trimmedOptionalString(64),
-  team_members: trimmedOptionalString(64),
+  occupation: trimmedRequiredString(128, '请选择职业 / 身份'),
+  work_background: trimmedOptionalString(1000),
+  use_case: trimmedRequiredString(256, '请选择应用场景'),
+  contact: trimmedRequiredString(128, '请输入联系方式'),
+  invite_code: trimmedOptionalString(64),
   source: trimmedOptionalString(64),
 });
 
+export type InviteCodeStatus = 'none' | 'valid' | 'not_found' | 'inactive' | 'expired' | 'exhausted';
+
 export type BetaApplicationRecord = {
-  id: number;
+  id: string;
   public_id: string;
-  name: string;
-  company_name: string;
+  occupation: string;
+  work_background: string | null;
+  use_case: string;
   contact: string;
-  team_size: string | null;
+  invite_code: string | null;
+  invite_code_valid: boolean;
+  invite_code_status: InviteCodeStatus;
+  priority_level: string;
+  priority_reason: string | null;
   review_status: string;
-  slot_status: string;
-  source: string;
-  submitted_at: string;
+  reviewer_note: string | null;
+  source: string | null;
+  created_at: string;
+  updated_at: string;
 };
 
 export type NormalizedBetaApplicationInput = {
-  name: string;
-  company_name: string;
+  occupation: string;
+  work_background: string | null;
+  use_case: string;
   contact: string;
-  team_size: string | null;
+  invite_code: string | null;
   source: string;
   raw_payload: Record<string, unknown>;
-  normalized_aliases: string[];
 };
 
 export function normalizeBetaApplicationInput(payload: unknown): NormalizedBetaApplicationInput {
   const parsed = rawBetaApplicationSchema.parse(payload);
 
-  const normalizedAliases: string[] = [];
-
-  const companyName = parsed.company_name ?? parsed.company;
-  if (parsed.company_name === undefined && parsed.company !== undefined) {
-    normalizedAliases.push('company');
-  }
-
-  const contactAliasMap = [
-    ['phone_or_wechat', parsed.phone_or_wechat],
-    ['mobile_or_wechat', parsed.mobile_or_wechat],
-    ['phone', parsed.phone],
-    ['wechat', parsed.wechat],
-  ] as const;
-
-  const contactAliasEntry = contactAliasMap.find(([, value]) => value !== undefined);
-  const contact = parsed.contact ?? contactAliasEntry?.[1];
-  if (parsed.contact === undefined && contactAliasEntry) {
-    normalizedAliases.push(contactAliasEntry[0]);
-  }
-
-  const teamSize = parsed.team_size ?? parsed.team_members;
-  if (parsed.team_size === undefined && parsed.team_members !== undefined) {
-    normalizedAliases.push('team_members');
-  }
-
-  const requiredSchema = z.object({
-    company_name: trimmedRequiredString(256, '请输入公司名称'),
-    contact: trimmedRequiredString(64, '请输入联系方式'),
-  });
-
-  const required = requiredSchema.parse({
-    company_name: companyName,
-    contact,
-  });
-
   return {
-    name: parsed.name,
-    company_name: required.company_name,
-    contact: required.contact,
-    team_size: teamSize ?? null,
+    occupation: parsed.occupation,
+    work_background: parsed.work_background ?? null,
+    use_case: parsed.use_case,
+    contact: parsed.contact,
+    invite_code: parsed.invite_code ? parsed.invite_code.toUpperCase() : null,
     source: parsed.source ?? 'landing_page',
     raw_payload: isRecord(payload) ? payload : {},
-    normalized_aliases: normalizedAliases,
   };
 }
 
@@ -118,12 +86,14 @@ export function serializeBetaApplicationRecord(record: BetaApplicationRecord) {
   return {
     application_id: record.id,
     application_public_id: record.public_id,
-    name: record.name,
-    company_name: record.company_name,
+    occupation: record.occupation,
+    work_background: record.work_background,
+    use_case: record.use_case,
     contact: record.contact,
-    team_size: record.team_size,
+    invite_code_valid: record.invite_code_valid,
+    invite_code_status: record.invite_code_status,
+    priority_level: record.priority_level,
     review_status: record.review_status,
-    slot_status: record.slot_status,
     source: record.source,
   };
 }
