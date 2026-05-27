@@ -1,0 +1,2 @@
+- [Supabase database endpoint](supabase-database-endpoint.md) — use the ap-southeast-1 session pooler; direct db host did not resolve locally.
+- [Beta invite code scarcity](beta-invite-code-scarcity.md) — invite codes need lifecycle state, expiry, usage count, and submit-time validation.

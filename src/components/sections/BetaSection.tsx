@@ -10,9 +10,82 @@ type BetaApplicationResponse = {
   data?: {
     record?: {
       application_public_id?: string;
+      invite_code_status?: string;
     };
   };
 };
+
+type FieldKind = 'select' | 'textarea' | 'text';
+
+type BetaFormField = {
+  name: 'occupation' | 'workBackground' | 'useCase' | 'contact' | 'inviteCode';
+  label: string;
+  required: boolean;
+  kind: FieldKind;
+  placeholder?: string;
+  options?: string[];
+};
+
+const occupationOptions = [
+  '开发者 / 技术负责人',
+  '产品经理',
+  '运营 / 增长',
+  '创业者 / 企业管理者',
+  '咨询 / 交付 / 项目管理',
+  '内容 / 市场 / 销售',
+  '其他',
+];
+
+const useCaseOptions = [
+  '企业内部知识库 / 文档自动化',
+  '飞书 / 办公流程自动化',
+  '项目管理 / 团队协作',
+  '内容生产 / 营销自动化',
+  '客服 / 销售支持',
+  '研发 / 代码或工程提效',
+  '个人效率工具',
+  '其他，请补充说明',
+];
+
+const betaFormFields: BetaFormField[] = [
+  {
+    name: 'occupation',
+    label: '职业 / 身份',
+    required: true,
+    kind: 'select',
+    placeholder: '选择你的职业 / 身份',
+    options: occupationOptions,
+  },
+  {
+    name: 'workBackground',
+    label: '工作背景',
+    required: false,
+    kind: 'textarea',
+    placeholder: '简单说说你的行业、团队或过往相关经验',
+  },
+  {
+    name: 'useCase',
+    label: '应用场景',
+    required: true,
+    kind: 'select',
+    placeholder: '选择你最想用 AutoMage 做什么',
+    options: useCaseOptions,
+  },
+  {
+    name: 'contact',
+    label: '联系方式',
+    required: true,
+    kind: 'text',
+    placeholder: '微信 / 手机 / 邮箱',
+  },
+  {
+    name: 'inviteCode',
+    label: '邀请码',
+    required: false,
+    kind: 'text',
+    placeholder: '邀请码，可选；有效邀请码会优先处理',
+  },
+];
 
 export default function BetaSection() {
   const [submitted, setSubmitted] = useState(false);
@@ -163,10 +236,11 @@ export default function BetaSection() {
 
     const form = event.currentTarget;
     const formData = new FormData(form);
-    const name = String(formData.get('name') ?? '').trim();
-    const companyName = String(formData.get('company') ?? '').trim();
+    const occupation = String(formData.get('occupation') ?? '').trim();
+    const workBackground = String(formData.get('workBackground') ?? '').trim();
+    const useCase = String(formData.get('useCase') ?? '').trim();
     const contact = String(formData.get('contact') ?? '').trim();
-    const teamSize = String(formData.get('teamSize') ?? '').trim();
+    const inviteCode = String(formData.get('inviteCode') ?? '').trim();
 
     try {
       const response = await fetch('/api/v1/beta-applications', {
@@ -175,10 +249,11 @@ export default function BetaSection() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          name,
-          company_name: companyName,
+          occupation,
+          work_background: workBackground || undefined,
+          use_case: useCase,
           contact,
-          team_size: teamSize || undefined,
+          invite_code: inviteCode || undefined,
           source: 'landing_page',
         }),
       });
@@ -202,7 +277,7 @@ export default function BetaSection() {
     }
   };
 
-  const inputStyle: CSSProperties = {
+  const controlStyle: CSSProperties = {
     width: '100%',
     border: 'none',
     borderBottom: 'none',
@@ -214,9 +289,70 @@ export default function BetaSection() {
     fontFamily: 'var(--font-sans)',
   };
 
-  const inputNames = ['name', 'company', 'contact', 'teamSize'] as const;
-  const inputPlaceholders = ['你的名字', '公司名称', '手机号或微信', '团队人数'];
-  const inputRequired = [true, true, true, false];
+  const selectStyle: CSSProperties = {
+    ...controlStyle,
+    appearance: 'none',
+    cursor: 'pointer',
+  };
+
+  const textareaStyle: CSSProperties = {
+    ...controlStyle,
+    minHeight: 96,
+    resize: 'vertical',
+    lineHeight: 1.6,
+  };
+
+  const renderField = (field: BetaFormField, index: number) => {
+    if (field.kind === 'select') {
+      return (
+        <select
+          name={field.name}
+          aria-label={field.label}
+          required={field.required}
+          defaultValue=""
+          style={selectStyle}
+          onFocus={() => handleFocus(index)}
+          onBlur={() => handleBlur(index)}
+        >
+          <option value="" disabled>
+            {field.placeholder}
+          </option>
+          {field.options?.map((option) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
+        </select>
+      );
+    }
+
+    if (field.kind === 'textarea') {
+      return (
+        <textarea
+          name={field.name}
+          placeholder={field.placeholder}
+          aria-label={field.label}
+          required={field.required}
+          style={textareaStyle}
+          onFocus={() => handleFocus(index)}
+          onBlur={() => handleBlur(index)}
+        />
+      );
+    }
+
+    return (
+      <input
+        type="text"
+        name={field.name}
+        placeholder={field.placeholder}
+        aria-label={field.label}
+        required={field.required}
+        style={controlStyle}
+        onFocus={() => handleFocus(index)}
+        onBlur={() => handleBlur(index)}
+      />
+    );
+  };
 
   return (
     <>
@@ -246,7 +382,7 @@ export default function BetaSection() {
               marginBottom: 48,
             }}
           >
-            我们正在寻找愿意一起探索组织管理新方式的团队。如果你也觉得现在的方式有问题，欢迎聊聊。
+            我们正在开放第一批 AutoMage 内测名额。告诉我们你的身份、场景和联系方式，我们会优先邀请最匹配的用户体验。
           </p>
 
           {submitted ? (
@@ -287,24 +423,27 @@ export default function BetaSection() {
               aria-busy={isSubmitting}
               style={{ display: 'flex', flexDirection: 'column', gap: 32 }}
             >
-              {inputNames.map((name, index) => (
+              {betaFormFields.map((field, index) => (
                 <div
-                  key={name}
+                  key={field.name}
                   ref={(element) => {
                     if (element) wrapperRefs.current[index] = element;
                   }}
                   style={{ position: 'relative' }}
                 >
-                  <input
-                    type="text"
-                    name={name}
-                    placeholder={inputPlaceholders[index]}
-                    aria-label={inputPlaceholders[index]}
-                    required={inputRequired[index]}
-                    style={inputStyle}
-                    onFocus={() => handleFocus(index)}
-                    onBlur={() => handleBlur(index)}
-                  />
+                  <label
+                    style={{
+                      display: 'block',
+                      color: 'var(--color-text-tertiary)',
+                      fontSize: '0.78rem',
+                      letterSpacing: '0.04em',
+                      marginBottom: 2,
+                    }}
+                  >
+                    {field.label}
+                    {field.required ? ' *' : ''}
+                  </label>
+                  {renderField(field, index)}
                   <div
                     ref={(element) => {
                       if (element) underlineRefs.current[index] = element;
