@@ -42,9 +42,5 @@ export default function LenisProvider({ children }: { children: React.ReactNode 
     };
   }, []);
 
-  return (
-    <LenisContext.Provider value={lenisRef.current}>
-      {children}
-    </LenisContext.Provider>
-  );
+  return <>{children}</>;
 }

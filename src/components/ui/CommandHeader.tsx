@@ -1,7 +1,8 @@
 'use client';
 
 import Image from 'next/image';
-import { useEffect, useRef, useState, useCallback } from 'react';
+import Link from 'next/link';
+import { useEffect, useRef, useState, useCallback, useSyncExternalStore } from 'react';
 import { gsap, ScrollTrigger, gsapReady } from '@/lib/gsap';
 
 /* ── Navigation items ── */
@@ -32,6 +33,19 @@ const STATUS_MAP: Record<string, StatusState> = {
   faq:      { label: 'Decision manual', color: 'var(--color-brand-accent)' },
   footer:   { label: 'Loop closed',    color: 'var(--color-signal-success)' },
 };
+
+function subscribeReducedMotion(onChange: () => void) {
+  if (typeof window === 'undefined') return () => {};
+  const media = window.matchMedia('(prefers-reduced-motion: reduce)');
+  media.addEventListener('change', onChange);
+  return () => media.removeEventListener('change', onChange);
+}
+
+function getReducedMotionSnapshot() {
+  return typeof window !== 'undefined'
+    ? window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    : false;
+}
 
 /* ── Brand Mark: bare icon with subtle halo ── */
 function BrandMark() {
@@ -96,19 +110,17 @@ export default function CommandHeader() {
   const [activeSection, setActiveSection] = useState('hero');
   const [status, setStatus] = useState<StatusState>(STATUS_MAP.hero);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [booted, setBooted] = useState(false);
-  const [reducedMotion, setReducedMotion] = useState(false);
+  const reducedMotion = useSyncExternalStore(
+    subscribeReducedMotion,
+    getReducedMotionSnapshot,
+    () => false,
+  );
   const activeRef = useRef('hero');
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    setReducedMotion(window.matchMedia('(prefers-reduced-motion: reduce)').matches);
-  }, []);
 
   /* ── Boot animation ── */
   useEffect(() => {
     if (!gsapReady() || !headerRef.current) return;
-    if (reducedMotion) { setBooted(true); return; }
+    if (reducedMotion) return;
 
     const els = headerRef.current.querySelectorAll('[data-boot]');
     gsap.set(els, { opacity: 0, y: 5 });
@@ -125,8 +137,7 @@ export default function CommandHeader() {
       .to('[data-boot="name"]', { opacity: 1, y: 0, duration: 0.3, ease: 'power2.out' }, '-=0.12')
       .to('[data-boot="nav"]', { opacity: 1, y: 0, duration: 0.25, stagger: 0.06, ease: 'power2.out' }, '-=0.1')
       .to('[data-boot="status"]', { opacity: 1, y: 0, duration: 0.25, ease: 'power2.out' }, '-=0.05')
-      .to('[data-boot="cta"]', { opacity: 1, y: 0, duration: 0.3, ease: 'power2.out' }, '-=0.1')
-      .call(() => setBooted(true));
+      .to('[data-boot="cta"]', { opacity: 1, y: 0, duration: 0.3, ease: 'power2.out' }, '-=0.1');
   }, [reducedMotion]);
 
   /* ── Scroll tracking ── */
@@ -224,7 +235,7 @@ export default function CommandHeader() {
         }}
       >
         {/* ── Brand ── */}
-        <a
+        <Link
           href="/"
           data-boot="logo"
           style={{
@@ -246,7 +257,7 @@ export default function CommandHeader() {
           >
             AutoMage
           </span>
-        </a>
+        </Link>
 
         {/* ── Nav ── */}
         <nav

@@ -104,7 +104,7 @@ export function useParticles(
 
           // Use native SVG path animation
           const progress = { value: 0 };
-          const pathAnim = motionPathTo(circle as any, pathEl, progress);
+          const pathAnim = motionPathTo(circle, pathEl, progress);
           if (!pathAnim) continue;
 
           // Animate progress from 0 to 1
@@ -144,7 +144,7 @@ export function useParticles(
             const trailOffset = offset + t * trailDelay;
 
             const trailProgress = { value: 0 };
-            const trailAnim = motionPathTo(trail as any, pathEl, trailProgress);
+            const trailAnim = motionPathTo(trail, pathEl, trailProgress);
             if (!trailAnim) continue;
 
             tl.fromTo(

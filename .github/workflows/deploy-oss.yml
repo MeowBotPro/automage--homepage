@@ -1,20 +1,31 @@
-name: Deploy to Alibaba Cloud OSS
+name: Deploy with Docker Compose
 
 on:
+  pull_request:
   push:
     branches: [main]
+  workflow_dispatch:
 
 permissions:
   contents: read
+  packages: write
 
 concurrency:
-  group: deploy-oss
+  group: automage-homepage-${{ github.ref }}
   cancel-in-progress: true
 
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
+env:
+  DEPLOY_ACCOUNT: deploy
+  DEPLOY_PATH: /opt/automage-homepage
+  APP_HOST: 127.0.0.1
+  APP_PORT: 3000
 
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: postgresql://ci:ci@localhost:5432/ci
+      NEXT_TELEMETRY_DISABLED: '1'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -28,31 +39,156 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Lint
+        run: npm run lint
+
       - name: Build
         run: npm run build
 
-      - name: Install Alibaba Cloud CLI
-        run: |
-          curl -fsSL https://aliyuncli.alicdn.com/aliyun-cli-linux-latest-amd64.tgz -o aliyun-cli.tgz
-          tar -xzf aliyun-cli.tgz
-          sudo mv aliyun /usr/local/bin/aliyun
+  image:
+    if: github.event_name != 'pull_request'
+    needs: verify
+    runs-on: ubuntu-latest
+    outputs:
+      image: ${{ steps.image.outputs.image }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Configure CLI credentials
-        run: |
-          aliyun configure set \
-            --mode AK \
-            --access-key-id "${{ secrets.ALIYUN_ACCESS_KEY_ID }}" \
-            --access-key-secret "${{ secrets.ALIYUN_ACCESS_KEY_SECRET }}" \
-            --region cn-hangzhou
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-      - name: Deploy to OSS
-        run: |
-          aliyun oss sync out/ oss://${{ secrets.ALIYUN_OSS_BUCKET }}/ \
-            --delete \
-            --force \
-            --exclude "*.map"
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Verify deployment
+      - name: Resolve image tag
+        id: image
         run: |
-          echo "Deployed to https://automage.cn"
-          curl -s -o /dev/null -w "%{http_code}" https://automage.cn | grep -q "200" && echo "OK" || echo "Warning: site may take a few seconds to propagate"
+          IMAGE_NAME="ghcr.io/${GITHUB_REPOSITORY,,}"
+          echo "image_name=$IMAGE_NAME" >> "$GITHUB_OUTPUT"
+          echo "image=$IMAGE_NAME:$GITHUB_SHA" >> "$GITHUB_OUTPUT"
+
+      - name: Build and push image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ steps.image.outputs.image }}
+            ${{ steps.image.outputs.image_name }}:main
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  bootstrap:
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    needs: image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create deploy user and directory
+        uses: appleboy/ssh-action@v1.2.0
+        env:
+          DEPLOY_PASSWORD: ${{ secrets.DEPLOY_PASSWORD }}
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          password: ${{ secrets.DEPLOY_PASSWORD }}
+          port: ${{ secrets.DEPLOY_PORT }}
+          envs: DEPLOY_PASSWORD
+          script: |
+            set -euo pipefail
+
+            run_root() {
+              if [ "$(id -u)" -eq 0 ]; then
+                "$@"
+              else
+                printf '%s\n' "$DEPLOY_PASSWORD" | sudo -S "$@"
+              fi
+            }
+
+            set_deploy_password() {
+              if [ "$(id -u)" -eq 0 ]; then
+                printf 'deploy:%s\n' "$DEPLOY_PASSWORD" | chpasswd
+              else
+                printf '%s\n' "$DEPLOY_PASSWORD" | sudo -S env DEPLOY_PASSWORD="$DEPLOY_PASSWORD" sh -c 'printf "deploy:%s\n" "$DEPLOY_PASSWORD" | chpasswd'
+              fi
+            }
+
+            if ! id deploy >/dev/null 2>&1; then
+              run_root useradd -m -s /bin/bash deploy
+            fi
+
+            set_deploy_password
+            run_root usermod -aG docker deploy
+            run_root mkdir -p /opt/automage-homepage
+            run_root chown -R deploy:deploy /opt/automage-homepage
+
+  deploy:
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    needs: [image, bootstrap]
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Copy compose file
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: deploy
+          password: ${{ secrets.DEPLOY_PASSWORD }}
+          port: ${{ secrets.DEPLOY_PORT }}
+          source: deploy/compose.yml
+          target: /opt/automage-homepage
+          strip_components: 1
+
+      - name: Deploy on server
+        uses: appleboy/ssh-action@v1.2.0
+        env:
+          IMAGE: ${{ needs.image.outputs.image }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          GHCR_USERNAME: ${{ github.actor }}
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: deploy
+          password: ${{ secrets.DEPLOY_PASSWORD }}
+          port: ${{ secrets.DEPLOY_PORT }}
+          envs: IMAGE,DATABASE_URL,GHCR_USERNAME,GHCR_TOKEN
+          script: |
+            set -euo pipefail
+
+            cd /opt/automage-homepage
+
+            cat > .env <<EOF
+            IMAGE=$IMAGE
+            DATABASE_URL=$DATABASE_URL
+            APP_HOST=127.0.0.1
+            APP_PORT=3000
+            NODE_ENV=production
+            EOF
+
+            if [ -n "${GHCR_USERNAME:-}" ] && [ -n "${GHCR_TOKEN:-}" ]; then
+              printf '%s\n' "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USERNAME" --password-stdin
+            fi
+
+            docker compose pull
+            docker compose run --rm migrate
+            docker compose up -d --remove-orphans web
+
+            for i in $(seq 1 30); do
+              STATUS=$(docker inspect --format='{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}' automage-homepage 2>/dev/null || true)
+              if [ "$STATUS" = "healthy" ]; then
+                docker image prune -f
+                exit 0
+              fi
+              sleep 2
+            done
+
+            docker compose ps
+            docker compose logs --tail=100 web
+            exit 1

@@ -1,0 +1,23 @@
+services:
+  migrate:
+    image: ${IMAGE}
+    env_file:
+      - .env
+    working_dir: /app/migrate
+    command: ["./node_modules/.bin/prisma", "migrate", "deploy"]
+    restart: "no"
+
+  web:
+    image: ${IMAGE}
+    container_name: automage-homepage
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "${APP_HOST:-127.0.0.1}:${APP_PORT:-3000}:3000"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:3000/ >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 30s

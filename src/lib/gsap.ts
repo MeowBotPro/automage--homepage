@@ -64,7 +64,7 @@ function safeContext(callback: () => void | (() => void), scope?: Element | obje
  * @param opts - Optional alignment settings
  */
 function motionPathTo(
-  target: { x: number; y: number },
+  target: { x: number; y: number } | SVGElement,
   pathEl: SVGGeometryElement,
   progress: { value: number },
   opts?: { align?: boolean; offsetX?: number; offsetY?: number },
@@ -76,18 +76,26 @@ function motionPathTo(
   const ctm = pathEl.getCTM();
   const svgPoint = svg.createSVGPoint();
 
+  function setTargetPosition(x: number, y: number) {
+    if (target instanceof SVGElement) {
+      target.setAttribute('cx', String(x));
+      target.setAttribute('cy', String(y));
+      return;
+    }
+
+    target.x = x;
+    target.y = y;
+  }
+
   function updatePosition() {
     const point = pathEl.getPointAtLength(progress.value * totalLength);
-    // Transform from SVG coords to screen coords
     if (ctm) {
       svgPoint.x = point.x;
       svgPoint.y = point.y;
       const screenPoint = svgPoint.matrixTransform(ctm);
-      target.x = screenPoint.x + (opts?.offsetX ?? 0);
-      target.y = screenPoint.y + (opts?.offsetY ?? 0);
+      setTargetPosition(screenPoint.x + (opts?.offsetX ?? 0), screenPoint.y + (opts?.offsetY ?? 0));
     } else {
-      target.x = point.x + (opts?.offsetX ?? 0);
-      target.y = point.y + (opts?.offsetY ?? 0);
+      setTargetPosition(point.x + (opts?.offsetX ?? 0), point.y + (opts?.offsetY ?? 0));
     }
   }
 
