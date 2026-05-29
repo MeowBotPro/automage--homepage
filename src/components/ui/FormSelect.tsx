@@ -14,6 +14,7 @@ interface FormSelectProps {
   label: string;
   placeholder: string;
   options: string[];
+  onOpenChange?: (isOpen: boolean) => void;
   onFocus?: () => void;
   onBlur?: () => void;
 }
@@ -23,6 +24,7 @@ export default function FormSelect({
   label,
   placeholder,
   options,
+  onOpenChange,
   onFocus,
   onBlur,
 }: FormSelectProps) {
@@ -52,17 +54,20 @@ export default function FormSelect({
   const openList = () => {
     setActiveIndex(selectedIndex >= 0 ? selectedIndex : 0);
     setIsOpen(true);
+    onOpenChange?.(true);
     onFocus?.();
   };
 
   const closeList = () => {
     setIsOpen(false);
+    onOpenChange?.(false);
     onBlur?.();
   };
 
   const chooseOption = (option: string) => {
     setValue(option);
     setIsOpen(false);
+    onOpenChange?.(false);
     onBlur?.();
     buttonRef.current?.focus();
   };
@@ -191,17 +196,15 @@ export default function FormSelect({
         aria-label={label}
         style={{
           position: 'absolute',
-          zIndex: 30,
+          zIndex: 300,
           top: 'calc(100% + 10px)',
           left: 0,
           right: 0,
           padding: 8,
           border: '1px solid var(--color-border-default)',
           borderRadius: 'var(--radius-lg)',
-          background: 'rgba(255, 255, 255, 0.96)',
-          boxShadow: '0 24px 64px rgba(15, 23, 42, 0.18), inset 0 1px 0 rgba(255,255,255,0.85)',
-          backdropFilter: 'blur(18px)',
-          WebkitBackdropFilter: 'blur(18px)',
+          background: 'var(--color-surface-card)',
+          boxShadow: '0 24px 64px rgba(15, 23, 42, 0.20), inset 0 1px 0 rgba(255,255,255,0.9)',
           opacity: isOpen ? 1 : 0,
           transform: isOpen ? 'translateY(0) scale(1)' : 'translateY(-6px) scale(0.98)',
           transformOrigin: 'top center',

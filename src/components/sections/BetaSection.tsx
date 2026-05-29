@@ -94,6 +94,7 @@ export default function BetaSection() {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [applicationPublicId, setApplicationPublicId] = useState('');
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+  const [openSelectIndex, setOpenSelectIndex] = useState<number | null>(null);
 
   const sectionRef = useRef<HTMLElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
@@ -311,6 +312,7 @@ export default function BetaSection() {
           label={field.label}
           placeholder={field.placeholder ?? field.label}
           options={field.options ?? []}
+          onOpenChange={(isOpen) => setOpenSelectIndex(isOpen ? index : null)}
           onFocus={() => handleFocus(index)}
           onBlur={() => handleBlur(index)}
         />
@@ -420,7 +422,10 @@ export default function BetaSection() {
                   ref={(element) => {
                     if (element) wrapperRefs.current[index] = element;
                   }}
-                  style={{ position: 'relative' }}
+                  style={{
+                    position: 'relative',
+                    zIndex: openSelectIndex === index ? 20 : betaFormFields.length - index,
+                  }}
                 >
                   <label
                     style={{
