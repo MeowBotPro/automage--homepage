@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, type CSSProperties, type FormEvent } from 'react';
 import { gsap, safeContext, gsapReady } from '@/lib/gsap';
 import BetaSuccessModal from '@/components/ui/BetaSuccessModal';
+import FormSelect from '@/components/ui/FormSelect';
 
 type BetaApplicationResponse = {
   code?: number;
@@ -242,6 +243,12 @@ export default function BetaSection() {
     const contact = String(formData.get('contact') ?? '').trim();
     const inviteCode = String(formData.get('inviteCode') ?? '').trim();
 
+    if (!occupation || !useCase || !contact) {
+      setSubmitError('请补充必填信息后再提交。');
+      setIsSubmitting(false);
+      return;
+    }
+
     try {
       const response = await fetch('/api/v1/beta-applications', {
         method: 'POST',
@@ -289,12 +296,6 @@ export default function BetaSection() {
     fontFamily: 'var(--font-sans)',
   };
 
-  const selectStyle: CSSProperties = {
-    ...controlStyle,
-    appearance: 'none',
-    cursor: 'pointer',
-  };
-
   const textareaStyle: CSSProperties = {
     ...controlStyle,
     minHeight: 96,
@@ -305,24 +306,14 @@ export default function BetaSection() {
   const renderField = (field: BetaFormField, index: number) => {
     if (field.kind === 'select') {
       return (
-        <select
+        <FormSelect
           name={field.name}
-          aria-label={field.label}
-          required={field.required}
-          defaultValue=""
-          style={selectStyle}
+          label={field.label}
+          placeholder={field.placeholder ?? field.label}
+          options={field.options ?? []}
           onFocus={() => handleFocus(index)}
           onBlur={() => handleBlur(index)}
-        >
-          <option value="" disabled>
-            {field.placeholder}
-          </option>
-          {field.options?.map((option) => (
-            <option key={option} value={option}>
-              {option}
-            </option>
-          ))}
-        </select>
+        />
       );
     }
 
@@ -443,36 +434,69 @@ export default function BetaSection() {
                     {field.label}
                     {field.required ? ' *' : ''}
                   </label>
-                  {renderField(field, index)}
-                  <div
-                    ref={(element) => {
-                      if (element) underlineRefs.current[index] = element;
-                    }}
-                    style={{
-                      position: 'absolute',
-                      bottom: 0,
-                      left: 0,
-                      width: '0%',
-                      height: 1,
-                      background: 'var(--color-border-default)',
-                    }}
-                  >
+                  <div style={{ marginTop: field.kind === 'select' ? 10 : 0 }}>
+                    {renderField(field, index)}
+                  </div>
+                  {field.kind === 'select' ? (
                     <div
                       ref={(element) => {
-                        if (element) particleRefs.current[index] = element;
+                        if (element) underlineRefs.current[index] = element;
                       }}
                       style={{
                         position: 'absolute',
-                        left: 0,
-                        top: -2.5,
-                        width: 6,
-                        height: 6,
-                        borderRadius: '50%',
-                        background: 'var(--color-brand-accent)',
-                        opacity: 0,
+                        inset: 'auto 16px -6px 16px',
+                        height: 1,
+                        width: '0%',
+                        background: 'var(--color-border-default)',
                       }}
-                    />
-                  </div>
+                    >
+                      <div
+                        ref={(element) => {
+                          if (element) particleRefs.current[index] = element;
+                        }}
+                        style={{
+                          position: 'absolute',
+                          left: 0,
+                          top: -2.5,
+                          width: 6,
+                          height: 6,
+                          borderRadius: '50%',
+                          background: 'var(--color-brand-accent)',
+                          opacity: 0,
+                        }}
+                      />
+                    </div>
+                  ) : (
+                    <div
+                      ref={(element) => {
+                        if (element) underlineRefs.current[index] = element;
+                      }}
+                      style={{
+                        position: 'absolute',
+                        bottom: 0,
+                        left: 0,
+                        width: '0%',
+                        height: 1,
+                        background: 'var(--color-border-default)',
+                      }}
+                    >
+                      <div
+                        ref={(element) => {
+                          if (element) particleRefs.current[index] = element;
+                        }}
+                        style={{
+                          position: 'absolute',
+                          left: 0,
+                          top: -2.5,
+                          width: 6,
+                          height: 6,
+                          borderRadius: '50%',
+                          background: 'var(--color-brand-accent)',
+                          opacity: 0,
+                        }}
+                      />
+                    </div>
+                  )}
                 </div>
               ))}
 
