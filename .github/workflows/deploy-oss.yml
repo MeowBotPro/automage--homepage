@@ -17,8 +17,7 @@ concurrency:
 env:
   DEPLOY_ACCOUNT: deploy
   DEPLOY_PATH: /opt/automage-homepage
-  APP_HOST: 127.0.0.1
-  APP_PORT: 3000
+  APP_DOMAIN: automage.cn
 
 jobs:
   verify:
@@ -167,8 +166,8 @@ jobs:
             cat > .env <<EOF
             IMAGE=$IMAGE
             DATABASE_URL=$DATABASE_URL
-            APP_HOST=127.0.0.1
-            APP_PORT=3000
+            APP_DOMAIN=automage.cn
+            ACME_EMAIL=admin@automage.cn
             NODE_ENV=production
             EOF
 
@@ -178,7 +177,7 @@ jobs:
 
             docker compose pull
             docker compose run --rm migrate
-            docker compose up -d --remove-orphans web
+            docker compose up -d --remove-orphans nginx-proxy acme-companion web
 
             for i in $(seq 1 30); do
               STATUS=$(docker inspect --format='{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}' automage-homepage 2>/dev/null || true)

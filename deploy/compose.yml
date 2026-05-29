@@ -1,4 +1,35 @@
 services:
+  nginx-proxy:
+    image: nginxproxy/nginx-proxy:1.11
+    container_name: automage-nginx-proxy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - nginx-conf:/etc/nginx/conf.d
+      - nginx-vhost:/etc/nginx/vhost.d
+      - nginx-html:/usr/share/nginx/html
+      - nginx-dhparam:/etc/nginx/dhparam
+      - nginx-certs:/etc/nginx/certs:ro
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+
+  acme-companion:
+    image: nginxproxy/acme-companion:2.6.3
+    container_name: automage-acme-companion
+    restart: unless-stopped
+    depends_on:
+      - nginx-proxy
+    volumes_from:
+      - nginx-proxy
+    volumes:
+      - nginx-certs:/etc/nginx/certs:rw
+      - acme-state:/etc/acme.sh
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      NGINX_PROXY_CONTAINER: automage-nginx-proxy
+      DEFAULT_EMAIL: ${ACME_EMAIL:-}
+
   migrate:
     image: ${IMAGE}
     env_file:
@@ -13,11 +44,21 @@ services:
     restart: unless-stopped
     env_file:
       - .env
-    ports:
-      - "${APP_HOST:-127.0.0.1}:${APP_PORT:-3000}:3000"
+    environment:
+      VIRTUAL_HOST: ${APP_DOMAIN:-automage.cn}
+      VIRTUAL_PORT: "3000"
+      LETSENCRYPT_HOST: ${APP_DOMAIN:-automage.cn}
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:3000/ >/dev/null || exit 1"]
       interval: 30s
       timeout: 5s
       retries: 5
       start_period: 30s
+
+volumes:
+  nginx-conf:
+  nginx-vhost:
+  nginx-html:
+  nginx-dhparam:
+  nginx-certs:
+  acme-state:
