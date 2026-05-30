@@ -45,7 +45,7 @@ jobs:
         run: npm run build
 
   image:
-    if: github.event_name != 'pull_request'
+    if: github.event_name == 'workflow_dispatch'
     needs: verify
     runs-on: ubuntu-latest
     outputs:
@@ -83,7 +83,7 @@ jobs:
           cache-to: type=gha,mode=max
 
   bootstrap:
-    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch'
     needs: image
     runs-on: ubuntu-latest
     steps:
@@ -126,7 +126,7 @@ jobs:
             run_root chown -R deploy:deploy /opt/automage-homepage
 
   deploy:
-    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch'
     needs: [image, bootstrap]
     runs-on: ubuntu-latest
     environment: production
