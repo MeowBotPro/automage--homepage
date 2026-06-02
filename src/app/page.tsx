@@ -31,9 +31,9 @@ export default function Home() {
 
       <SocialProof />
 
-      <FAQSection />
-
       <BetaSection />
+
+      <FAQSection />
     </main>
   );
 }
