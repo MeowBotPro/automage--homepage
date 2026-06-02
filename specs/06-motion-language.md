@@ -151,7 +151,7 @@ Lenis 滚动引擎提供平滑的滚动体验：
 | **HeroSection** | 标题逐字出现 + 渐变文字 + 副标题 + CTA | 无 (首次加载) | 0.03s (chars) | 0.4-0.8s | `power2.out` | `gsap.set` 直接显示 opacity:1 |
 | **HeroSection SignalConsole** | Console 滑入 + 芯片 stagger-in + 柱状图 scaleY + Pipeline 轮转 | 无 (延迟 1.2s) | 0.1s (chips/bars) | 0.3-0.6s | `power2.out` | CSS `animation: none !important` + 静态显示 |
 | **LogoMarquee** | 信号流无限滚动 | 无 (CSS infinite) | N/A | 28s 循环 | `linear` | `animation: none !important` |
-| **CompareSection** | 噪声碎片出现 -> 核心脉冲 -> 噪声吸入 -> 核心闪光 -> 决策卡滑入 -> 连接线绘制 | `start: 'top 70%'` | 0.03-0.15s | 0.3-0.6s | `power2.out`, `power2.in` (吸入) | 噪声缩至 0.6/opacity 0.3，决策卡直接显示 |
+| **CompareSection** | 噪声碎片出现 -> 核心脉冲 -> 3 张高价值信号吸入 -> 5 张残留噪声稳定保留 -> 核心闪光 -> 决策卡滑入 -> 连接线绘制 | `start: 'top 70%'` | 0.02-0.15s | 0.2-0.6s | `power2.out`, `power2.in` (吸入) | 3 张转化噪声隐藏，5 张残留/队列噪声保持可见，决策卡直接显示 |
 | **InfoLoopSection** | 粒子巡游 + 节点逐个激活 + Inspector 切换 + 闭环完成 + Loop-back 绘制 | `pin: true, scrub: 0.5, start: 'top top', end: '+=2000'` | 1s/node (6 nodes) | 0.3s (node), 0.6s (glow), 0.8s (loop-back) | `power2.out`, `none` (scrub) | Reduced motion 检测后跳过所有动画 |
 | **ValueCardsSection** | 卡片 scale+fade + 连接线淡入 | `start: 'top 80%'` | 0.12s | 0.4s (cards), 0.6s (lines) | `power2.out` | `gsap.set` 显示最终态 |
 | **MetricsBar** | 数字计数器 + 卡片 scale 出现 | `IntersectionObserver threshold: 0.2` | 0.1s | 1200ms (count), 500ms (card CSS) | ease-out cubic (RAF) | 直接显示最终数值 |
@@ -420,7 +420,7 @@ const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)
 | **CommandHeader** | `setBooted(true)` 跳过启动动画，所有 `[data-boot]` 元素通过 JSX 初始 `opacity: reducedMotion ? 1 : 0` 直接可见 |
 | **HeroSection** | `gsap.set` 所有元素为 `{opacity: 1, y: 0}` |
 | **HeroSection SignalConsole** | CSS `animation: none !important` |
-| **CompareSection** | 噪声碎片 `gsap.set({opacity: 0.3, scale: 0.6, x: '60%'})`；决策卡 `gsap.set({opacity: 1, x: 0})` |
+| **CompareSection** | 3 张 `convert` 噪声直接进入隐藏终态；5 张 `retain` / `queue` 噪声直接进入可见残留终态；决策卡 `gsap.set({opacity: 1, x: 0})` |
 | **InfoLoopSection** | `if (reduced) return;` 跳过整个 ScrollTrigger timeline |
 | **ValueCardsSection** | `gsap.set(cards, {opacity: 1, scale: 1})`；连接线 `gsap.set({opacity: 0.06})` |
 | **MetricsBar** | 直接显示最终数值 `el.textContent = m.value`；卡片 `style.opacity = '1'` |

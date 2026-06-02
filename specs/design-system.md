@@ -427,7 +427,7 @@ Glyph 专用色阶（蓝色光谱）：
 |---------|---------|---------------|-------------------|
 | CommandHeader | `power2.out`, `back.out(2.5)` (eyes) | 首次加载 | `setBooted(true)` 直接展示 |
 | HeroSection | `power2.out` | 首次加载 | `gsap.set` opacity:1, y:0 |
-| CompareSection | `power2.out`, `power2.in` (吸入) | `start: top 70%` | 噪声缩至 0.6, 决策卡直接显示 |
+| CompareSection | `power2.out`, `power2.in` (吸入) | `start: top 70%` | 3 张高价值信号吸入隐藏，5 张残留/队列噪声保持可见，决策卡直接显示 |
 | InfoLoopSection | `power2.out`, `none` (scrub) | `pin: true, scrub: 0.5` | 跳过 timeline |
 | ValueCardsSection | `power2.out` | `start: top 80%` | `gsap.set` 最终态 |
 | SecuritySection | `power2.out` | `start: top 75%` | `gsap.set` 最终态 |
