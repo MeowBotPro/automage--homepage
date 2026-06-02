@@ -22,11 +22,11 @@
 | 7 | SecuritySection | `section-security` | 900px | light | Execute |
 | 8 | StorySection | `section-story` | 860px | dark（`--color-surface-command`） | — |
 | 9 | SocialProof | `section-social` | 1200px | light + dark cards | — |
-| 10 | FAQSection | `section-faq` | 1000px | light | Learn |
-| 11 | BetaSection | `section-beta` | 600px | light | — |
+| 10 | BetaSection | `section-beta` | 600px | light | — |
+| 11 | FAQSection | `section-faq` | 1000px | light | Learn |
 | 12 | Footer | — | 1200px（links） | dark（`--color-surface-dark`） | Loop closed |
 
-> **破晓黎明模型（2026-06-02）**: 中后段从旧版 `StorySection -> SocialProof -> SecuritySection -> BetaSection -> FAQSection` 调整为 `SecuritySection -> StorySection -> SocialProof -> FAQSection -> BetaSection`。视觉节奏为浅色安全原则 -> 全深色 Story 叙事暗场 -> 浅底深色评价卡片 -> 浅色 FAQ / 内测转化尾部。StorySection 保留原有三幕布局：标题、引号卡片、实验视频占位窗口、洞察线，避免改成控制台面板集合。
+> **破晓黎明模型（2026-06-02）**: 中后段从旧版 `StorySection -> SocialProof -> SecuritySection -> BetaSection -> FAQSection` 调整为 `SecuritySection -> StorySection -> SocialProof -> BetaSection -> FAQSection`。视觉节奏为浅色安全原则 -> 全深色 Story 叙事暗场 -> 浅底深色评价卡片 -> 内测转化 -> 浅色 FAQ 决策说明书收口。StorySection 保留原有三幕布局：标题、引号卡片、实验视频占位窗口、洞察线，避免改成控制台面板集合。
 >
 > **证据来源**: `page.tsx` 定义 `<main>` 内 11 个 section 的渲染顺序；`layout.tsx` 将 Footer 渲染在 children 之前；每个组件的 `max-width` 值从各组件的 `style.maxWidth` 属性提取。
 

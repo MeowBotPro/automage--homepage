@@ -164,8 +164,8 @@ AutoMage 是**组织信息流 OS**，将前线噪声压缩为结构化判断，�
 | SecuritySection | 安全门控 | Execute | light | 900px |
 | StorySection | 全深色三幕叙事 + 视频占位窗口 | -- | dark | 860px |
 | SocialProof | 客户评价 | -- | light + dark cards | 1200px |
-| FAQSection | 决策说明书 | Learn | light | 1000px |
 | BetaSection | 内测申请 | -- | light | 600px |
+| FAQSection | 决策说明书 | Learn | light | 1000px |
 | Footer | 闭环收口 + 粒子网络 | Learn / Loop closed | dark | 1200px (links) |
 
 #### Loop 节点命名体系（两层映射）
@@ -312,9 +312,9 @@ The Loop 有两层命名，概念层用于品牌叙事，技术层用于代码�
 
 ### 3.1 页面架构
 
-12 个 section 按以下顺序渲染：CommandHeader -> HeroSection -> LogoMarquee -> CompareSection -> InfoLoopSection -> ValueCardsSection -> MetricsBar -> SecuritySection -> StorySection -> SocialProof -> FAQSection -> BetaSection -> Footer。
+12 个 section 按以下顺序渲染：CommandHeader -> HeroSection -> LogoMarquee -> CompareSection -> InfoLoopSection -> ValueCardsSection -> MetricsBar -> SecuritySection -> StorySection -> SocialProof -> BetaSection -> FAQSection -> Footer。
 
-2026-06-02 起，中后段采用“破晓黎明模型”：浅色安全原则前置，硬切进入全深色 Story 叙事暗场，再硬切回浅色背景承载深色客户评价卡片，最后进入 FAQ 与内测申请转化尾部。StorySection 保留原有标题、引号卡片、实验窗口、洞察线三幕结构，实验窗口作为后续宣传视频承载位。该更新覆盖旧版 `StorySection -> SocialProof -> SecuritySection -> BetaSection -> FAQSection` 顺序。
+2026-06-02 起，中后段采用“破晓黎明模型”：浅色安全原则前置，硬切进入全深色 Story 叙事暗场，再硬切回浅色背景承载深色客户评价卡片，随后进入内测申请转化，最后以 FAQ 决策说明书收口。StorySection 保留原有标题、引号卡片、实验窗口、洞察线三幕结构，实验窗口作为后续宣传视频承载位。该更新覆盖旧版 `StorySection -> SocialProof -> SecuritySection -> BetaSection -> FAQSection` 顺序。
 
 **非常规布局**:
 - Footer 使用 `position: fixed; bottom: 0` + main `marginBottom: 100vh` 实现揭示式布局
