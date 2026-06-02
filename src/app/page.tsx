@@ -25,15 +25,15 @@ export default function Home() {
 
       <MetricsBar />
 
+      <SecuritySection />
+
       <StorySection />
 
       <SocialProof />
 
-      <SecuritySection />
+      <FAQSection />
 
       <BetaSection />
-
-      <FAQSection />
     </main>
   );
 }
