@@ -1,19 +1,125 @@
 'use client';
 
 import { useRef, useEffect } from 'react';
-import { gsap, ScrollTrigger, safeContext } from '@/lib/gsap';
+import { gsap, safeContext } from '@/lib/gsap';
 
 /* ── Noise Fragments ── */
+type NoiseMode = 'convert' | 'retain' | 'queue';
+
+interface NoiseFragment {
+  text: string;
+  x: string;
+  y: string;
+  rotate: number;
+  mode: NoiseMode;
+  settledX: string;
+  settledY: string;
+  settledRotate: number;
+  settledScale: number;
+  settledOpacity: number;
+}
+
 const NOISE_FRAGMENTS = [
-  { text: '日报：今天客户说交付要延期…', x: '5%', y: '10%', rotate: -3 },
-  { text: '群聊消息：@所有人 项目进度？', x: '60%', y: '5%', rotate: 2 },
-  { text: 'Excel：Q2预算表_v3_最终版_改', x: '15%', y: '45%', rotate: -2 },
-  { text: '会议纪要：讨论了但没结论', x: '55%', y: '40%', rotate: 4 },
-  { text: '口头传达：老板说尽快搞定', x: '8%', y: '75%', rotate: -1 },
-  { text: '邮件：FW: FW: FW: 请确认', x: '65%', y: '70%', rotate: 3 },
-  { text: '钉钉：已读未回', x: '35%', y: '20%', rotate: -4 },
-  { text: '周报：这周做了很多事情…', x: '40%', y: '60%', rotate: 1 },
-];
+  {
+    text: '日报：今天客户说交付要延期…',
+    x: '5%',
+    y: '10%',
+    rotate: -3,
+    mode: 'convert',
+    settledX: '122%',
+    settledY: '18%',
+    settledRotate: 0,
+    settledScale: 0.3,
+    settledOpacity: 0,
+  },
+  {
+    text: '群聊消息：@所有人 项目进度？',
+    x: '60%',
+    y: '5%',
+    rotate: 2,
+    mode: 'retain',
+    settledX: '-6%',
+    settledY: '-2%',
+    settledRotate: 1,
+    settledScale: 0.9,
+    settledOpacity: 0.62,
+  },
+  {
+    text: 'Excel：Q2预算表_v3_最终版_改',
+    x: '15%',
+    y: '45%',
+    rotate: -2,
+    mode: 'convert',
+    settledX: '118%',
+    settledY: '-4%',
+    settledRotate: 0,
+    settledScale: 0.3,
+    settledOpacity: 0,
+  },
+  {
+    text: '会议纪要：讨论了但没结论',
+    x: '55%',
+    y: '40%',
+    rotate: 4,
+    mode: 'convert',
+    settledX: '112%',
+    settledY: '-18%',
+    settledRotate: 0,
+    settledScale: 0.3,
+    settledOpacity: 0,
+  },
+  {
+    text: '口头传达：老板说尽快搞定',
+    x: '8%',
+    y: '75%',
+    rotate: -1,
+    mode: 'queue',
+    settledX: '26%',
+    settledY: '-8%',
+    settledRotate: -1,
+    settledScale: 0.96,
+    settledOpacity: 0.86,
+  },
+  {
+    text: '邮件：FW: FW: FW: 请确认',
+    x: '65%',
+    y: '70%',
+    rotate: 3,
+    mode: 'retain',
+    settledX: '-12%',
+    settledY: '4%',
+    settledRotate: 2,
+    settledScale: 0.9,
+    settledOpacity: 0.6,
+  },
+  {
+    text: '钉钉：已读未回',
+    x: '35%',
+    y: '20%',
+    rotate: -4,
+    mode: 'retain',
+    settledX: '-10%',
+    settledY: '8%',
+    settledRotate: -2,
+    settledScale: 0.88,
+    settledOpacity: 0.58,
+  },
+  {
+    text: '周报：这周做了很多事情…',
+    x: '40%',
+    y: '60%',
+    rotate: 1,
+    mode: 'retain',
+    settledX: '-18%',
+    settledY: '10%',
+    settledRotate: 1,
+    settledScale: 0.9,
+    settledOpacity: 0.62,
+  },
+] satisfies NoiseFragment[];
+
+const TRANSFORMED_NOISE_COUNT = NOISE_FRAGMENTS.filter((frag) => frag.mode === 'convert').length;
+const RETAINED_NOISE_COUNT = NOISE_FRAGMENTS.length - TRANSFORMED_NOISE_COUNT;
 
 /* ── Decision Cards ── */
 const DECISIONS = [
@@ -36,14 +142,33 @@ export default function CompareSection() {
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     const ctx = safeContext(() => {
+      const setNoiseSettledState = (el: HTMLDivElement, i: number) => {
+        const frag = NOISE_FRAGMENTS[i];
+        gsap.set(el, {
+          x: frag.settledX,
+          y: frag.settledY,
+          rotation: frag.settledRotate,
+          scale: frag.settledScale,
+          opacity: frag.settledOpacity,
+        });
+      };
+
+      const setCoreRestingState = () => {
+        if (!coreRef.current) return;
+        const rings = Array.from(coreRef.current.querySelectorAll('.core-ring'));
+        gsap.set(rings, { scale: 1, opacity: 1 });
+        gsap.set(coreRef.current.querySelector('.core-center'), { scale: 1 });
+      };
+
       if (reduced) {
-        // Show final state immediately
-        noiseRefs.current.forEach((el) => {
-          if (el) gsap.set(el, { opacity: 0.3, scale: 0.6, x: '60%' });
+        // Show the same partial-conversion end state immediately.
+        noiseRefs.current.forEach((el, i) => {
+          if (el) setNoiseSettledState(el, i);
         });
         decisionRefs.current.forEach((el) => {
           if (el) gsap.set(el, { opacity: 1, x: 0 });
         });
+        setCoreRestingState();
         return;
       }
 
@@ -58,7 +183,7 @@ export default function CompareSection() {
       // 1. Noise fragments appear with stagger
       noiseRefs.current.forEach((el, i) => {
         if (!el) return;
-        gsap.set(el, { opacity: 0, scale: 0.8 });
+        gsap.set(el, { opacity: 0, scale: 0.8, rotation: NOISE_FRAGMENTS[i].rotate, x: 0, y: 0 });
         tl.to(
           el,
           { opacity: 1, scale: 1, duration: 0.4, ease: 'power2.out' },
@@ -77,19 +202,46 @@ export default function CompareSection() {
         );
       }
 
-      // 3. Noise fragments get sucked toward center
+      // 3. Only selected signal fragments compress; ambient noise stays visible.
       noiseRefs.current.forEach((el, i) => {
         if (!el) return;
+        const frag = NOISE_FRAGMENTS[i];
+        const timing = frag.mode === 'convert' ? 1.42 + i * 0.02 : 1.34 + i * 0.02;
+
+        if (frag.mode !== 'convert') {
+          tl.to(
+            el,
+            {
+              x: frag.settledX,
+              y: frag.settledY,
+              rotation: frag.settledRotate,
+              scale: frag.settledScale,
+              opacity: frag.settledOpacity,
+              duration: 0.5,
+              ease: 'power2.out',
+            },
+            timing,
+          );
+          return;
+        }
+
+        tl.to(
+          el,
+          { opacity: 1, scale: 1.06, duration: 0.2, ease: 'power2.out' },
+          1.22 + i * 0.03,
+        );
         tl.to(
           el,
           {
-            x: '120%',
-            scale: 0.3,
-            opacity: 0,
+            x: frag.settledX,
+            y: frag.settledY,
+            rotation: frag.settledRotate,
+            scale: frag.settledScale,
+            opacity: frag.settledOpacity,
             duration: 0.6,
             ease: 'power2.in',
           },
-          1.4 + i * 0.03,
+          timing,
         );
       });
 
@@ -136,6 +288,8 @@ export default function CompareSection() {
       id="section-compare"
       ref={sectionRef}
       className="relative"
+      data-transformed-noise-count={TRANSFORMED_NOISE_COUNT}
+      data-retained-noise-count={RETAINED_NOISE_COUNT}
       style={{ paddingTop: 'var(--space-section)', paddingBottom: 'var(--space-section)' }}
     >
       <h2
@@ -153,6 +307,7 @@ export default function CompareSection() {
       {/* Desktop: 3-zone layout */}
       <div
         className="hidden md:grid mx-auto px-6 relative"
+        data-compare-desktop
         style={{
           maxWidth: 1100,
           gridTemplateColumns: '1fr 200px 1fr',
@@ -167,20 +322,27 @@ export default function CompareSection() {
               key={i}
               ref={(el) => { if (el) noiseRefs.current[i] = el; }}
               className="absolute"
+              data-noise-card
+              data-noise-mode={frag.mode}
               style={{
                 left: frag.x,
                 top: frag.y,
                 transform: `rotate(${frag.rotate}deg)`,
                 background: 'var(--color-surface-elevated)',
-                border: '1px solid var(--color-border-default)',
+                border: frag.mode === 'queue'
+                  ? '1px solid var(--color-brand-accent)'
+                  : '1px solid var(--color-border-default)',
                 borderRadius: 'var(--radius-sm)',
                 padding: '10px 14px',
                 fontSize: '0.8125rem',
-                color: 'var(--color-text-tertiary)',
+                color: frag.mode === 'convert'
+                  ? 'var(--color-text-tertiary)'
+                  : 'var(--color-text-secondary)',
                 maxWidth: 200,
                 whiteSpace: 'nowrap',
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
+                boxShadow: frag.mode === 'queue' ? '0 8px 24px rgba(59, 130, 246, 0.08)' : undefined,
               }}
             >
               {frag.text}
@@ -232,6 +394,7 @@ export default function CompareSection() {
             <div
               key={i}
               ref={(el) => { if (el) decisionRefs.current[i] = el; }}
+              data-decision-card
               style={{
                 background: 'var(--color-surface-card)',
                 borderLeft: '3px solid var(--color-brand-accent)',
