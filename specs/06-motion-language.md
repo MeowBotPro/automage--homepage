@@ -155,7 +155,7 @@ Lenis 滚动引擎提供平滑的滚动体验：
 | **InfoLoopSection** | 粒子巡游 + 节点逐个激活 + Inspector 切换 + 闭环完成 + Loop-back 绘制 | `pin: true, scrub: 0.5, start: 'top top', end: '+=2000'` | 1s/node (6 nodes) | 0.3s (node), 0.6s (glow), 0.8s (loop-back) | `power2.out`, `none` (scrub) | Reduced motion 检测后跳过所有动画 |
 | **ValueCardsSection** | 卡片 scale+fade + 连接线淡入 | `start: 'top 80%'` | 0.12s | 0.4s (cards), 0.6s (lines) | `power2.out` | `gsap.set` 显示最终态 |
 | **MetricsBar** | 数字计数器 + 卡片 scale 出现 | `IntersectionObserver threshold: 0.2` | 0.1s | 1200ms (count), 500ms (card CSS) | ease-out cubic (RAF) | 直接显示最终数值 |
-| **StorySection** | 深色研发控制台面板入场 + 日志行序贯显示 + 状态灯信息脉冲 | `start: 'top 72%'` | 0.08s (panels), 0.04s (logs) | 0.25-0.45s | `power2.out` | `gsap.set` 面板与日志为最终可见态，状态灯静态显示 |
+| **StorySection** | 全深色三幕叙事：引号淡入 + 引文扫入、视频占位窗口内容视差、洞察线绘制 | quote/insight `start: 'top 80%'`; video scrub | N/A | 0.3-0.8s; scrub 视差 | `power2.out`, `none` (scrub) | `gsap.set` 引号、引文、洞察线与洞察文案为最终可见态 |
 | **SecuritySection** | Pipeline 节点逐个入场 + 连线 scaleX + Dual-key 入场 + Trust 卡片入场 | `start: 'top 75%'` | 0.3s (stages), 0.12s (trust) | 0.3-0.5s | `power2.out` | `gsap.set` 显示最终态 |
 | **BetaSection** | 表单字段 stagger-in + 下划线绘制 + 按钮 scale; Focus: 粒子跑动 + 下划线变色 | `start: 'top 80%'` | 0.15s | 0.3-0.5s | `power2.out` | `gsap.set` 显示最终态，focus 动画禁用 |
 | **FAQSection** | 桌面 FAQ 项 stagger-in + 答案面板 cross-fade | `start: 'top 80%'` | 0.08s | 0.3-0.4s | `power2.out` | 不执行入场动画，显示默认态 |
@@ -371,7 +371,7 @@ interface PathDrawConfig {
 | **CompareSection** | `top 70%` | (默认) | `false` | `false` | (默认 true) | `play none none none` | 噪声压缩序列 |
 | **InfoLoopSection** | `top top` | `+=2000` | `0.5` | `true` | `false` | (scrub 模式) | 固定 + scrub 驱动闭环动画 |
 | **ValueCardsSection** | `top 80%` | (默认) | `false` | `false` | (默认 true) | `play none none none` | 卡片入场 |
-| **StorySection** | `top 72%` | (默认) | `false` | `false` | `true` | `play none none none` | 深色研发控制台面板与日志流入场 |
+| **StorySection** | `top 80%` | (默认) | `false` | `false` | `true` | `play none none none` | 引号卡片揭示与洞察线绘制；视频占位窗口内容使用独立 scrub 视差 |
 | **SecuritySection** | `top 75%` | (默认) | `false` | `false` | (默认 true) | `play none none none` | Pipeline + Dual-key + Trust 卡 |
 | **BetaSection** | `top 80%` | (默认) | `false` | `false` | (默认 true) | `play none none none` | 表单入场 |
 | **FAQSection** | `top 80%` | (默认) | `false` | `false` | (默认 true) | `play none none none` | FAQ 项入场 |
@@ -422,7 +422,7 @@ const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)
 | **InfoLoopSection** | `if (reduced) return;` 跳过整个 ScrollTrigger timeline |
 | **ValueCardsSection** | `gsap.set(cards, {opacity: 1, scale: 1})`；连接线 `gsap.set({opacity: 0.06})` |
 | **MetricsBar** | 直接显示最终数值 `el.textContent = m.value`；卡片 `style.opacity = '1'` |
-| **StorySection** | 面板与日志行 `gsap.set({opacity: 1, y: 0})`；状态灯 CSS 动画禁用并保持可见 |
+| **StorySection** | 引号、引文、洞察线与洞察文案 `gsap.set({opacity: 1, y: 0, scaleY: 1, clipPath: 'inset(0 0% 0 0)'})`；视频占位窗口常驻可见，不依赖入场动画 |
 | **SecuritySection** | Pipeline `gsap.set({opacity: 1})`；连线 `gsap.set({scaleX: 1})`；Trust 卡 `gsap.set({opacity: 1, y: 0})` |
 | **BetaSection** | 表单 `gsap.set({opacity: 1, y: 0})`；下划线 `gsap.set({width: '100%'})`；按钮 `gsap.set({scale: 1})` |
 | **FAQSection** | 不执行入场 GSAP 动画 |

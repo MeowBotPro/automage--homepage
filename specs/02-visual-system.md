@@ -43,7 +43,7 @@
 | `surface-tinted` | `#F0F4FF` | `--color-surface-tinted` | 品牌色着色表面 | 带品牌色暗示的浅色区域、数据卡片 |
 | `surface-dark` | `#0F172A` | `--color-surface-dark` | 深色区域背景 | Hero Signal Console、InfoLoop Inspector、Pipeline 节点容器 |
 | `surface-deep` | `#0B1628` | `--color-surface-deep` | 最深背景层 | Hero 全幅背景、Loop 区域全幅背景 |
-| `surface-command` | `#08111F` | `--color-surface-command` | 真实研发控制台暗场 | StorySection 破晓黎明模型深色研发环境 |
+| `surface-command` | `#08111F` | `--color-surface-command` | Story 全深色视频叙事暗场 | StorySection 破晓黎明模型深色叙事环境 |
 
 > **证据来源**: `globals.css` Surface tokens, `HeroSection.tsx`, `InfoLoopSection.tsx`, `StorySection.tsx`
 
@@ -193,7 +193,7 @@ SecuritySection 的 6 个 SVG Glyph（AI Logo, Human Logo, Policy Gate, Executio
 | 组件 | 用途 | 当前值 | 处理建议 |
 |------|------|--------|---------|
 | `HeroSection.tsx` L92-L94 | Signal Console 窗口装饰点 | `#EF4444`, `#EAB308`, `#22C55E` | **保留**。这是 macOS 窗口 chrome 的视觉隐喻，不属于 signal 系统。建议提取为 `--color-chrome-close`, `--color-chrome-minimize`, `--color-chrome-maximize` |
-| `StorySection.tsx` L186-L192 | 同上窗口装饰点 | `#ff5f57`, `#febc2e`, `#28c840` | **需统一**。与 HeroSection 的红黄绿不一致（使用了 macOS 原生色 vs signal 色）。建议统一到 HeroSection 的版本 |
+| `StorySection.tsx` | 同上窗口装饰点 | `var(--color-chrome-close)`, `var(--color-chrome-minimize)`, `var(--color-chrome-maximize)` | **已统一**。实验窗口保留 macOS chrome 隐喻，作为后续宣传视频承载位 |
 
 **建议提取**:
 ```css

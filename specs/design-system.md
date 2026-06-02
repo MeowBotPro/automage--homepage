@@ -67,7 +67,7 @@ AutoMage 是**组织信息流 OS**，将前线噪声压缩为结构化判断，�
 |-------|-----|--------------|------|
 | `surface-dark` | `#0F172A` | `--color-surface-dark` | 系统内部、控制台、Inspector 面板 |
 | `surface-deep` | `#0B1628` | `--color-surface-deep` | 最深背景层、Hero 全幅、Loop 区域 |
-| `surface-command` | `#08111F` | `--color-surface-command` | 真实研发控制台暗场、破晓黎明深色区 |
+| `surface-command` | `#08111F` | `--color-surface-command` | StorySection 全深色视频叙事暗场、破晓黎明深色区 |
 
 #### 颜色使用禁区
 
@@ -162,7 +162,7 @@ AutoMage 是**组织信息流 OS**，将前线噪声压缩为结构化判断，�
 | ValueCardsSection | 三大决策价值 | Decide | light | 1100px |
 | MetricsBar | 指标数据 | -- | light | 1200px |
 | SecuritySection | 安全门控 | Execute | light | 900px |
-| StorySection | 真实研发环境 | -- | dark | 1160px |
+| StorySection | 全深色三幕叙事 + 视频占位窗口 | -- | dark | 860px |
 | SocialProof | 客户评价 | -- | light + dark cards | 1200px |
 | FAQSection | 决策说明书 | Learn | light | 1000px |
 | BetaSection | 内测申请 | -- | light | 600px |
@@ -314,7 +314,7 @@ The Loop 有两层命名，概念层用于品牌叙事，技术层用于代码�
 
 12 个 section 按以下顺序渲染：CommandHeader -> HeroSection -> LogoMarquee -> CompareSection -> InfoLoopSection -> ValueCardsSection -> MetricsBar -> SecuritySection -> StorySection -> SocialProof -> FAQSection -> BetaSection -> Footer。
 
-2026-06-02 起，中后段采用“破晓黎明模型”：浅色安全原则前置，硬切进入深色真实研发环境，再硬切回浅色背景承载深色客户评价卡片，最后进入 FAQ 与内测申请转化尾部。该更新覆盖旧版 `StorySection -> SocialProof -> SecuritySection -> BetaSection -> FAQSection` 顺序。
+2026-06-02 起，中后段采用“破晓黎明模型”：浅色安全原则前置，硬切进入全深色 Story 叙事暗场，再硬切回浅色背景承载深色客户评价卡片，最后进入 FAQ 与内测申请转化尾部。StorySection 保留原有标题、引号卡片、实验窗口、洞察线三幕结构，实验窗口作为后续宣传视频承载位。该更新覆盖旧版 `StorySection -> SocialProof -> SecuritySection -> BetaSection -> FAQSection` 顺序。
 
 **非常规布局**:
 - Footer 使用 `position: fixed; bottom: 0` + main `marginBottom: 100vh` 实现揭示式布局
