@@ -136,7 +136,7 @@ async function main() {
     await new Promise((resolve) => setTimeout(resolve, 2200));
 
     const desktop = await evaluate(client, `(() => {
-      const ids = ['section-security', 'section-story', 'section-social', 'section-faq', 'section-beta'];
+      const ids = ['section-security', 'section-story', 'section-social', 'section-beta', 'section-faq'];
       const sections = Object.fromEntries(ids.map((id) => [id, document.getElementById(id)]));
       const missing = ids.filter((id) => !sections[id]);
       if (missing.length) return { error: 'missing sections', missing };
@@ -199,8 +199,8 @@ async function main() {
         order,
         orderOk: order['section-security'] < order['section-story']
           && order['section-story'] < order['section-social']
-          && order['section-social'] < order['section-faq']
-          && order['section-faq'] < order['section-beta'],
+          && order['section-social'] < order['section-beta']
+          && order['section-beta'] < order['section-faq'],
         darkBg: cssRgba(dark),
         storyActCount: storyActs.length,
         hasQuoteCard: Boolean(quoteCard),
