@@ -19,14 +19,16 @@
 | 4 | InfoLoopSection | `section-loop` | 1160px（外容器，桌面端内部 flow 1120px） | dark（`--color-surface-deep`） | Review |
 | 5 | ValueCardsSection | `section-value` | 1100px | light | Decide |
 | 6 | MetricsBar | `section-metrics` | 1200px | light | — |
-| 7 | StorySection | — | — | light | — |
-| 8 | SocialProof | `section-social` | 1200px | light | — |
-| 9 | SecuritySection | `section-security` | 900px | light | Execute |
-| 10 | BetaSection | `section-beta` | 600px | light | — |
-| 11 | FAQSection | `section-faq` | 1000px | light | Learn |
+| 7 | SecuritySection | `section-security` | 900px | light | Execute |
+| 8 | StorySection | `section-story` | 1160px | dark（`--color-surface-command`） | — |
+| 9 | SocialProof | `section-social` | 1200px | light + dark cards | — |
+| 10 | FAQSection | `section-faq` | 1000px | light | Learn |
+| 11 | BetaSection | `section-beta` | 600px | light | — |
 | 12 | Footer | — | 1200px（links） | dark（`--color-surface-dark`） | Loop closed |
 
-> **证据来源**: `page.tsx` L13-L39 定义了 11 个 section 的渲染顺序；`layout.tsx` L36 将 Footer 渲染在 children 之前；每个组件的 `max-width` 值从各组件的 `style.maxWidth` 属性提取。
+> **破晓黎明模型（2026-06-02）**: 中后段从旧版 `StorySection -> SocialProof -> SecuritySection -> BetaSection -> FAQSection` 调整为 `SecuritySection -> StorySection -> SocialProof -> FAQSection -> BetaSection`。视觉节奏为浅色安全原则 -> 深色真实研发环境 -> 浅底深色评价卡片 -> 浅色 FAQ / 内测转化尾部。
+>
+> **证据来源**: `page.tsx` 定义 `<main>` 内 11 个 section 的渲染顺序；`layout.tsx` 将 Footer 渲染在 children 之前；每个组件的 `max-width` 值从各组件的 `style.maxWidth` 属性提取。
 
 ### 非常规布局模式
 

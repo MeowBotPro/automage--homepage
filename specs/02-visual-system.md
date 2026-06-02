@@ -43,8 +43,9 @@
 | `surface-tinted` | `#F0F4FF` | `--color-surface-tinted` | 品牌色着色表面 | 带品牌色暗示的浅色区域、数据卡片 |
 | `surface-dark` | `#0F172A` | `--color-surface-dark` | 深色区域背景 | Hero Signal Console、InfoLoop Inspector、Pipeline 节点容器 |
 | `surface-deep` | `#0B1628` | `--color-surface-deep` | 最深背景层 | Hero 全幅背景、Loop 区域全幅背景 |
+| `surface-command` | `#08111F` | `--color-surface-command` | 真实研发控制台暗场 | StorySection 破晓黎明模型深色研发环境 |
 
-> **证据来源**: `globals.css` L18-L23, `design-tokens.json` L31-L36, `HeroSection.tsx` L82, `InfoLoopSection.tsx` L279
+> **证据来源**: `globals.css` Surface tokens, `HeroSection.tsx`, `InfoLoopSection.tsx`, `StorySection.tsx`
 
 #### Border 边框色
 

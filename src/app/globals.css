@@ -22,6 +22,7 @@
   --color-surface-tinted: #F0F4FF;
   --color-surface-dark: #0F172A;
   --color-surface-deep: #0B1628;
+  --color-surface-command: #08111F;
 
   /* ── Border ── */
   --color-border-default: rgba(0, 0, 0, 0.06);
