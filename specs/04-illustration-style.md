@@ -67,7 +67,7 @@
 | 引用方式 | 使用场景 | 原因 |
 |---------|---------|------|
 | CSS Variable `var(--color-*)` | 语义色引用、可切换色 | 保持主题一致性、支持暗底/亮底切换 |
-| 硬编码 HEX | Glyph 内部蓝色色阶 (`#60A5FA`, `#93C5FD`, `#2563EB`, `#DBEAFE`, `#EFF6FF`) | SVG `fill`/`stroke` 属性不支持 `var()` 在某些浏览器的 SVG 属性中 |
+| 硬编码 HEX / rgba | Glyph 内部暗场蓝色色阶 (`#60A5FA`, `#93C5FD`, `#3B82F6`, `rgba(59,130,246,...)`) | SVG `fill`/`stroke` 属性不支持 `var()` 在某些浏览器的 SVG 属性中 |
 | 硬编码 HEX | 品牌标识元素（Octopus Logo 眼睛 `#60A5FA`、章鱼路径 `#F8FAFC`） | 品牌核心标识不应受主题切换影响 |
 
 **SVG 属性限制说明**: SVG 元素的 `fill` 和 `stroke` 属性在 JSX 中接受字符串值。CSS Variable 可以在 `style` 对象中生效，但在 SVG 属性直接写 `var(--color-*)` 在部分浏览器中不被解析。当前代码采用混合策略：
@@ -96,12 +96,13 @@
 
 | 色阶名 | HEX | 建议 Token | 语义 | 使用场景 |
 |--------|-----|-----------|------|---------|
-| Deep | `#2563EB` | `--color-glyph-stroke-deep` | 深描边 | PolicyGate 圆心、Ledger 圆心、AuditTrail 圆心、高对比描边 |
+| Deep | `#2563EB` | `--color-glyph-stroke-deep` | 深描边 | 仅用于浅底旧稿或需要深色对比的局部 |
 | Medium | `#3B82F6` | `--color-brand-accent` | 中描边 | 主路径、连接线、节点默认色 |
 | Light | `#60A5FA` | `--color-glyph-stroke` | 轻描边 | AI 侧发光感、六边形边框、指纹外框、品牌眼色 |
 | Pale | `#93C5FD` | `--color-glyph-stroke-light` | 辅助描边 | 轨道点、指纹内线、辅助线条 |
-| Fill | `#DBEAFE` | `--color-glyph-fill` | 实体填充 | 圆心填充、Brief 卡填充、印章底 |
-| Fill Subtle | `#EFF6FF` | `--color-glyph-fill-subtle` | 浅底填充 | Trust Card 背景、大面积底色 |
+| Fill | `rgba(59,130,246,0.14)` | `--color-glyph-fill` | 暗场半透明填充 | 圆心填充、印章底、节点弱面 |
+| Fill Subtle | `rgba(59,130,246,0.08)` | `--color-glyph-fill-subtle` | 暗场弱填充 | Trust Card 内部大面积暗蓝面 |
+| Legacy Fill | `#DBEAFE` / `#EFF6FF` | -- | 浅底旧稿填充 | 当前官网暗场禁用 |
 
 #### 深底色
 
@@ -138,36 +139,37 @@
 |-------|---------------|-------------|---------|----------|------------|------|
 | **AILogo** | `#0F172A` | `#60A5FA` (六边形) | `#93C5FD` (轨道点 fill) | `#60A5FA` (中心圆) | -- | -- |
 | **HumanLogo** | `#0F172A` | `#60A5FA` (外圆) | `#93C5FD` (指纹内线) | -- | -- | `#60A5FA` (确认勾) |
-| **PolicyGateGlyph** | `#0F172A` | `#60A5FA` (门框) | `#93C5FD` (扫描线) | `#DBEAFE` (圆心) | `#2563EB` (圆心边) | -- |
-| **ExecutionLedgerGlyph** | `#0F172A` | `#60A5FA` (账本框) | `#93C5FD` (写入线) | `#DBEAFE` (印章底) | `#2563EB` (印章边) | -- |
+| **PolicyGateGlyph** | `#0F172A` | `#60A5FA` (门框) | `#93C5FD` (扫描线) | `rgba(59,130,246,0.18)` (圆心) | `#60A5FA` (圆心边) | -- |
+| **ExecutionLedgerGlyph** | `#0F172A` | `#60A5FA` (账本框) | `#93C5FD` (写入线) | `rgba(59,130,246,0.18)` (印章底) | `#60A5FA` (印章边) | -- |
 
 #### Trust Card Glyphs
 
 | Glyph | 背景 fill | 主描边 stroke | 辅助描边 | 遮罩/标记色 |
 |-------|----------|-------------|---------|-----------|
-| **MaskedDataGlyph** | `#EFF6FF` | `#2563EB` (数据线、X 圆边) | `#93C5FD` (虚化线, opacity .5) | `#2563EB` fillOpacity .2 (遮罩区) |
-| **PermissionBoundaryGlyph** | `#EFF6FF` | `#2563EB` (网格线、边界墙) | -- | `#2563EB` (agent 点) |
-| **AuditTrailCardGlyph** | 无底 rect | `#2563EB` (路径) | `#93C5FD`/`#60A5FA`/`#2563EB` (3 检查点, 由浅到深) | `#DBEAFE` (印章底) |
+| **MaskedDataGlyph** | `rgba(15,23,42,0.92)` | `#60A5FA` (数据线、X 圆边) | `#93C5FD` (虚化线, opacity .46) | `rgba(59,130,246,0.24)` (遮罩区) |
+| **PermissionBoundaryGlyph** | `rgba(15,23,42,0.92)` | `#60A5FA` (网格线) / `#F1F5F9` (边界墙) | `#93C5FD` (弱网格) | `#3B82F6` (agent 点) |
+| **AuditTrailCardGlyph** | 无底 rect | `#60A5FA` (路径) | `#93C5FD` / `#60A5FA` / `#3B82F6` (3 检查点) | `rgba(59,130,246,0.18)` (印章底) |
 
 #### ValueCards Mini Diagrams
 
 | Glyph | 路径 stroke | 节点 fill | 核心 fill/stroke | 输出 fill |
 |-------|-----------|----------|-----------------|----------|
 | **FidelityDiagram** | `#60A5FA` | `#93C5FD` (input), `#2563EB` (output) | `rgba(37,99,235,0.08)` / `#2563EB` | `#2563EB` |
-| **CompressionDiagram** | `#93C5FD` (数据线), `#60A5FA` (路径) | `#2563EB` (core dot) | `#2563EB` (stroke) | `#DBEAFE` (brief 填充) |
-| **AuditDiagram** | `#60A5FA` (审计路径) | `#2563EB` (checkpoints) | -- | `#DBEAFE` (印章底) |
+| **CompressionDiagram** | `#93C5FD` (数据线), `#60A5FA` (路径) | `#2563EB` (core dot) | `#2563EB` (stroke) | `#DBEAFE` (mini diagram 局部 brief 填充，非 Security glyph) |
+| **AuditDiagram** | `#60A5FA` (审计路径) | `#2563EB` (checkpoints) | -- | `#DBEAFE` (mini diagram 局部印章底，非 Security glyph) |
 
 ### 4.2.3 暗底/亮底色彩切换规则
 
 | 场景 | 背景色 | 前景规则 |
 |------|--------|---------|
 | **Glyph 底座 (Pipeline)** | `#0F172A` (dark) | 描边使用 light/pale 蓝色色阶 (`#60A5FA`, `#93C5FD`) |
-| **Trust Card 背景 (亮底)** | `#EFF6FF` 或 `#FFFFFF` | 描边使用 deep 蓝色色阶 (`#2563EB`) |
+| **Trust Card 背景 (暗场官网)** | `rgba(15,23,42,0.90)` / `rgba(11,22,40,0.84)` | 描边使用 light/pale 蓝色色阶，填充使用半透明蓝 |
+| **Trust Card 背景 (浅底旧稿)** | `#EFF6FF` 或 `#FFFFFF` | 描边使用 deep 蓝色色阶 (`#2563EB`)；当前官网禁用 |
 | **Console 面板 (深底)** | `var(--color-surface-deep)` | 文字使用 `var(--color-text-on-dark)` / `var(--color-text-on-dark-muted)` |
 | **ValueCard Diagram 容器** | 微渐变 (见 L323-325) | 路径使用 `#60A5FA`，节点使用 `#93C5FD`/`#2563EB` |
-| **Footer Seal (深底)** | `var(--color-surface-dark)` | 轨道 `#3B82F6` (opacity 0.25)，标签 `#94A3B8` |
+| **Footer Seal (深底，已废弃)** | 旧版 fixed reveal footer | 当前官网不再渲染 Footer Seal 或节点网络 |
 
-**核心原则**: 深底上用亮描边 (light blue spectrum)，亮底上用深描边 (deep blue spectrum)。两个场景都限定在 `#2563EB` -> `#60A5FA` -> `#93C5FD` -> `#DBEAFE` -> `#EFF6FF` 这条蓝色光谱内。
+**核心原则**: 当前官网深底上用亮描边与半透明蓝填充；接近白色的 `#DBEAFE/#EFF6FF` 仅属于浅底旧稿，不进入暗场官网。
 
 ---
 
@@ -187,7 +189,7 @@
 
 | 策略 | 规范 | 示例 |
 |------|------|------|
-| Minimal fills | 小面积实体填充仅用于关键节点 | AILogo 中心圆 `fill="#60A5FA"` (r=4), PolicyGate 圆心 `fill="#DBEAFE"` |
+| Minimal fills | 小面积实体填充仅用于关键节点 | AILogo 中心圆 `fill="#60A5FA"` (r=4), PolicyGate 圆心 `fill="rgba(59,130,246,0.18)"` |
 | Semi-transparent overlays | 大面积填充使用低透明度 | CompressionDiagram am-core: `fill: rgba(37, 99, 235, 0.08)` |
 | 底座 rect | 每个 Pipeline Glyph 有一个深色底座 | AILogo: `<rect fill="#0f172a" rx="14">`, PolicyGate: `<rect fill="#0F172A">` |
 | 无渐变填充 | SVG 内部不使用 `<linearGradient>` 或 `<radialGradient>` | 所有 SVG 内部均无渐变定义（渐变仅在容器 CSS 中） |
@@ -275,7 +277,7 @@
 | 左门 | `<rect x="10" y="9" width="8" height="26" rx="4" fill="#0F172A" stroke="#60A5FA" strokeWidth="1.5">` |
 | 右门 | `<rect x="26" y="9" width="8" height="26" rx="4" fill="#0F172A" stroke="#60A5FA" strokeWidth="1.5">` |
 | 扫描线 | `<path d="M14 22H30" stroke="#93C5FD" strokeWidth="2" strokeLinecap="round">` |
-| 圆心 | `<circle cx="22" cy="22" r="4" fill="#DBEAFE" stroke="#2563EB" strokeWidth="1.5">` |
+| 圆心 | `<circle cx="22" cy="22" r="4" fill="rgba(59,130,246,0.18)" stroke="#60A5FA" strokeWidth="1.5">` |
 | 语义 | 权限校验关卡：双门代表两道验证关卡，扫描线代表正在执行的策略检查，圆心代表校验核心引擎。隐喻"AI 的每一步建议都必须通过策略校验"。 |
 | 动画 | 扫描线脉冲：`animation: scan-gate 1.8s ease-in-out infinite`（CSS @keyframes，具体实现在 globals.css）。 |
 
@@ -286,7 +288,7 @@
 | 尺寸 | 44x44, viewBox `0 0 44 44` |
 | 账本框 | `<rect x="11" y="8" width="22" height="28" rx="5" fill="#0F172A" stroke="#60A5FA" strokeWidth="1.5">` |
 | 写入线 | 3 条 `<path d="M16 17H28/H25/H22" stroke="#93C5FD" strokeWidth="1.5" strokeLinecap="round">` 分别在 y=17, 23, 29 |
-| 印章 | `<circle cx="30" cy="30" r="4" fill="#DBEAFE" stroke="#2563EB" strokeWidth="1.5">` |
+| 印章 | `<circle cx="30" cy="30" r="4" fill="rgba(59,130,246,0.18)" stroke="#60A5FA" strokeWidth="1.5">` |
 | 语义 | 执行记录账本：账本框代表记录容器，3 条写入线代表记录正在被逐行写入（长度递减表示新记录越来越短/精确），印章代表每条记录被最终确认盖章。隐喻"决策执行的每一步都被永久记录"。 |
 | 动画 | 写入线绘制：`stroke-dasharray: 20; stroke-dashoffset: 20; animation: ledger-write 2.2s ease-in-out infinite`，3 条线延迟 0s, 0.18s, 0.36s（序贯写入效果）。印章脉冲：`transform-origin: center; animation: ledger-seal 2.2s ease-in-out infinite`。 |
 
@@ -295,7 +297,7 @@
 | 属性 | 值 |
 |------|-----|
 | 尺寸 | 56x56, viewBox `0 0 56 56` |
-| 卡片背景 | `<rect x="10" y="14" width="36" height="28" rx="8" fill="#EFF6FF">` |
+| 卡片背景 | `<rect x="10" y="14" width="36" height="28" rx="8" fill="rgba(15,23,42,0.92)" stroke="rgba(96,165,250,0.34)" strokeWidth="1.2">` |
 | 数据线 | `<path d="M18 24H38" stroke="#2563EB" strokeWidth="2" strokeLinecap="round">` (主数据) |
 | 虚化线 | `<path d="M18 32H32" stroke="#93C5FD" strokeWidth="2" strokeLinecap="round" opacity=".5">` (模糊数据) |
 | 遮罩区 | `<rect x="20" y="20" width="16" height="4" rx="2" fill="#2563EB" fillOpacity=".2">` |
@@ -308,7 +310,7 @@
 | 属性 | 值 |
 |------|-----|
 | 尺寸 | 56x56, viewBox `0 0 56 56` |
-| 容器 | `<rect x="10" y="12" width="36" height="32" rx="10" fill="#EFF6FF">` |
+| 容器 | `<rect x="10" y="12" width="36" height="32" rx="10" fill="rgba(15,23,42,0.92)" stroke="rgba(96,165,250,0.34)" strokeWidth="1.2">` |
 | 水平网格 | `<path d="M18 28H38" stroke="#2563EB" strokeWidth="2" strokeLinecap="round">` |
 | 垂直网格 | `<path d="M28 18V38" stroke="#2563EB" strokeWidth="2" strokeLinecap="round" opacity=".35">` |
 | Agent 点 | `<circle cx="22" cy="28" r="4" fill="#2563EB">` |
@@ -325,7 +327,7 @@
 | 检查点 1 | `<circle cx="14" cy="16" r="3" fill="#93C5FD">` (最浅) |
 | 检查点 2 | `<circle cx="38" cy="26" r="3" fill="#60A5FA">` (中等) |
 | 检查点 3 | `<circle cx="18" cy="36" r="3" fill="#2563EB">` (最深) |
-| 印章底 | `<circle cx="30" cy="26" r="6" fill="#DBEAFE">` |
+| 印章底 | `<circle cx="30" cy="26" r="6" fill="rgba(59,130,246,0.18)" stroke="rgba(96,165,250,0.42)" strokeWidth="1">` |
 | 确认勾 | `<path d="M27 26L29 28.5L33 23" stroke="#2563EB" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">` |
 | 语义 | 行为审计追溯：环形路径代表审计流程（非直线，暗示曲折但完整），3 个检查点的色深递进 (`#93C5FD` -> `#60A5FA` -> `#2563EB`) 代表审计深度递增（越往后检查越严格），印章+对勾代表审计通过确认。隐喻"每一次建议、确认、回流都有审计记录"。 |
 | 动画 | 无独立动画 -- Trust Card 内静态展示。 |
@@ -455,8 +457,8 @@
 | **轨道旋转** | Orbit | 数据环绕处理 | AILogo 3 轨道点持续旋转 |
 | **路径绘制** | Stroke Draw | 信息正在生成/记录 | HumanLogo 指纹/确认勾; ValueCards 路径线; Ledger 写入线 |
 | **脉冲呼吸** | Pulse/Breathe | 系统活跃/节点激活 | FlowNavigation 节点光晕; StatusDot; SignalConsole active 点 |
-| **光点流动** | Particle Flow | 数据持续传输 | Loop Rail 粒子; PageParticles; Footer Network; Approval Bridge 点 |
-| **序贯点亮** | Sequential Light-up | 流程正在推进 | Footer Seal 节点逐个亮起; Pipeline stage 逐个展示 |
+| **光点流动** | Particle Flow | 数据持续传输 | Loop Rail 粒子; PageParticles; Approval Bridge 点 |
+| **序贯点亮** | Sequential Light-up | 流程正在推进 | Pipeline stage 逐个展示；旧版 Footer Seal 已废弃 |
 | **路径扫描** | Path Scan | 正在执行检查 | PolicyGate 扫描线 |
 | **边界探索** | Boundary Explore | AI 在权限内活动 | PermissionBoundary agent 点微移 |
 | **信号旋转** | Signal Rotation | 流程阶段轮换 | SignalConsole Pipeline 指示器 |
@@ -480,8 +482,8 @@
 | **Octopus Logo** | 入场揭示 | Logo 缩放入场 + 眼睛弹出 | `0.48s` + `0.3s` | `power2.out` + `back.out(2.5)` |
 | **Signal Console** | 入场揭示 + 信号旋转 | 整体渐入 + Pipeline 阶段轮换 | `0.4s` 入场, `3s` 轮换 | `power2.out` |
 | **Loop Rail** | 光点流动 + 脉冲呼吸 | 粒子沿轨道流动 + 节点光晕 | `3s` 流动, `1s` 脉冲 | `sine.inOut`, `sine.inOut` |
-| **Loop Seal** | 序贯点亮 + 光点流动 | 节点逐个亮起 + 信号点沿轨道运动 | scrub 驱动 (滚动关联) | `power2.out`, `none` |
-| **Particle Network** | 光点流动 | 粒子沿贝塞尔路径运动 | `5-9s` (随机) | 自动 (useParticles) |
+| **Loop Seal** | 已废弃 | 旧版 Footer fixed reveal 使用 | -- | -- |
+| **Particle Network** | 已废弃 | 旧版 Footer fixed reveal 使用 | -- | -- |
 | **Page Particles** | 光点流动 | 粒子沿贝塞尔路径运动 + 尾迹 | `3-5s` (随机) | 自动 (useParticles) |
 
 ### 4.5.3 动画时长规范
@@ -513,7 +515,7 @@
 | **power2.in** | `ease: 'power2.in'` | `cubic-bezier(0.55, 0, 1, 0.45)` ≈ `--ease-in` | 退出/消失动画（噪声碎片被吸入核心） |
 | **sine.inOut** | `ease: 'sine.inOut'` | `cubic-bezier(0.37, 0, 0.63, 1)` | 粒子流动、脉冲呼吸（平滑往复运动） |
 | **back.out(2.5)** | `ease: 'back.out(2.5)'` | 无直接 CSS 等效 | 品牌标识特殊动画（Logo 眼睛弹出，仅此一处） |
-| **back.out(2)** | `ease: 'back.out(2)'` | 无直接 CSS 等效 | Footer Seal 节点内圆弹出 |
+| **back.out(2)** | `ease: 'back.out(2)'` | 无直接 CSS 等效 | 旧版 Footer Seal 节点内圆弹出（当前官网不使用） |
 | **linear** | `ease: 'linear'` | `linear` | 轨道旋转（AILogo 轨道点）、循环粒子 |
 | **power1.in/out** | `ease: 'power1.in'` / `'power1.out'` | -- | 粒子透明度变化、轻柔状态切换 |
 | **none** (scrub) | `ease: 'none'` | `linear` | ScrollTrigger scrub 动画（路径绘制、节点点亮） |
@@ -629,10 +631,11 @@ Logo 启动动画（页面加载时触发）：
 | `#60A5FA` | AILogo, HumanLogo, PolicyGate, AuditTrail | `var(--color-glyph-stroke)` | style 对象 |
 | `#93C5FD` | AILogo, HumanLogo, PolicyGate, Ledger, Fidelity, Compression, Audit | `var(--color-glyph-stroke-light)` | style 对象 |
 | `#2563EB` | PolicyGate, Ledger, MaskedData, PermissionBoundary, AuditTrail, Fidelity, Compression, Audit | `var(--color-glyph-stroke-deep)` | style 对象 |
-| `#DBEAFE` | PolicyGate, Ledger, Compression, Audit | `var(--color-glyph-fill)` | style 对象 |
-| `#EFF6FF` | MaskedData, PermissionBoundary | `var(--color-glyph-fill-subtle)` | style 对象 |
+| `rgba(59,130,246,0.14)` | PolicyGate, Ledger, Compression, Audit | `var(--color-glyph-fill)` | style 对象 |
+| `rgba(59,130,246,0.08)` | MaskedData, PermissionBoundary | `var(--color-glyph-fill-subtle)` | style 对象 |
+| `#DBEAFE` / `#EFF6FF` | 浅底旧稿 | legacy only | 当前官网暗场禁用 |
 | `#0F172A` | AILogo, HumanLogo, PolicyGate, Ledger, PermissionBoundary | `var(--color-surface-dark)` | style 对象 |
-| `#3B82F6` | PageParticles, Footer Network | `var(--color-brand-accent)` | 已部分使用 CSS var |
+| `#3B82F6` | PageParticles, legacy Footer Network | `var(--color-brand-accent)` | Footer Network 已废弃 |
 | `#60A5FA` | Octopus Logo 眼睛 | `var(--color-brand-eye)` (待建) | style 对象 |
 | `#F8FAFC` | Octopus Logo 主体 | 保留硬编码 (品牌标识) | 不迁移 |
 

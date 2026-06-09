@@ -25,9 +25,9 @@
 
 | Token 名称 | HEX | CSS Variable | 语义 | 使用场景 |
 |------------|-----|--------------|------|---------|
-| `text-primary` | `#0F172A` | `--color-text-primary` | 最高优先级文本 | 标题、正文主色、强调文字 |
-| `text-secondary` | `#334155` | `--color-text-secondary` | 正文辅助色 | 正文段落、描述文字 |
-| `text-tertiary` | `#64748B` | `--color-text-tertiary` | 低优先级文本 | 标注、标签、元数据、placeholder |
+| `text-primary` | `#F1F5F9` | `--color-text-primary` | 暗场最高优先级文本 | 标题、正文主色、强调文字 |
+| `text-secondary` | `#CBD5E1` | `--color-text-secondary` | 暗场正文辅助色 | 正文段落、描述文字 |
+| `text-tertiary` | `#94A3B8` | `--color-text-tertiary` | 暗场低优先级文本 | 标注、标签、元数据、placeholder |
 | `text-on-dark` | `#F1F5F9` | `--color-text-on-dark` | 深色背景上的主文本 | Hero 区域、InfoLoop 区域、Security 深色面板 |
 | `text-on-dark-muted` | `#94A3B8` | `--color-text-on-dark-muted` | 深色背景上的次文本 | 深色区域的辅助信息、系统状态文本、console 标注 |
 
@@ -37,13 +37,20 @@
 
 | Token 名称 | HEX | CSS Variable | 语义 | 使用场景 |
 |------------|-----|--------------|------|---------|
-| `surface-page` | `#FAFBFC` | `--color-surface-page` | 页面主背景 | body 背景、浅色区域基底 |
-| `surface-card` | `#FFFFFF` | `--color-surface-card` | 卡片背景 | 决策卡、价值卡、表单面板 |
-| `surface-elevated` | `#F1F5F9` | `--color-surface-elevated` | 提升/凹陷区域 | 代码块、次级面板、噪声碎片 |
-| `surface-tinted` | `#F0F4FF` | `--color-surface-tinted` | 品牌色着色表面 | 带品牌色暗示的浅色区域、数据卡片 |
+| `surface-page` | `#08111F` | `--color-surface-page` | 页面主暗场背景 | body 背景、全站统一暗场基底 |
+| `surface-card` | `#0F172A` | `--color-surface-card` | 暗色卡片/控制台面板 | 决策卡、价值卡、表单面板 |
+| `surface-elevated` | `#0B1628` | `--color-surface-elevated` | 暗场提升/凹陷区域 | 代码块、次级面板、噪声碎片 |
+| `surface-tinted` | `#10203A` | `--color-surface-tinted` | 品牌色着色暗面 | 选中态、数据卡片、激活项背景 |
 | `surface-dark` | `#0F172A` | `--color-surface-dark` | 深色区域背景 | Hero Signal Console、InfoLoop Inspector、Pipeline 节点容器 |
 | `surface-deep` | `#0B1628` | `--color-surface-deep` | 最深背景层 | Hero 全幅背景、Loop 区域全幅背景 |
-| `surface-command` | `#08111F` | `--color-surface-command` | Story 全深色视频叙事暗场 | StorySection 破晓黎明模型深色叙事环境 |
+| `surface-command` | `#08111F` | `--color-surface-command` | 全站暗场叙事底色 | body / main wrapper 的连续暗色画布 |
+| `surface-command-soft` | `#0A1424` | `--color-surface-command-soft` | 暗场内部亮度过渡 | 仅用于局部面板、控件或旧稿兼容；禁止作为整屏 section 背景 |
+| `surface-panel` | `rgba(15,23,42,.78)` | `--color-surface-panel` | 半透明控制台面板 | 信号残影、field report、轻量容器 |
+| `surface-panel-strong` | `rgba(15,23,42,.94)` | `--color-surface-panel-strong` | 高优先级暗色面板 | 决策 brief、表单、FAQ 答案 |
+
+#### 连续暗场分段规则
+
+当前官网不再用 `surface-command` / `surface-command-soft` / `surface-deep` 的全宽色块交替来分段。所有主体 section 默认使用透明背景，继承 `surface-page #08111F` 这一张连续暗色画布；重点区段通过 `.am-narrative-section` 的容器内 hairline、极轻顶部亮度、局部面板、内容密度和品牌蓝路径建立节奏。大面积径向光源必须落在 section 内部并充分羽化，不能从 section 顶部被硬裁切。
 
 > **证据来源**: `globals.css` Surface tokens, `HeroSection.tsx`, `InfoLoopSection.tsx`, `StorySection.tsx`
 
@@ -51,9 +58,9 @@
 
 | Token 名称 | 值 | CSS Variable | 语义 | 使用场景 |
 |------------|-----|--------------|------|---------|
-| `border-default` | `rgba(0, 0, 0, 0.06)` | `--color-border-default` | 最轻边框 | 卡片默认边框、内容分隔 |
-| `border-strong` | `rgba(0, 0, 0, 0.12)` | `--color-border-strong` | 强调边框 | 输入框聚焦、hover 态边框 |
-| `border-brand` | `rgba(59, 130, 246, 0.3)` | `--color-border-brand` | 品牌色边框 | 选中态、激活态卡片、品牌强调 |
+| `border-default` | `rgba(148, 163, 184, 0.16)` | `--color-border-default` | 暗场最轻边框 | 卡片默认边框、内容分隔 |
+| `border-strong` | `rgba(148, 163, 184, 0.28)` | `--color-border-strong` | 暗场强调边框 | 输入框聚焦、hover 态边框 |
+| `border-brand` | `rgba(59, 130, 246, 0.36)` | `--color-border-brand` | 品牌色边框 | 选中态、激活态卡片、品牌强调 |
 
 > **证据来源**: `globals.css` L26-L28, `design-tokens.json` L39-L41
 
@@ -105,20 +112,18 @@ Loop Rail 色系构成信息闭环模拟器的视觉骨架 -- 从静默节点到
 
 基于 WCAG 2.1 AA 标准计算（正常文本 >= 4.5:1, 大文本 >= 3.0:1）。所有比值基于实际 HEX 值通过 sRGB 相对亮度公式计算。
 
-#### 浅色背景组合
+#### 暗场主背景组合
 
 | 前景色 | 背景色 | 对比度 | WCAG 判定 | 使用场景 |
 |--------|--------|--------|-----------|---------|
-| `#0F172A` (text-primary) | `#FAFBFC` (page) | **17.23:1** | AAA | body 默认文本 |
-| `#0F172A` (text-primary) | `#FFFFFF` (card) | **17.85:1** | AAA | 卡片标题、正文 |
-| `#334155` (text-secondary) | `#FFFFFF` (card) | **10.35:1** | AAA | 卡片正文段落 |
-| `#64748B` (text-tertiary) | `#FAFBFC` (page) | **4.59:1** | AA (刚好通过) | 标注文字、元数据 |
-| `#64748B` (text-tertiary) | `#FFFFFF` (card) | **4.76:1** | AA | 卡片标注、辅助信息 |
-| `#64748B` (text-tertiary) | `#F0F4FF` (tinted) | **4.33:1** | AA-lg (仅大文本) | tinted 表面的标注文字需谨慎 |
-| `#1E3A5F` (primary) | `#FFFFFF` (card) | **11.50:1** | AAA | 品牌色文字、CTA |
-| `#3B82F6` (accent) | `#FFFFFF` (card) | **3.68:1** | AA-lg (仅大文本) | accent 色不可作正文色 |
-| `#2563EB` (deep blue) | `#FFFFFF` (card) | **5.17:1** | AA | 硬编码蓝色在 SVG 中的使用 |
-| `#EF4444` (risk) | `#FFFFFF` (card) | **3.76:1** | AA-lg | 风险标签（需加粗 14px+） |
+| `#F1F5F9` (text-primary / on-dark) | `#08111F` (surface-command) | **17.26:1** | AAA | 全站主标题、正文主文本 |
+| `#CBD5E1` (text-secondary) | `#08111F` (surface-command) | **12.74:1** | AAA | section 描述、表单辅助说明 |
+| `#94A3B8` (text-tertiary / muted) | `#08111F` (surface-command) | **7.38:1** | AA | 标签、元数据、placeholder |
+| `#F1F5F9` (on-dark) | `#0F172A` (surface-card) | **16.30:1** | AAA | 暗色卡片标题、FAQ 答案标题 |
+| `#94A3B8` (muted) | `#0F172A` (surface-card) | **6.96:1** | AA | 暗色卡片正文、字段说明 |
+| `#3B82F6` (accent) | `#08111F` (surface-command) | **5.14:1** | AA | CTA、路径、激活态文字 |
+| `#38BDF8` (cyan) | `#08111F` (surface-command) | **8.83:1** | AAA | 粒子、瞬时高亮 |
+| `#60A5FA` (glyph stroke) | `#08111F` (surface-command) | **7.44:1** | AA | SVG Glyph 描边和轨道点 |
 
 #### 深色背景组合
 
@@ -134,10 +139,13 @@ Loop Rail 色系构成信息闭环模拟器的视觉骨架 -- 从静默节点到
 | `#22C55E` (success) | `#0F172A` (dark) | **7.83:1** | AAA | 成功信号在暗色区域 |
 | `#60A5FA` | `#0F172A` (dark) | **7.02:1** | AA | 硬编码色在暗背景上的安全 |
 
-#### 硬编码颜色的对比度警告
+#### 历史浅底 / 白底使用警告
+
+官网暗场叙事改版后不再把 `#FFFFFF` / `#FAFBFC` 作为 section 背景。以下组合仅用于审查旧稿、品牌 glyph 浅色填充或外部物料导出，不作为当前官网主界面方案。
 
 | 前景色 | 背景色 | 对比度 | WCAG 判定 | 问题说明 |
 |--------|--------|--------|-----------|---------|
+| `#3B82F6` (accent) | `#FFFFFF` | **3.68:1** | AA-lg | 白底上仅可用于大文本/粗线，不可作正文色 |
 | `#60A5FA` | `#FFFFFF` | **2.54:1** | FAIL | 不可用于白色背景上的文字或细线描边 |
 | `#93C5FD` | `#FFFFFF` | **1.80:1** | FAIL | 不可用于白色背景上的任何元素 |
 | `#22C55E` (success) | `#FFFFFF` | **2.28:1** | FAIL | 不可用于白色背景上的文字，仅作图标色或暗色区域使用 |
@@ -157,8 +165,8 @@ SecuritySection 的 6 个 SVG Glyph（AI Logo, Human Logo, Policy Gate, Executio
 | `#60A5FA` | AI Logo (stroke, fill), Human Logo (stroke), Policy Gate (stroke), Approval Flow (dot, bridge glow) | `var(--color-brand-accent)` 或新建 `--color-accent-light` | `#60A5FA` 是 `#3B82F6` 的 400 级变体，比 brand-accent (#3B82F6) 更亮。在 SVG 描边中用于表现"AI 侧发光"的视觉层次。建议保留为 SVG 专用语义 token `--color-glyph-stroke` |
 | `#93C5FD` | AI Logo (orbit dots), Human Logo (sub-stroke), Policy Gate (scan line), Ledger (lines), Approval Flow (dot) | 新建 `--color-glyph-stroke-light` | 作为 Glyph 系统的次要描边色（亮调），用于辅助线条和轨道点 |
 | `#2563EB` | Policy Gate (circle), Ledger (circle, lines), Approval Flow (path), Data Path (various) | `var(--color-brand-accent)` 或新建 `--color-glyph-stroke-deep` | 比 brand-accent 更深一级，用于 Glyph 中需要更强对比的描边和填充 |
-| `#DBEAFE` | Policy Gate (fill), Ledger (circle fill), Data Path (circle fill) | 新建 `--color-glyph-fill` | 浅蓝填充色，用于 Glyph 中实体区域的背景 |
-| `#EFF6FF` | Approval Flow (rect fill), Data Path (rect fill) | `var(--color-surface-tinted)` 或新建 `--color-glyph-fill-subtle` | 比 `#DBEAFE` 更浅，用于 Glyph 的大面积背景填充 |
+| `#DBEAFE` | 旧版 Policy Gate / Ledger 圆心填充 | 废弃于当前暗场官网 | 仅保留为历史浅底语境，不用于 SecuritySection 的暗场 glyph |
+| `#EFF6FF` | 旧版 Trust Card / Data Path 大面积填充 | 废弃于当前暗场官网 | 仅保留为外部浅底物料，不用于官网暗场 section |
 | `#0F172A` | AI Logo (rect fill), Human Logo (rect fill), Policy Gate (rect fill), Ledger (rect fill), Data Path (path stroke) | `var(--color-surface-dark)` | 与 surface-dark 一致，用于 Glyph 的深色基底 |
 | `#94A3B8` | Bridge label text | `var(--color-text-on-dark-muted)` | 统一到深色辅助文本 |
 | `#64748B` | Trust card description | `var(--color-text-tertiary)` | 统一到辅助文本 |
@@ -166,15 +174,15 @@ SecuritySection 的 6 个 SVG Glyph（AI Logo, Human Logo, Policy Gate, Executio
 **建议的 Glyph 专用 Token 方案**:
 
 ```css
-/* ── SVG Glyph System ── */
---color-glyph-fill: #DBEAFE;           /* 实体区域浅蓝填充 */
---color-glyph-fill-subtle: #EFF6FF;    /* 大面积背景浅蓝填充 */
---color-glyph-stroke: #60A5FA;         /* 主描边 -- AI 侧发光感 */
---color-glyph-stroke-light: #93C5FD;   /* 辅助描边 -- 轨道/线条 */
---color-glyph-stroke-deep: #2563EB;    /* 深描边 -- 强对比需求 */
+/* ── SVG Glyph System (dark homepage) ── */
+--color-glyph-fill: rgba(59, 130, 246, 0.14);        /* 暗场节点半透明填充 */
+--color-glyph-fill-subtle: rgba(59, 130, 246, 0.08); /* 暗场大面积弱填充 */
+--color-glyph-stroke: #60A5FA;                       /* 主描边 -- AI 侧发光感 */
+--color-glyph-stroke-light: #93C5FD;                 /* 辅助描边 -- 轨道/线条 */
+--color-glyph-stroke-deep: #2563EB;                  /* 深描边 -- 仅用于浅底旧稿 */
 ```
 
-> **设计意图**: Glyph 系统自成色阶，不混入品牌色或信号色系统。蓝色色阶 (#2563EB -> #3B82F6 -> #60A5FA -> #93C5FD -> #DBEAFE -> #EFF6FF) 在 Glyph 中表达"AI 能力的光谱"，从深到浅传递技术精密感。
+> **设计意图**: 当前暗场官网的 Glyph 系统以深色底座 + 亮描边 + 半透明蓝填充为主，不再使用接近白色的大面积浅蓝块。`#DBEAFE/#EFF6FF` 只作为历史浅底或外部物料的兼容色，不进入官网深色 Security glyph。
 
 #### CommandHeader STATUS_MAP 状态色
 
@@ -244,8 +252,10 @@ SecuritySection 的 6 个 SVG Glyph（AI Logo, Human Logo, Policy Gate, Executio
 | `#60A5FA` | 60A5FA | ~10 | -- | `--color-glyph-stroke` / `--color-brand-eye` |
 | `#93C5FD` | 93C5FD | ~6 | -- | `--color-glyph-stroke-light` |
 | `#2563EB` | 2563EB | ~12 | -- | `--color-glyph-stroke-deep` |
-| `#DBEAFE` | DBEAFE | ~4 | -- | `--color-glyph-fill` |
-| `#EFF6FF` | EFF6FF | ~2 | `var(--color-surface-tinted)` (近似) | `--color-glyph-fill-subtle` |
+| `rgba(59,130,246,0.14)` | -- | -- | -- | `--color-glyph-fill` |
+| `rgba(59,130,246,0.08)` | -- | -- | -- | `--color-glyph-fill-subtle` |
+| `#DBEAFE` | DBEAFE | legacy | -- | 当前官网禁用，保留给浅底旧稿 |
+| `#EFF6FF` | EFF6FF | legacy | `var(--color-surface-tinted)` (近似) | 当前官网禁用，保留给浅底旧稿 |
 | `#6366F1` | 6366F1 | ~1 | `var(--color-brand-accent-alt)` | -- |
 | `#38BDF8` | 38BDF8 | -- | `var(--color-brand-cyan)` | -- |
 | `#22C55E` | 22C55E | ~4 | `var(--color-signal-success)` | -- |
@@ -480,9 +490,9 @@ const jetbrainsMono = JetBrains_Mono({
 
 | Token | CSS Variable | 值 | 使用场景 |
 |-------|-------------|-----|---------|
-| `shadow-sm` | `--shadow-sm` | `0 1px 2px rgba(0, 0, 0, 0.04)` | 卡片默认态、轻微抬升 |
-| `shadow-md` | `--shadow-md` | `0 4px 12px rgba(0, 0, 0, 0.06)` | 卡片 hover 态、中度抬升 |
-| `shadow-lg` | `--shadow-lg` | `0 12px 32px rgba(0, 0, 0, 0.08)` | 模态窗口、下拉菜单、强抬升 |
+| `shadow-sm` | `--shadow-sm` | `0 10px 28px rgba(0, 0, 0, 0.18)` | 暗场卡片默认态、轻微抬升 |
+| `shadow-md` | `--shadow-md` | `0 18px 56px rgba(0, 0, 0, 0.26)` | 暗场卡片 hover 态、中度抬升 |
+| `shadow-lg` | `--shadow-lg` | `0 30px 90px rgba(0, 0, 0, 0.34)` | 暗场模态窗口、下拉菜单、强抬升 |
 | `shadow-glow` | `--shadow-glow` | `0 0 20px rgba(59, 130, 246, 0.15)` | 品牌色发光、聚焦态、活跃指示 |
 | `shadow-node-glow` | `--shadow-node-glow` | `0 0 12px rgba(59, 130, 246, 0.3)` | Loop 节点激活发光、状态点脉冲 |
 
@@ -496,7 +506,7 @@ const jetbrainsMono = JetBrains_Mono({
 
 ```css
 /* 常态 */
-background: rgba(15, 23, 42, 0.78);   /* surface-dark 半透明 */
+background: rgba(15, 23, 42, 0.84);   /* surface-dark 半透明 */
 border: 1px solid rgba(255, 255, 255, 0.10);
 box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
 
@@ -509,9 +519,9 @@ box-shadow: 0 18px 60px rgba(15, 23, 42, 0.16), inset 0 1px 0 rgba(255, 255, 255
 #### CommandHeader Mobile Drawer (移动端抽屉)
 
 ```css
-background: rgba(255, 255, 255, 0.92);
-border: 1px solid rgba(148, 163, 184, 0.2);
-box-shadow: 0 24px 80px rgba(15, 23, 42, 0.12);
+background: rgba(15, 23, 42, 0.94);
+border: 1px solid rgba(148, 163, 184, 0.20);
+box-shadow: 0 24px 80px rgba(0, 0, 0, 0.34);
 ```
 
 > **证据来源**: `CommandHeader.tsx` L446-L450
@@ -519,9 +529,9 @@ box-shadow: 0 24px 80px rgba(15, 23, 42, 0.12);
 #### Dual-key Cards (双密钥信任卡)
 
 ```css
-background: rgba(255, 255, 255, 0.78);
-border: 1px solid rgba(148, 163, 184, 0.2);
-box-shadow: 0 14px 40px rgba(15, 23, 42, 0.06);
+background: rgba(15, 23, 42, 0.80);
+border: 1px solid rgba(148, 163, 184, 0.18);
+box-shadow: 0 24px 70px rgba(0, 0, 0, 0.26), inset 0 1px 0 rgba(255,255,255,0.05);
 ```
 
 > **证据来源**: `SecuritySection.tsx` L350-L352

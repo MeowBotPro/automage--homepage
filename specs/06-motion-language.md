@@ -193,7 +193,7 @@ interface PathConfig {
 
 | 约束 | 值 | 说明 |
 |------|-----|------|
-| 桌面端最大 SVG 数 | 5 (PageParticles) + 12 (Footer) + 1 (InfoLoop) + 2 (FlowNavigation) | 总计约 20 个 SVG 圆，GPU 加速后可接受 |
+| 桌面端最大 SVG 数 | 5 (PageParticles) + 1 (InfoLoop) + 2 (FlowNavigation) | Footer 粒子网络已废弃，底部不再露出节点背景 |
 | 移动端最大路径数 | 3 (PageParticles 降级) | `MOBILE_PATHS` 只保留 3 条 |
 | 每条路径粒子数 | 桌面 2 / 移动 1 | `particlesPerPath` 响应式 |
 | 粒子总数估算 | 桌面: ~35 / 移动: ~18 | 含尾随粒子 |
@@ -229,11 +229,13 @@ pp4: M 1300,0 C 1350,220 1250,420 1320,620 S 1280,820 1300,1080
 pp5: M 1700,0 C 1650,300 1750,500 1680,700 S 1720,900 1700,1080
 ```
 
-#### Footer (粒子网络背景)
+#### Footer (粒子网络背景，已废弃)
+
+Footer 粒子网络和 Loop Seal 属于旧版 fixed reveal 方案。当前官网底部直接在 FAQ 后渲染紧凑 Footer，不再创建 Footer 背景粒子、Loop Seal 或 scrub timeline。
 
 | 参数 | 值 |
 |------|-----|
-| 路径数量 | 12 条 (贝塞尔曲线网络) |
+| 路径数量 | 0 |
 | 每条路径粒子数 | 1 |
 | radius | `[1.5, 3]` |
 | color | `#3B82F6` |

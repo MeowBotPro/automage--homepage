@@ -6,51 +6,45 @@
 
 ### Section 渲染顺序与映射
 
-页面由 `layout.tsx` 包裹，`page.tsx` 定义 `<main>` 内的 section 顺序。Footer 在 layout 层级渲染（非 children 内部），通过 fixed 定位实现揭示式布局。
+页面由 `layout.tsx` 包裹，`page.tsx` 定义 `<main>` 内的 section 顺序。Footer 作为普通文档流收尾段渲染在 FAQ 之后，不再使用 fixed 揭示式布局。
 
 | 顺序 | 组件 | section ID | max-width | 主题 | Loop 节点 |
 |------|------|-----------|-----------|------|----------|
 | - | CommandHeader | — | `min(1180px, calc(100% - 32px))` | dark（固定深色毛玻璃） | — |
 | - | FlowNavigation | — | 80px（SVG rail） | — | 6 节点导航 |
 | - | PageParticles | — | 全屏覆盖 | — | — |
-| 1 | HeroSection | `section-hero` | `max-w-7xl` (1280px) | light | Signal |
+| 1 | HeroSection | `section-hero` | `max-w-7xl` (1280px) | dark narrative（低光开场） | Signal |
 | 2 | LogoMarquee | — | `min(1120px, calc(100vw - 48px))` | dark（`--color-surface-deep`） | — |
-| 3 | CompareSection | `section-compare` | 1100px | light | Compress |
+| 3 | CompareSection | `section-compare` | 1100px | dark narrative（压缩第一高潮） | Compress |
 | 4 | InfoLoopSection | `section-loop` | 1160px（外容器，桌面端内部 flow 1120px） | dark（`--color-surface-deep`） | Review |
-| 5 | ValueCardsSection | `section-value` | 1100px | light | Decide |
-| 6 | MetricsBar | `section-metrics` | 1200px | light | — |
-| 7 | SecuritySection | `section-security` | 900px | light | Execute |
+| 5 | ValueCardsSection | `section-value` | 1100px | dark narrative（系统原则） | Decide |
+| 6 | MetricsBar | `section-metrics` | 1200px | dark narrative（低光 HUD） | — |
+| 7 | SecuritySection | `section-security` | 900px | dark narrative（权限门控第二高潮） | Execute |
 | 8 | StorySection | `section-story` | 860px | dark（`--color-surface-command`） | — |
-| 9 | SocialProof | `section-social` | 1200px | light + dark cards | — |
-| 10 | BetaSection | `section-beta` | 600px | light | — |
-| 11 | FAQSection | `section-faq` | 1000px | light | Learn |
-| 12 | Footer | — | 1200px（links） | dark（`--color-surface-dark`） | Loop closed |
+| 9 | SocialProof | `section-social` | 1200px | dark narrative（field report） | — |
+| 10 | BetaSection | `section-beta` | 660px | dark narrative（command panel） | — |
+| 11 | FAQSection | `section-faq` | 1000px | dark narrative（Decision Manual） | Learn |
+| 12 | Footer | — | 1200px（links） | transparent dark legal bar | — |
 
-> **破晓黎明模型（2026-06-02）**: 中后段从旧版 `StorySection -> SocialProof -> SecuritySection -> BetaSection -> FAQSection` 调整为 `SecuritySection -> StorySection -> SocialProof -> BetaSection -> FAQSection`。视觉节奏为浅色安全原则 -> 全深色 Story 叙事暗场 -> 浅底深色评价卡片 -> 内测转化 -> 浅色 FAQ 决策说明书收口。StorySection 保留原有三幕布局：标题、引号卡片、实验视频占位窗口、洞察线，避免改成控制台面板集合。
+> **暗场叙事模型（2026-06-09 修订）**: 全页使用连续暗色画布，不再通过全宽深浅色块硬切区分 section。视觉节奏来自 `.am-narrative-section` hairline、轻微顶部亮度、局部面板、内容密度和品牌蓝路径。中后段保留 `SecuritySection -> StorySection -> SocialProof -> BetaSection -> FAQSection` 顺序：权限门控第二高潮 -> Story 三幕暗场深化 -> field report / audit record 降调 -> command panel 转化 -> Decision Manual 深色手册收口。FAQ 是页面叙事收口，Footer 仅保留紧凑法律/链接条，不再露出节点背景图。
 >
-> **证据来源**: `page.tsx` 定义 `<main>` 内 11 个 section 的渲染顺序；`layout.tsx` 将 Footer 渲染在 children 之前；每个组件的 `max-width` 值从各组件的 `style.maxWidth` 属性提取。
+> **证据来源**: `page.tsx` 定义 `<main>` 内 12 个渲染段，并在 `FAQSection` 后渲染 `Footer`；`layout.tsx` 只包裹全局 Header、粒子和导航；每个组件的 `max-width` 值从各组件的 `style.maxWidth` 属性提取。
 
 ### 非常规布局模式
 
-#### Footer fixed + marginBottom: 100vh 的揭示式布局原理
+#### Footer 普通文档流收尾
 
-Footer 使用 `position: fixed; bottom: 0; z-index: 0` 固定在视口底部。主内容区域 `.main-content-wrapper` 设置 `marginBottom: 100vh`，当用户滚动到页面底部时，main 内容滚出视口，Footer 自然露出。
+Footer 不再使用 `position: fixed` 或 `main-content-wrapper marginBottom: 100vh`。页面滚动到底部时直接停在 FAQ 与紧凑 Footer 条上，避免旧版上翻揭示机制露出 Loop Seal / 节点网络背景。
 
 ```
-┌─────────────────────────────┐ ← viewport top
-│  main-content-wrapper       │
-│  (position: relative, z-1)  │
-│  marginBottom: 100vh        │
-│                             │
-├─────────────────────────────┤ ← 内容结束
-│  (空白 margin 100vh)        │
-│                             │
-└─────────────────────────────┘ ← viewport bottom
-                                ↑ Footer 在这里露出
-                                  (position: fixed, bottom: 0, z-0)
+FAQSection
+  ↓
+Footer compact legal bar
+  ↓
+document end
 ```
 
-> **证据来源**: `layout.tsx` L38-L46: `main-content-wrapper` 设置 `position: 'relative', zIndex: 1, marginBottom: '100vh'`；`Footer.tsx` L257-L261: footer 设置 `position: 'fixed', bottom: 0, zIndex: 0`。
+> **证据来源**: `layout.tsx` 的 `.main-content-wrapper` 只设置 `position`, `zIndex`, `background`；`page.tsx` 在 `FAQSection` 后直接渲染 `Footer`；`Footer.tsx` 为普通 `<footer>`，无 `position: fixed`。
 
 #### FlowNavigation fixed right rail 的层叠规则
 
@@ -82,8 +76,6 @@ Lenis 配置：`duration: 1.2`，缓动函数 `Math.min(1, 1.001 - Math.pow(2, -
 
 | 层级 | z-index | 组件 | 定位方式 | 说明 |
 |------|---------|------|---------|------|
-| z-0 | 0 | Footer | `position: fixed; bottom: 0` | 页面底层，被 main wrapper 遮盖后通过滚动揭示 |
-| z-0 | 0 | Footer 内部 SVG 网络 | absolute | 粒子网络背景 |
 | z-1 | 1 | `.main-content-wrapper` | `position: relative` | 所有 section 内容的容器 |
 | z-1 | 1 | PageParticles | `position: fixed; inset: 0` | 全屏粒子覆盖层，`pointer-events: none` |
 | z-1 | 1 | AccordionItem 左边框 | absolute | 展开时的蓝色竖线指示器 |
@@ -92,7 +84,7 @@ Lenis 配置：`duration: 1.2`，缓动函数 `Math.min(1, 1.001 - Math.pow(2, -
 | z-99 | 99 | Mobile Command Drawer | `position: fixed; inset: 0` | 移动端导航抽屉遮罩层 |
 | z-100 | 100 | CommandHeader | `position: fixed; top: 20` | 主导航栏，最高可见层级 |
 
-> **证据来源**: `Footer.tsx` L261 (`zIndex: 0`)、L275 (`zIndex: 0`)；`layout.tsx` L42 (`zIndex: 1`)；`PageParticles.tsx` L81 (`zIndex: 1`)；`AccordionItem.tsx` L124 (`zIndex: 1`)；`ValueCardsSection.tsx` L277 (`zIndex: 1`)；`FlowNavigation.tsx` L185 (`z-50`)；`CommandHeader.tsx` L428 (`zIndex: 99`)、L222 (`zIndex: 100`)。
+> **证据来源**: `layout.tsx` (`main-content-wrapper` zIndex 1)；`PageParticles.tsx` (`zIndex: 1`)；`AccordionItem.tsx` (`zIndex: 1`)；`ValueCardsSection.tsx` (`zIndex: 1`)；`FlowNavigation.tsx` (`z-50`)；`CommandHeader.tsx` (`zIndex: 99/100`)。
 
 ---
 
@@ -188,11 +180,11 @@ export default function XxxSection() {
 |---------|--------|---------|-----|
 | LogoMarquee | `var(--color-surface-deep)` | `--color-surface-deep` | `#0B1628` |
 | InfoLoopSection | `var(--color-surface-deep)` | `--color-surface-deep` | `#0B1628` |
-| Footer | `var(--color-surface-dark)` | `--color-surface-dark` | `#0F172A` |
+| Footer | transparent + hairline | `--color-surface-page` inherited | `#08111F` |
 
 深色 section 使用 `--color-text-on-dark`（`#F1F5F9`）和 `--color-text-on-dark-muted`（`#94A3B8`）作为文字色。
 
-> **证据来源**: `LogoMarquee.tsx` L137: `background: 'var(--color-surface-deep)'`；`InfoLoopSection.tsx` L235: `background: 'var(--color-surface-deep)'`；`Footer.tsx` L263: `background: 'var(--color-surface-dark)'`。
+> **证据来源**: 主体 section 使用 `.am-narrative-section` 并设置 `background: 'transparent'`；局部面板仍可使用 `surface-dark` / `surface-deep` 表达内部系统层级。
 
 ---
 
@@ -207,37 +199,35 @@ CommandHeader 有 4 个状态维度，通过 `data-state` 和 `data-theme` 属�
 | 状态 | 触发条件 | data-state | data-theme |
 |------|---------|-----------|-----------|
 | **boot** | 页面加载，GSAP timeline 播放期间 | — | — |
-| **idle/top** | `scrollY <= 80` | `top` | `light` |
-| **scrolled** | `scrollY > 80` | `scrolled` | `light` |
-| **dark-theme** | Footer 进入视口 | `scrolled` | `dark` |
+| **idle/top** | `scrollY <= 80` | `top` | `light`（legacy 标记） |
+| **scrolled** | `scrollY > 80` | `scrolled` | `light`（legacy 标记） |
+| **footer** | Footer 进入视口 | `scrolled` | `dark` |
 
-状态转换链：`boot` → `idle`（GSAP timeline 完成后 `setBooted(true)`）→ `scrolled`（滚动 > 80px）→ `dark-theme`（Footer ScrollTrigger `onEnter`）
+状态转换链：`boot` → `idle` → `scrolled`（滚动 > 80px）→ `footer`（Footer ScrollTrigger `onEnter`）。暗场叙事改版后 Header 的视觉底色恒定为深色毛玻璃，`data-theme="light"` 仅是旧状态字段，不能解读为浅色主题。
 
 Boot 动画序列（GSAP timeline）：
 1. Logo 出现（`data-boot="logo"`, opacity 0→1, y 5→0）
 2. Brand mark 出现（scale 0.96→1）
-3. Logo eyes 出现（scale 0.5→1, `back.out(2.5)` 缓动, stagger 0.08）
-4. Brand mark 添加 `.am-booted` 类触发 `signal-boot` CSS 动画
-5. 名称 "AutoMage" 出现
-6. 导航项逐个出现（stagger 0.06）
-7. Status chip 出现
-8. CTA 按钮出现
-9. `setBooted(true)`
+3. Brand mark 添加 `.am-booted` 类
+4. 名称 "AutoMage" 出现
+5. 导航项逐个出现（stagger 0.06）
+6. Status chip 出现
+7. CTA 按钮出现
 
 > **证据来源**: `CommandHeader.tsx` L106-L111: 状态定义；L148-L149: scroll 阈值 80px；L163-L193: section 追踪和 Footer dark-theme 触发；L120-L143: boot 动画 timeline。
 
 #### 毛玻璃参数矩阵
 
-**CommandHeader（light & scrolled 状态）：**
+**CommandHeader（top & scrolled 状态）：**
 
 | 属性 | idle/top 状态 | scrolled 状态 |
 |------|-------------|--------------|
 | `backdrop-filter` | `blur(22px)` | `blur(22px)` |
-| `background` | `rgba(15, 23, 42, 0.78)` | `rgba(15, 23, 42, 0.78)` |
+| `background` | `rgba(15, 23, 42, 0.84)` | `rgba(15, 23, 42, 0.84)` |
 | `border` | `1px solid rgba(255,255,255,0.10)` | `1px solid rgba(255,255,255,0.10)` |
 | `box-shadow` | `inset 0 1px 0 rgba(255,255,255,0.08)` | `0 18px 60px rgba(15,23,42,0.16), inset 0 1px 0 rgba(255,255,255,0.08)` |
 
-注意：`isDark` 状态（Footer 进入时）对 background 和 border 无实际变化，两者使用相同值。
+注意：`isDark` 状态（Footer 进入时）对 background 和 border 无实际变化，两者使用相同深色值。
 
 **Brand Mark hover（header hover 时）：**
 ```css
@@ -253,11 +243,11 @@ box-shadow:
 
 | 属性 | 遮罩层 | 面板 |
 |------|-------|------|
-| `background` | `rgba(15,23,42,0.4)` | `rgba(255,255,255,0.92)` |
+| `background` | `rgba(15,23,42,0.4)` | `rgba(15,23,42,0.94)` |
 | `backdrop-filter` | `blur(4px)` | `blur(24px)` |
 | `border` | — | `1px solid rgba(148,163,184,0.2)` |
 | `border-radius` | — | `20px` |
-| `box-shadow` | — | `0 24px 80px rgba(15,23,42,0.12)` |
+| `box-shadow` | — | `0 24px 80px rgba(0,0,0,0.34)` |
 | `opacity` 过渡 | 0↔1 (0.3s) | — |
 | `transform` 过渡 | — | `translateY(-12px)` ↔ `translateY(0)` (0.35s, `--ease-out`) |
 
@@ -413,16 +403,16 @@ FlowNavigation 使用 ScrollTrigger（非 IntersectionObserver）检测 section 
 
 | 组件 | backdrop-filter | background | border | shadow |
 |------|----------------|------------|--------|--------|
-| **CommandHeader (idle/top)** | `blur(22px)` | `rgba(15, 23, 42, 0.78)` | `1px solid rgba(255,255,255,0.10)` | `inset 0 1px 0 rgba(255,255,255,0.08)` |
-| **CommandHeader (scrolled)** | `blur(22px)` | `rgba(15, 23, 42, 0.78)` | `1px solid rgba(255,255,255,0.10)` | `0 18px 60px rgba(15,23,42,0.16), inset 0 1px 0 rgba(255,255,255,0.08)` |
-| **CommandHeader (dark-theme)** | `blur(22px)` | `rgba(15, 23, 42, 0.78)` | `1px solid rgba(255,255,255,0.10)` | 同 scrolled |
+| **CommandHeader (idle/top)** | `blur(22px)` | `rgba(15, 23, 42, 0.84)` | `1px solid rgba(255,255,255,0.10)` | `inset 0 1px 0 rgba(255,255,255,0.08)` |
+| **CommandHeader (scrolled)** | `blur(22px)` | `rgba(15, 23, 42, 0.84)` | `1px solid rgba(255,255,255,0.10)` | `0 18px 60px rgba(15,23,42,0.16), inset 0 1px 0 rgba(255,255,255,0.08)` |
+| **CommandHeader (footer)** | `blur(22px)` | `rgba(15, 23, 42, 0.84)` | `1px solid rgba(255,255,255,0.10)` | 同 scrolled |
 | **Mobile drawer backdrop** | `blur(4px)` | `rgba(15,23,42,0.4)` | — | — |
-| **Mobile drawer panel** | `blur(24px)` | `rgba(255,255,255,0.92)` | `1px solid rgba(148,163,184,0.2)` | `0 24px 80px rgba(15,23,42,0.12)` |
-| **Dual-key role cards** | `blur(14px)` | `rgba(255, 255, 255, 0.78)` | `1px solid rgba(148, 163, 184, 0.2)` | `0 14px 40px rgba(15, 23, 42, 0.06)` |
+| **Mobile drawer panel** | `blur(24px)` | `rgba(15,23,42,0.94)` | `1px solid rgba(148,163,184,0.20)` | `0 24px 80px rgba(0,0,0,0.34)` |
+| **Dual-key role cards** | `blur(14px)` | `rgba(15, 23, 42, 0.80)` | `1px solid rgba(148, 163, 184, 0.18)` | `0 24px 70px rgba(0,0,0,0.26), inset 0 1px 0 rgba(255,255,255,0.05)` |
 | **Signal Console** | — | `var(--color-surface-deep)` (`#0B1628`) | `1px solid rgba(255,255,255,0.06)` | — |
 | **Signal Bus (LogoMarquee)** | — | `linear-gradient(180deg, rgba(15, 23, 42, 0.96), rgba(15, 23, 42, 0.88))` | `1px solid rgba(148, 163, 184, 0.18)` | `0 20px 60px rgba(15, 23, 42, 0.16)` |
 | **Inspector Panel (InfoLoop)** | — | `var(--color-surface-dark)` (`#0F172A`) | `1px solid rgba(255,255,255,0.06)` | — |
-| **LoopNodeCard (light)** | — | `var(--color-surface-card)` (`#FFFFFF`) | `1px solid var(--color-border-default)` (`rgba(0,0,0,0.06)`) | `var(--shadow-sm)` (`0 1px 2px rgba(0,0,0,0.04)`) |
+| **LoopNodeCard (legacy light, deprecated)** | — | 历史白卡，不用于暗场官网主界面 | — | — |
 | **LoopNodeCard (dark)** | — | `var(--color-surface-dark)` (`#0F172A`) | `1px solid rgba(255,255,255,0.08)` | `0 4px 24px rgba(0,0,0,0.3)` |
 | **Brand Mark (light, idle)** | — | `radial-gradient(circle at 50% 45%, rgba(96,165,250,.28), transparent 60%), linear-gradient(180deg, rgba(15,23,42,.98), rgba(30,41,59,.92))` | `inset 0 0 0 1px rgba(255,255,255,.12), 0 8px 24px rgba(15,23,42,.18)` | — |
 | **Brand Mark (dark)** | — | `linear-gradient(180deg, rgba(15,23,42,.98), rgba(30,41,59,.92))` | `inset 0 0 0 1px rgba(255,255,255,.12)` | — |

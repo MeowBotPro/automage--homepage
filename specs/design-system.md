@@ -1,6 +1,6 @@
 # AutoMage 设计规范 Design System Specification
 
-> 版本: 1.0.0 | 日期: 2026-05-14 | 基于 AutoMage Homepage v1.0 代码库
+> 版本: 1.1.0 | 日期: 2026-06-09 | 基于 AutoMage Homepage 暗场叙事改版
 >
 > 本文件为 AutoMage 官网首页的**唯一权威设计规范**。所有子文档（01-06）为详细参考，本文件为可独立阅读的完整摘要与修复后的统一标准。
 
@@ -29,6 +29,12 @@ AutoMage 是**组织信息流 OS**，将前线噪声压缩为结构化判断，�
 品牌面向中国企业的 Boss/决策者/高管，核心诉求是：AI 压缩信息，管理者只做判断。AI 可以建议，但不能越权。系统负责生成选项，人负责做决定。
 
 品牌调性五关键词：**权威** (Authoritative)、**克制** (Restrained)、**精密** (Precise)、**流动** (Flowing)、**信任** (Trustworthy)。
+
+### 暗场叙事方向 C
+
+2026-06-09 起，官网视觉从深浅 section 交替统一为「连续暗场叙事」。页面不再依赖白底/黑底或深色块/更深色块的硬切突出重点，而通过同一深色画布内的 hairline、局部面板、轻微顶部亮度、信息密度和品牌蓝色激活路径建立节奏。
+
+亮度曲线：低光开场 -> 信号变亮 -> 压缩高潮 -> 深暗停顿 -> 权限门控第二高潮 -> 安静收口。全站底色以 `surface-page #08111F` 为连续画布，主体 section 默认透明继承该底色；重点叙事段只增加局部光量和 hairline，不铺全宽色块。卡片、brief、表单、FAQ 使用 `surface-dark #0F172A` 或半透明 panel。品牌主色不变，`#3B82F6` 只用于路径、状态、CTA 和激活态；`#38BDF8` 只用于数据粒子和瞬时高亮。
 
 ### 色彩速查
 
@@ -67,7 +73,10 @@ AutoMage 是**组织信息流 OS**，将前线噪声压缩为结构化判断，�
 |-------|-----|--------------|------|
 | `surface-dark` | `#0F172A` | `--color-surface-dark` | 系统内部、控制台、Inspector 面板 |
 | `surface-deep` | `#0B1628` | `--color-surface-deep` | 最深背景层、Hero 全幅、Loop 区域 |
-| `surface-command` | `#08111F` | `--color-surface-command` | StorySection 全深色视频叙事暗场、破晓黎明深色区 |
+| `surface-command` | `#08111F` | `--color-surface-command` | 全站暗场叙事底色 |
+| `surface-command-soft` | `#0A1424` | `--color-surface-command-soft` | 局部暗场亮度过渡；禁止作为整屏 section 色块 |
+| `surface-panel` | `rgba(15,23,42,.78)` | `--color-surface-panel` | 半透明控制台面板 |
+| `surface-panel-strong` | `rgba(15,23,42,.94)` | `--color-surface-panel-strong` | 高优先级 brief / 表单 / 手册面板 |
 
 #### 颜色使用禁区
 
@@ -140,7 +149,7 @@ AutoMage 是**组织信息流 OS**，将前线噪声压缩为结构化判断，�
 | `power2.out` | `--ease-out` | 数学近似 | 所有 section 入场（默认） |
 | `power2.in` | `--ease-in` | 数学近似 | 噪声碎片被吸入 |
 | `back.out(2.5)` | `--ease-spring` | GSAP 特有过冲 | Logo 眼睛弹出（仅此一处） |
-| `back.out(2)` | `--ease-spring` | GSAP 特有过冲 | Footer Seal 节点弹出 |
+| `back.out(2)` | `--ease-spring` | GSAP 特有过冲 | 旧版 Footer Seal 节点弹出（当前官网不使用） |
 | `sine.inOut` | `--ease-in-out` (语义近似) | 不同数学曲线 | 粒子流动、脉冲呼吸 |
 | `power2.inOut` | `--ease-in-out` (语义近似) | 不同数学曲线 | InfoLoop loop-back 路径绘制 |
 | `none` / `linear` | `linear` | 完全一致 | 轨道旋转、ScrollTrigger scrub |
@@ -155,17 +164,17 @@ AutoMage 是**组织信息流 OS**，将前线噪声压缩为结构化判断，�
 |------|------|-----------|------|-----------|
 | CommandHeader | 全局导航栏 | -- | dark (毛玻璃) | `min(1180px, calc(100% - 32px))` |
 | FlowNavigation | 右侧 Loop Rail 导航 | 6 节点 | -- | 80px (SVG rail) |
-| HeroSection | 首屏信号控制台 | Signal | light | `max-w-7xl` (1280px) |
+| HeroSection | 低光开场 + Signal Console 光窗 | Signal | dark narrative | `max-w-7xl` (1280px) |
 | LogoMarquee | 信号流无限滚动 | -- | dark | `min(1120px, calc(100vw - 48px))` |
-| CompareSection | 噪声到决策转化 | Compress | light | 1100px |
+| CompareSection | 噪声到决策转化，第一高潮 | Compress | dark narrative | 1100px |
 | InfoLoopSection | 信息闭环模拟器 | Review | dark | 1000px |
-| ValueCardsSection | 三大决策价值 | Decide | light | 1100px |
-| MetricsBar | 指标数据 | -- | light | 1200px |
-| SecuritySection | 安全门控 | Execute | light | 900px |
+| ValueCardsSection | 三条系统原则 / command modules | Decide | dark narrative | 1100px |
+| MetricsBar | 低光 HUD 运行指标 | -- | dark narrative | 1200px |
+| SecuritySection | 权限门控第二高潮 | Execute | dark narrative | 900px |
 | StorySection | 全深色三幕叙事 + 视频占位窗口 | -- | dark | 860px |
-| SocialProof | 客户评价 | -- | light + dark cards | 1200px |
-| BetaSection | 内测申请 | -- | light | 600px |
-| FAQSection | 决策说明书 | Learn | light | 1000px |
+| SocialProof | Field report / audit record | -- | dark narrative | 1200px |
+| BetaSection | 内测申请 command panel | -- | dark narrative | 660px |
+| FAQSection | Decision Manual 深色系统手册 | Learn | dark narrative | 1000px |
 | Footer | 闭环收口 + 粒子网络 | Learn / Loop closed | dark | 1200px (links) |
 
 #### Loop 节点命名体系（两层映射）
@@ -187,7 +196,6 @@ The Loop 有两层命名，概念层用于品牌叙事，技术层用于代码�
 
 | 层级 | z-index | 组件 |
 |------|---------|------|
-| z-0 | 0 | Footer (揭示式布局底层) |
 | z-1 | 1 | main-content-wrapper, PageParticles, AccordionItem 边框, ValueCards |
 | z-50 | 50 | FlowNavigation (右侧 Loop Rail) |
 | z-99 | 99 | Mobile Command Drawer (遮罩层) |
@@ -250,13 +258,14 @@ The Loop 有两层命名，概念层用于品牌叙事，技术层用于代码�
 
 | 前景色 | 背景色 | 对比度 | WCAG |
 |--------|--------|--------|------|
-| `#0F172A` (text-primary) | `#FAFBFC` (page) | 17.23:1 | AAA |
+| `#F1F5F9` (text-primary) | `#08111F` (surface-command) | 17.26:1 | AAA |
+| `#CBD5E1` (text-secondary) | `#08111F` (surface-command) | 12.74:1 | AAA |
+| `#94A3B8` (text-tertiary) | `#08111F` (surface-command) | 7.38:1 | AA |
 | `#F1F5F9` (on-dark) | `#0F172A` (dark) | 16.30:1 | AAA |
-| `#3B82F6` (accent) | `#0F172A` (dark) | 4.85:1 | AA |
-| `#38BDF8` (cyan) | `#0F172A` (dark) | 8.33:1 | AAA |
-| `#3B82F6` (accent) | `#FFFFFF` (card) | 3.68:1 | AA-lg only |
+| `#3B82F6` (accent) | `#08111F` (surface-command) | 5.14:1 | AA |
+| `#38BDF8` (cyan) | `#08111F` (surface-command) | 8.83:1 | AAA |
 
-**不可用于白底文字**: `#60A5FA` (2.54:1), `#93C5FD` (1.80:1), `#22C55E` (2.28:1)
+**历史浅底警告**: `#3B82F6` 在 `#FFFFFF` 上只有 3.68:1，仅可作大文本/粗线；`#60A5FA` (2.54:1), `#93C5FD` (1.80:1), `#22C55E` (2.28:1) 不可用于白底文字。
 
 ### 2.2 排版系统
 
@@ -290,9 +299,9 @@ The Loop 有两层命名，概念层用于品牌叙事，技术层用于代码�
 
 | Token | 值 | 使用场景 |
 |-------|-----|---------|
-| `shadow-sm` | `0 1px 2px rgba(0,0,0,0.04)` | 卡片默认态 |
-| `shadow-md` | `0 4px 12px rgba(0,0,0,0.06)` | 卡片 hover 态 |
-| `shadow-lg` | `0 12px 32px rgba(0,0,0,0.08)` | 模态窗口 |
+| `shadow-sm` | `0 10px 28px rgba(0,0,0,0.18)` | 暗场卡片默认态 |
+| `shadow-md` | `0 18px 56px rgba(0,0,0,0.26)` | 暗场卡片 hover 态 |
+| `shadow-lg` | `0 30px 90px rgba(0,0,0,0.34)` | 暗场模态窗口 |
 | `shadow-glow` | `0 0 20px rgba(59,130,246,0.15)` | 品牌色发光、聚焦态 |
 | `shadow-node-glow` | `0 0 12px rgba(59,130,246,0.3)` | Loop 节点激活发光 |
 
@@ -300,9 +309,9 @@ The Loop 有两层命名，概念层用于品牌叙事，技术层用于代码�
 
 | 组件 | backdrop-filter | background | border |
 |------|----------------|------------|--------|
-| CommandHeader | `blur(22px)` | `rgba(15,23,42,0.78)` | `1px solid rgba(255,255,255,0.10)` |
-| Mobile drawer panel | `blur(24px)` | `rgba(255,255,255,0.92)` | `1px solid rgba(148,163,184,0.2)` |
-| Dual-key cards | `blur(14px)` | `rgba(255,255,255,0.78)` | `1px solid rgba(148,163,184,0.2)` |
+| CommandHeader | `blur(22px)` | `rgba(15,23,42,0.84)` | `1px solid rgba(255,255,255,0.10)` |
+| Mobile drawer panel | `blur(24px)` | `rgba(15,23,42,0.94)` | `1px solid rgba(148,163,184,0.20)` |
+| Dual-key cards | `blur(14px)` | `rgba(15,23,42,0.80)` | `1px solid rgba(148,163,184,0.18)` |
 
 ---
 
@@ -314,10 +323,10 @@ The Loop 有两层命名，概念层用于品牌叙事，技术层用于代码�
 
 12 个 section 按以下顺序渲染：CommandHeader -> HeroSection -> LogoMarquee -> CompareSection -> InfoLoopSection -> ValueCardsSection -> MetricsBar -> SecuritySection -> StorySection -> SocialProof -> BetaSection -> FAQSection -> Footer。
 
-2026-06-02 起，中后段采用“破晓黎明模型”：浅色安全原则前置，硬切进入全深色 Story 叙事暗场，再硬切回浅色背景承载深色客户评价卡片，随后进入内测申请转化，最后以 FAQ 决策说明书收口。StorySection 保留原有标题、引号卡片、实验窗口、洞察线三幕结构，实验窗口作为后续宣传视频承载位。该更新覆盖旧版 `StorySection -> SocialProof -> SecuritySection -> BetaSection -> FAQSection` 顺序。
+2026-06-09 起，中后段从“破晓黎明模型”的浅深硬切更新为暗场叙事曲线：Security 作为权限门控第二高潮，Story 继续承载三幕暗场叙事，SocialProof 降调为 field report / audit record，Beta 进入 command panel 转化，FAQ 以 Decision Manual 深色系统手册收口。该更新保留现有 section 顺序，但取消浅色背景回切。
 
 **非常规布局**:
-- Footer 使用 `position: fixed; bottom: 0` + main `marginBottom: 100vh` 实现揭示式布局
+- Footer 作为普通文档流紧凑收尾段渲染在 FAQ 后方；禁止 fixed reveal 和节点网络背景露出
 - FlowNavigation 使用 `fixed right-10` 定位，仅在 lg (1024px+) 显示
 - PageParticles 使用 `position: fixed; inset: 0; z-index: 1; pointer-events: none` 全屏覆盖
 - Lenis 平滑滚动 + ScrollTrigger 同步（`lenis.on('scroll', () => ScrollTrigger.update())`）
@@ -364,8 +373,8 @@ Glyph 专用色阶（蓝色光谱）：
 | Medium | `#3B82F6` | `--color-brand-accent` | 主路径色 |
 | Light | `#60A5FA` | `--color-glyph-stroke` | AI 侧发光感 |
 | Pale | `#93C5FD` | `--color-glyph-stroke-light` | 轨道点、辅助线条 |
-| Fill | `#DBEAFE` | `--color-glyph-fill` | 实体区域填充 |
-| Fill Subtle | `#EFF6FF` | `--color-glyph-fill-subtle` | 大面积浅底填充 |
+| Fill | `rgba(59,130,246,0.14)` | `--color-glyph-fill` | 暗场节点半透明填充 |
+| Fill Subtle | `rgba(59,130,246,0.08)` | `--color-glyph-fill-subtle` | 暗场大面积弱填充 |
 
 **核心原则**: 深底上用亮描边 (light blue)，亮底上用深描边 (deep blue)。
 
@@ -438,14 +447,14 @@ Glyph 专用色阶（蓝色光谱）：
 | InfoLoopSection | `power2.out`, `none` (scrub) | `pin: true, scrub: 0.5` | 跳过 timeline |
 | ValueCardsSection | `power2.out` | `start: top 80%` | `gsap.set` 最终态 |
 | SecuritySection | `power2.out` | `start: top 75%` | `gsap.set` 最终态 |
-| Footer | `power2.out`, `back.out(2)` (inner) | `scrub: 0.6` | `gsap.set` 最终态 |
+| Footer | 无入场动画 | 无 ScrollTrigger | 普通文档流静态展示 |
 
 ### 6.3 粒子系统
 
 | 场景 | 粒子数 | 颜色 | 速度 | Reduced Motion |
 |------|--------|------|------|----------------|
 | PageParticles | 桌面 10 / 移动 3 | `#3B82F6` | 3-5s | 完全跳过 |
-| Footer Network | 12 | `#3B82F6` | 5-9s | 完全跳过 |
+| Footer Network | 0（已废弃） | -- | -- | 当前官网不创建 |
 | FlowNavigation | 1 + 2 尾迹 | `#38BDF8` | 3s | 粒子不启动 |
 | InfoLoopSection | 1 + 2 尾迹 | `#38BDF8` | 6s scrub | 跳过 |
 
@@ -454,7 +463,7 @@ Glyph 专用色阶（蓝色光谱）：
 | 禁止项 | 替代方案 |
 |--------|---------|
 | `bounce` / `elastic` 缓动 | `power2.out` / `sine.inOut` |
-| `back.out` 用于非品牌标识元素 | 仅限 Logo 眼睛弹出和 Footer Seal 节点弹出 |
+| `back.out` 用于非品牌标识元素 | 当前仅限 Logo 眼睛弹出；旧版 Footer Seal 已废弃 |
 | 装饰性粒子雨/雪花 | 沿贝塞尔路径约束的 Particle Flow |
 | 无限循环 hover 动画 | hover 仅使用 150-200ms 的 transform/shadow |
 | 滚动视差 | ScrollTrigger scrub 驱动的序贯揭示 |
@@ -531,8 +540,10 @@ Glyph 专用色阶（蓝色光谱）：
 | `#60A5FA` | -- | `--color-glyph-stroke` / `--color-brand-eye` | 待建 |
 | `#93C5FD` | -- | `--color-glyph-stroke-light` | 待建 |
 | `#2563EB` | -- | `--color-glyph-stroke-deep` | 待建 |
-| `#DBEAFE` | -- | `--color-glyph-fill` | 待建 |
-| `#EFF6FF` | `var(--color-surface-tinted)` (近似) | `--color-glyph-fill-subtle` | 待建 |
+| `rgba(59,130,246,0.14)` | -- | `--color-glyph-fill` | 已建 |
+| `rgba(59,130,246,0.08)` | -- | `--color-glyph-fill-subtle` | 已建 |
+| `#DBEAFE` | -- | legacy light glyph fill | 当前官网禁用 |
+| `#EFF6FF` | `var(--color-surface-tinted)` (近似) | legacy light glyph fill subtle | 当前官网禁用 |
 | `#22C55E` | `var(--color-signal-success)` | -- | 已有 |
 | `#F59E0B` | `var(--color-signal-warning)` | -- | 已有 |
 | `#EF4444` | `var(--color-signal-risk)` | -- | 已有 |
