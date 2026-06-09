@@ -9,6 +9,7 @@ import SocialProof from '@/components/sections/SocialProof';
 import SecuritySection from '@/components/sections/SecuritySection';
 import BetaSection from '@/components/sections/BetaSection';
 import FAQSection from '@/components/sections/FAQSection';
+import Footer from '@/components/sections/Footer';
 
 export default function Home() {
   return (
@@ -34,6 +35,8 @@ export default function Home() {
       <BetaSection />
 
       <FAQSection />
+
+      <Footer />
     </main>
   );
 }

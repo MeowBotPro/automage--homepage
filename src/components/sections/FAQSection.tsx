@@ -77,14 +77,19 @@ export default function FAQSection() {
     <section
       id="section-faq"
       ref={sectionRef}
-      style={{ paddingTop: 'var(--space-section)', paddingBottom: 'var(--space-section)' }}
+      className="am-narrative-section am-final-section"
+      style={{
+        paddingTop: 'var(--space-section)',
+        paddingBottom: 'var(--space-section)',
+        background: 'transparent',
+      }}
     >
       <div style={{ maxWidth: 1000, margin: '0 auto', padding: '0 24px' }}>
         <h2
           className="font-semibold text-center"
           style={{
             fontSize: 'clamp(2rem, 4vw, 3rem)',
-            color: 'var(--color-text-primary)',
+            color: 'var(--color-text-on-dark)',
             lineHeight: 1.2,
             marginBottom: 16,
           }}
@@ -95,7 +100,7 @@ export default function FAQSection() {
           className="text-center"
           style={{
             fontSize: '1.125rem',
-            color: 'var(--color-text-tertiary)',
+            color: 'var(--color-text-on-dark-muted)',
             marginBottom: 64,
           }}
         >
@@ -107,7 +112,8 @@ export default function FAQSection() {
           {/* Left: Question list */}
           <div
             style={{
-              background: 'var(--color-surface-elevated)',
+              background: 'rgba(15, 23, 42, 0.62)',
+              border: '1px solid rgba(148, 163, 184, 0.14)',
               borderRadius: 'var(--radius-lg)',
               padding: 8,
             }}
@@ -120,7 +126,7 @@ export default function FAQSection() {
                 style={{
                   padding: '16px 20px',
                   borderRadius: 'var(--radius-md)',
-                  background: activeIndex === i ? 'var(--color-surface-card)' : 'transparent',
+                  background: activeIndex === i ? 'rgba(59, 130, 246, 0.12)' : 'transparent',
                   border: 'none',
                   cursor: 'pointer',
                   position: 'relative',
@@ -148,7 +154,7 @@ export default function FAQSection() {
                   style={{
                     fontSize: '1rem',
                     fontWeight: activeIndex === i ? 600 : 400,
-                    color: activeIndex === i ? 'var(--color-text-primary)' : 'var(--color-text-secondary)',
+                    color: activeIndex === i ? 'var(--color-text-on-dark)' : 'var(--color-text-secondary)',
                   }}
                 >
                   {item.question}
@@ -161,8 +167,8 @@ export default function FAQSection() {
           <div
             ref={answerRef}
             style={{
-              background: 'var(--color-surface-card)',
-              border: '1px solid var(--color-border-default)',
+              background: 'linear-gradient(180deg, rgba(15, 23, 42, 0.92), rgba(11, 22, 40, 0.86))',
+              border: '1px solid rgba(148, 163, 184, 0.16)',
               borderRadius: 'var(--radius-lg)',
               padding: 32,
             }}
@@ -171,7 +177,7 @@ export default function FAQSection() {
               style={{
                 fontSize: '1.25rem',
                 fontWeight: 600,
-                color: 'var(--color-text-primary)',
+                color: 'var(--color-text-on-dark)',
                 marginBottom: 20,
               }}
             >
@@ -180,7 +186,7 @@ export default function FAQSection() {
             <p
               style={{
                 fontSize: '1rem',
-                color: 'var(--color-text-tertiary)',
+                color: 'var(--color-text-on-dark-muted)',
                 lineHeight: 1.75,
               }}
             >
@@ -192,7 +198,7 @@ export default function FAQSection() {
         {/* Mobile: Accordion */}
         <div className="md:hidden">
           {FAQ_ITEMS.map((item, index) => (
-            <div key={index} style={{ borderBottom: '1px solid var(--color-border-default)' }}>
+            <div key={index} style={{ borderBottom: '1px solid rgba(148, 163, 184, 0.16)' }}>
               <button
                 onClick={() => setMobileOpenIndex(mobileOpenIndex === index ? null : index)}
                 aria-expanded={mobileOpenIndex === index}
@@ -201,13 +207,13 @@ export default function FAQSection() {
               >
                 <span
                   className="font-semibold"
-                  style={{ fontSize: '1.125rem', color: 'var(--color-text-primary)' }}
+                  style={{ fontSize: '1.125rem', color: 'var(--color-text-on-dark)' }}
                 >
                   {item.question}
                 </span>
                 <svg
                   width="20" height="20" viewBox="0 0 20 20" fill="none"
-                  stroke="var(--color-text-tertiary)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"
+                  stroke="var(--color-text-on-dark-muted)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"
                   style={{
                     transform: mobileOpenIndex === index ? 'rotate(180deg)' : 'rotate(0deg)',
                     transition: 'transform 300ms var(--ease-out)',
@@ -230,7 +236,7 @@ export default function FAQSection() {
                 <div style={{ overflow: 'hidden', minHeight: 0 }}>
                   <p
                     style={{
-                      color: 'var(--color-text-tertiary)',
+                      color: 'var(--color-text-on-dark-muted)',
                       lineHeight: 1.65,
                       paddingBottom: 24,
                       fontSize: '0.95rem',

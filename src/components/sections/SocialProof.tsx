@@ -65,10 +65,11 @@ export default function SocialProof() {
       ref={sectionRef}
       id="section-social"
       data-social-proof-section
+      className="am-narrative-section"
       style={{
         paddingTop: 'var(--space-section)',
         paddingBottom: 'var(--space-section)',
-        background: 'var(--color-surface-page)',
+        background: 'transparent',
       }}
     >
       <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 24px' }}>
@@ -90,7 +91,7 @@ export default function SocialProof() {
             style={{
               margin: 0,
               fontSize: 'clamp(2rem, 4vw, 3rem)',
-              color: 'var(--color-text-primary)',
+              color: 'var(--color-text-on-dark)',
               lineHeight: 1.15,
               letterSpacing: 0,
             }}
@@ -110,11 +111,11 @@ export default function SocialProof() {
               style={{
                 minWidth: 0,
                 background: 'var(--color-surface-dark)',
-                border: '1px solid rgba(255,255,255,0.08)',
+                border: '1px solid rgba(148,163,184,0.16)',
                 borderRadius: 'var(--radius-md)',
                 padding: 28,
                 opacity: 0,
-                boxShadow: '0 24px 70px rgba(15, 23, 42, 0.18)',
+                boxShadow: '0 24px 70px rgba(0, 0, 0, 0.24), inset 0 1px 0 rgba(255,255,255,0.05)',
                 color: 'var(--color-text-on-dark)',
               }}
             >

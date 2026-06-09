@@ -223,7 +223,7 @@ export default function CommandHeader() {
           display: 'flex',
           alignItems: 'center',
           padding: '0 16px',
-          background: 'rgba(55, 65, 81, 0.88)',
+          background: 'rgba(15, 23, 42, 0.84)',
           backdropFilter: 'blur(22px)',
           WebkitBackdropFilter: 'blur(22px)',
           border: `1px solid ${isDark ? 'rgba(255,255,255,0.10)' : 'rgba(255,255,255,0.10)'}`,
@@ -249,7 +249,7 @@ export default function CommandHeader() {
           <span
             data-boot="name"
             style={{
-              fontWeight: 700, fontSize: 21, letterSpacing: '-0.02em',
+              fontWeight: 700, fontSize: 21, letterSpacing: 0,
               lineHeight: 1, color: '#F8FAFC',
               fontFamily: 'var(--font-sans)',
               opacity: reducedMotion ? 1 : 0,
@@ -279,7 +279,7 @@ export default function CommandHeader() {
                   cursor: 'pointer', padding: '7px 12px',
                   fontSize: 13, fontWeight: 560,
                   color: isActive ? '#F8FAFC' : '#CBD5E1',
-                  fontFamily: 'var(--font-sans)', letterSpacing: '-0.01em',
+                  fontFamily: 'var(--font-sans)', letterSpacing: 0,
                   borderRadius: 999,
                   transition: 'color 0.2s, background 0.2s',
                   whiteSpace: 'nowrap',
@@ -308,7 +308,7 @@ export default function CommandHeader() {
           style={{
             marginLeft: 16, gap: 6, padding: '3px 10px', borderRadius: 999,
             fontSize: 11, fontWeight: 500,
-            fontFamily: 'var(--font-mono, var(--font-sans))', letterSpacing: '-0.01em',
+            fontFamily: 'var(--font-mono, var(--font-sans))', letterSpacing: 0,
             color: 'rgba(191,219,254,0.88)',
             background: 'rgba(59,130,246,0.08)',
             border: '1px solid rgba(96,165,250,0.14)',
@@ -355,7 +355,8 @@ export default function CommandHeader() {
             className="am-cta-primary"
             onClick={() => handleNavClick('section-beta')}
             style={{
-              background: '#FFFFFF', color: 'var(--color-surface-dark)',
+              background: 'linear-gradient(135deg, var(--color-brand-primary), var(--color-brand-accent))',
+              color: 'var(--color-text-on-dark)',
               border: 'none', borderRadius: 999, padding: '7px 18px',
               fontSize: 13, fontWeight: 700, cursor: 'pointer',
               fontFamily: 'var(--font-sans)', whiteSpace: 'nowrap',
@@ -364,7 +365,7 @@ export default function CommandHeader() {
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = 'translateY(-1px)';
-              e.currentTarget.style.boxShadow = '0 4px 16px rgba(255,255,255,0.2)';
+              e.currentTarget.style.boxShadow = '0 8px 24px rgba(59,130,246,0.24)';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.transform = 'translateY(0)';
@@ -439,23 +440,23 @@ export default function CommandHeader() {
             opacity: menuOpen ? 1 : 0,
             transition: 'transform 0.35s var(--ease-out), opacity 0.3s',
             width: 'min(380px, calc(100% - 32px))',
-            background: 'rgba(255,255,255,0.92)',
+            background: 'rgba(15, 23, 42, 0.94)',
             backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)',
-            border: '1px solid rgba(148,163,184,0.2)',
+            border: '1px solid rgba(148,163,184,0.20)',
             borderRadius: 20, padding: '24px 20px',
-            boxShadow: '0 24px 80px rgba(15,23,42,0.12)',
+            boxShadow: '0 24px 80px rgba(0,0,0,0.34)',
           }}
         >
           <div style={{ marginBottom: 20 }}>
             <div style={{
               fontSize: 11, letterSpacing: '0.08em', textTransform: 'uppercase',
-              color: 'var(--color-text-tertiary)', fontWeight: 600, fontFamily: 'var(--font-sans)', marginBottom: 8,
+              color: 'var(--color-text-on-dark-muted)', fontWeight: 600, fontFamily: 'var(--font-sans)', marginBottom: 8,
             }}>
               AutoMage Command
             </div>
             <div style={{
               display: 'flex', alignItems: 'center', gap: 8,
-              fontSize: 12, color: 'var(--color-text-tertiary)',
+              fontSize: 12, color: 'var(--color-text-on-dark-muted)',
               fontFamily: 'var(--font-mono, var(--font-sans))',
             }}>
               <StatusDot color={status.color} />
@@ -471,14 +472,14 @@ export default function CommandHeader() {
                   key={item.sectionId}
                   onClick={() => handleNavClick(item.sectionId)}
                   style={{
-                    background: isActive ? 'rgba(37,99,235,0.06)' : 'transparent',
+                    background: isActive ? 'rgba(59,130,246,0.12)' : 'transparent',
                     border: 'none', cursor: 'pointer', textAlign: 'left',
                     padding: '12px 14px', borderRadius: 12,
                     transition: 'background 0.2s',
                     display: 'flex', gap: 12, alignItems: 'baseline',
                   }}
                   onMouseEnter={(e) => {
-                    if (!isActive) e.currentTarget.style.background = 'rgba(0,0,0,0.03)';
+                    if (!isActive) e.currentTarget.style.background = 'rgba(255,255,255,0.04)';
                   }}
                   onMouseLeave={(e) => {
                     if (!isActive) e.currentTarget.style.background = 'transparent';
@@ -493,7 +494,7 @@ export default function CommandHeader() {
                   <div>
                     <div style={{
                       fontSize: 15, fontWeight: isActive ? 600 : 450,
-                      color: isActive ? 'var(--color-surface-dark)' : 'var(--color-text-secondary)',
+                      color: isActive ? 'var(--color-text-on-dark)' : 'var(--color-text-secondary)',
                       fontFamily: 'var(--font-sans)', lineHeight: 1.3,
                     }}>
                       {item.label}
@@ -519,12 +520,12 @@ export default function CommandHeader() {
               border: '1px solid rgba(148,163,184,0.3)',
               borderRadius: 10, padding: '10px 0',
               fontSize: 14, fontWeight: 500, cursor: 'pointer',
-              color: 'var(--color-text-secondary)', fontFamily: 'var(--font-sans)',
+              color: 'var(--color-text-on-dark-muted)', fontFamily: 'var(--font-sans)',
             }}>
               预约演示
             </button>
             <button onClick={() => handleNavClick('section-beta')} style={{
-              flex: 1, background: 'var(--color-surface-dark)', color: 'var(--color-text-on-dark)',
+              flex: 1, background: 'linear-gradient(135deg, var(--color-brand-primary), var(--color-brand-accent))', color: 'var(--color-text-on-dark)',
               border: 'none', borderRadius: 10, padding: '10px 0',
               fontSize: 14, fontWeight: 600, cursor: 'pointer',
               fontFamily: 'var(--font-sans)',

@@ -287,14 +287,15 @@ export default function BetaSection() {
 
   const controlStyle: CSSProperties = {
     width: '100%',
-    border: 'none',
+    border: '1px solid rgba(148, 163, 184, 0.16)',
     borderBottom: 'none',
-    padding: '12px 0',
+    padding: '13px 16px',
     fontSize: '1rem',
-    background: 'transparent',
-    color: 'var(--color-text-primary)',
+    background: 'rgba(15, 23, 42, 0.58)',
+    color: 'var(--color-text-on-dark)',
     outline: 'none',
     fontFamily: 'var(--font-sans)',
+    borderRadius: 'var(--radius-md)',
   };
 
   const textareaStyle: CSSProperties = {
@@ -352,14 +353,36 @@ export default function BetaSection() {
       <section
         ref={sectionRef}
         id="section-beta"
-        style={{ paddingTop: 'var(--space-section)', paddingBottom: 'var(--space-section)' }}
+        className="am-narrative-section am-narrative-peak"
+        style={{
+          paddingTop: 'var(--space-section)',
+          paddingBottom: 'var(--space-section)',
+          background: 'transparent',
+        }}
       >
-        <div style={{ maxWidth: 600, margin: '0 auto', padding: '0 24px' }}>
+        <div
+          className="am-beta-shell"
+          style={{
+            maxWidth: 660,
+            margin: '0 auto',
+            padding: '0 24px',
+          }}
+        >
+          <div
+            className="am-beta-panel"
+            style={{
+              padding: '44px min(7vw, 48px)',
+              borderRadius: 'var(--radius-lg)',
+              border: '1px solid rgba(148, 163, 184, 0.16)',
+              background: 'linear-gradient(180deg, rgba(15, 23, 42, 0.88), rgba(8, 17, 31, 0.82))',
+              boxShadow: '0 32px 90px rgba(0, 0, 0, 0.30), inset 0 1px 0 rgba(255,255,255,0.05)',
+            }}
+          >
           <h2
             className="font-semibold text-center"
             style={{
               fontSize: 'clamp(2rem, 4vw, 3rem)',
-              color: 'var(--color-text-primary)',
+              color: 'var(--color-text-on-dark)',
               lineHeight: 1.2,
             }}
           >
@@ -369,7 +392,7 @@ export default function BetaSection() {
           <p
             className="text-center"
             style={{
-              color: 'var(--color-text-tertiary)',
+              color: 'var(--color-text-on-dark-muted)',
               lineHeight: 1.75,
               marginTop: 16,
               marginBottom: 48,
@@ -392,7 +415,7 @@ export default function BetaSection() {
               <div
                 style={{
                   marginTop: 12,
-                  color: 'var(--color-text-secondary)',
+                  color: 'var(--color-text-on-dark-muted)',
                   fontSize: '0.95rem',
                   lineHeight: 1.7,
                 }}
@@ -401,7 +424,7 @@ export default function BetaSection() {
                 <span
                   style={{
                     fontFamily: 'var(--font-console)',
-                    color: 'var(--color-text-primary)',
+                    color: 'var(--color-text-on-dark)',
                     letterSpacing: '0.04em',
                   }}
                 >
@@ -430,7 +453,7 @@ export default function BetaSection() {
                   <label
                     style={{
                       display: 'block',
-                      color: 'var(--color-text-tertiary)',
+                      color: 'var(--color-text-on-dark-muted)',
                       fontSize: '0.78rem',
                       letterSpacing: '0.04em',
                       marginBottom: 2,
@@ -527,7 +550,7 @@ export default function BetaSection() {
                 style={{
                   width: '100%',
                   background: isSubmitting
-                    ? 'var(--color-text-tertiary)'
+                    ? 'rgba(148, 163, 184, 0.72)'
                     : 'var(--color-brand-primary)',
                   color: 'var(--color-text-on-dark)',
                   padding: '14px 48px',
@@ -550,7 +573,7 @@ export default function BetaSection() {
                 }}
                 onMouseLeave={(event) => {
                   event.currentTarget.style.background = isSubmitting
-                    ? 'var(--color-text-tertiary)'
+                    ? 'rgba(148, 163, 184, 0.72)'
                     : 'var(--color-brand-primary)';
                   event.currentTarget.style.boxShadow = 'none';
                 }}
@@ -559,7 +582,31 @@ export default function BetaSection() {
               </button>
             </form>
           )}
+          </div>
         </div>
+        <style>{`
+          @media (max-width: 640px) {
+            #section-beta {
+              padding-top: 112px !important;
+              padding-bottom: 112px !important;
+            }
+
+            .am-beta-shell {
+              padding: 0 16px !important;
+            }
+
+            .am-beta-panel {
+              padding: 40px 28px !important;
+            }
+          }
+
+          @media (max-width: 380px) {
+            .am-beta-panel {
+              padding-left: 22px !important;
+              padding-right: 22px !important;
+            }
+          }
+        `}</style>
       </section>
 
       <BetaSuccessModal

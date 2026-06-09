@@ -118,8 +118,8 @@ export default function BetaSuccessModal({
           width: 'min(100%, 520px)',
           borderRadius: 'var(--radius-lg)',
           border: '1px solid var(--color-border-default)',
-          background: 'var(--color-surface-card)',
-          boxShadow: '0 24px 80px rgba(15, 23, 42, 0.24)',
+          background: 'linear-gradient(180deg, rgba(15, 23, 42, 0.98), rgba(8, 17, 31, 0.96))',
+          boxShadow: '0 24px 80px rgba(0, 0, 0, 0.38), inset 0 1px 0 rgba(255,255,255,0.05)',
           padding: '28px 24px 24px',
         }}
       >
@@ -137,7 +137,7 @@ export default function BetaSuccessModal({
             borderRadius: '50%',
             border: '1px solid var(--color-border-default)',
             background: 'transparent',
-            color: 'var(--color-text-secondary)',
+            color: 'var(--color-text-on-dark-muted)',
             cursor: 'pointer',
             fontSize: '1.125rem',
             lineHeight: 1,
@@ -170,7 +170,7 @@ export default function BetaSuccessModal({
             fontSize: '1.75rem',
             lineHeight: 1.2,
             fontWeight: 600,
-            color: 'var(--color-text-primary)',
+            color: 'var(--color-text-on-dark)',
           }}
         >
           申请已提交
@@ -192,7 +192,7 @@ export default function BetaSuccessModal({
               padding: '16px 18px',
               borderRadius: 'var(--radius-md)',
               border: '1px solid var(--color-border-default)',
-              background: 'var(--color-surface-elevated)',
+              background: 'rgba(15, 23, 42, 0.72)',
             }}
           >
             <div
@@ -206,7 +206,7 @@ export default function BetaSuccessModal({
             </div>
             <div
               style={{
-                color: 'var(--color-text-primary)',
+                color: 'var(--color-text-on-dark)',
                 fontFamily: 'var(--font-console)',
                 fontSize: '1rem',
                 letterSpacing: '0.06em',

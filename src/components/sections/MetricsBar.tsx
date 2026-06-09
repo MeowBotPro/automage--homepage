@@ -114,8 +114,11 @@ export default function MetricsBar() {
     <section
       ref={sectionRef}
       id="section-metrics"
-      className="w-full"
-      style={{ padding: 48 }}
+      className="am-narrative-section w-full"
+      style={{
+        padding: '56px 48px',
+        background: 'transparent',
+      }}
     >
       <div
         className="mx-auto grid gap-6"
@@ -129,9 +132,11 @@ export default function MetricsBar() {
             key={m.label}
             className="metric-card text-center"
             style={{
-              background: 'var(--color-surface-card)',
-              borderRadius: 'var(--radius-lg)',
+              background: 'rgba(15, 23, 42, 0.52)',
+              border: '1px solid rgba(148, 163, 184, 0.12)',
+              borderRadius: 'var(--radius-md)',
               padding: '48px 24px',
+              boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.04)',
             }}
           >
             <span
@@ -143,7 +148,7 @@ export default function MetricsBar() {
                 display: 'block',
                 fontSize: 'clamp(2rem, 4vw, 3rem)',
                 fontWeight: 700,
-                color: 'var(--color-brand-accent)',
+                color: 'var(--color-brand-cyan)',
                 lineHeight: 1.2,
               }}
             >
@@ -154,7 +159,7 @@ export default function MetricsBar() {
                 display: 'block',
                 marginTop: 12,
                 fontSize: '1rem',
-                color: 'var(--color-text-tertiary)',
+                color: 'var(--color-text-on-dark-muted)',
               }}
             >
               {m.label}

@@ -4,7 +4,6 @@ import FlowNavigation from "@/components/svg/FlowNavigation";
 import PageParticles from "@/components/svg/PageParticles";
 import LenisProvider from "@/components/ui/LenisProvider";
 import CommandHeader from "@/components/ui/CommandHeader";
-import Footer from "@/components/sections/Footer";
 import "./globals.css";
 
 const inter = Inter({
@@ -33,15 +32,12 @@ export default function RootLayout({
     <html lang="zh-CN" className={`${inter.variable} ${jetbrainsMono.variable} antialiased`}>
       <body>
         <LenisProvider>
-          <Footer />
-
           <div
             className="main-content-wrapper"
             style={{
               position: 'relative',
               zIndex: 1,
               background: 'var(--color-surface-page)',
-              marginBottom: '100vh',
             }}
           >
             <CommandHeader />

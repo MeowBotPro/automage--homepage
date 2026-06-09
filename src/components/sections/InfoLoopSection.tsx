@@ -329,8 +329,9 @@ export default function InfoLoopSection() {
       id="section-loop"
       ref={sectionRef}
       aria-label="组织信息回路模拟器"
+      className="am-narrative-section am-narrative-peak"
       style={{
-        background: 'var(--color-surface-deep)',
+        background: 'transparent',
         paddingTop: 'calc(var(--space-section) + 60px)',
         paddingBottom: 'var(--space-section)',
         minHeight: '100vh',
@@ -414,7 +415,7 @@ export default function InfoLoopSection() {
               color: 'var(--color-text-on-dark)',
               lineHeight: 1.15,
               marginBottom: 20,
-              letterSpacing: '-0.03em',
+              letterSpacing: 0,
             }}
           >
             信息如何在你的组织中流动

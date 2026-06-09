@@ -218,14 +218,19 @@ export default function ValueCardsSection() {
     <section
       id="section-value"
       ref={sectionRef}
-      style={{ paddingTop: 'var(--space-section)', paddingBottom: 'var(--space-section)' }}
+      className="am-narrative-section"
+      style={{
+        paddingTop: 'var(--space-section)',
+        paddingBottom: 'var(--space-section)',
+        background: 'transparent',
+      }}
     >
       <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 24px' }}>
         <h2
           className="font-semibold text-center"
           style={{
             fontSize: 'clamp(2rem, 4vw, 3rem)',
-            color: 'var(--color-text-primary)',
+            color: 'var(--color-text-on-dark)',
             lineHeight: 1.1,
             marginBottom: 64,
           }}
@@ -267,8 +272,8 @@ export default function ValueCardsSection() {
               key={card.title}
               className="value-card p-6 md:p-8"
               style={{
-                background: 'var(--color-surface-card)',
-                border: '1px solid var(--color-border-default)',
+                background: 'linear-gradient(180deg, rgba(15, 23, 42, 0.92), rgba(11, 22, 40, 0.88))',
+                border: '1px solid rgba(148, 163, 184, 0.16)',
                 borderTop: '3px solid var(--color-brand-accent)',
                 borderRadius: 'var(--radius-md)',
                 cursor: 'default',
@@ -292,7 +297,7 @@ export default function ValueCardsSection() {
                 className="font-semibold"
                 style={{
                   fontSize: '1.25rem',
-                  color: 'var(--color-text-primary)',
+                  color: 'var(--color-text-on-dark)',
                 }}
               >
                 {card.title}
@@ -300,7 +305,7 @@ export default function ValueCardsSection() {
               <p
                 style={{
                   fontSize: '0.95rem',
-                  color: 'var(--color-text-tertiary)',
+                  color: 'var(--color-text-on-dark-muted)',
                   marginTop: 8,
                 }}
               >
@@ -320,9 +325,9 @@ export default function ValueCardsSection() {
             align-items: center;
             justify-content: center;
             background:
-              radial-gradient(circle at 30% 20%, rgba(96, 165, 250, 0.16), transparent 42%),
-              linear-gradient(180deg, rgba(248, 250, 252, 0.96), rgba(241, 245, 249, 0.72));
-            border: 1px solid rgba(148, 163, 184, 0.22);
+              radial-gradient(circle at 30% 20%, rgba(96, 165, 250, 0.18), transparent 42%),
+              linear-gradient(180deg, rgba(15, 23, 42, 0.92), rgba(8, 17, 31, 0.72));
+            border: 1px solid rgba(96, 165, 250, 0.20);
           }
 
           .am-mini-diagram {

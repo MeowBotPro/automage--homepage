@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, useEffect } from 'react';
-import { gsap, ScrollTrigger, safeContext } from '@/lib/gsap';
+import { gsap, safeContext } from '@/lib/gsap';
 
 /* ── Brand Role Logos (reused across pipeline + dual-key) ── */
 
@@ -42,7 +42,7 @@ function PolicyGateGlyph() {
       <rect x="10" y="9" width="8" height="26" rx="4" fill="#0F172A" stroke="#60A5FA" strokeWidth="1.5" />
       <rect x="26" y="9" width="8" height="26" rx="4" fill="#0F172A" stroke="#60A5FA" strokeWidth="1.5" />
       <path className="scan" d="M14 22H30" stroke="#93C5FD" strokeWidth="2" strokeLinecap="round" />
-      <circle cx="22" cy="22" r="4" fill="#DBEAFE" stroke="#2563EB" strokeWidth="1.5" />
+      <circle cx="22" cy="22" r="4" fill="rgba(59,130,246,0.18)" stroke="#60A5FA" strokeWidth="1.5" />
     </svg>
   );
 }
@@ -54,7 +54,7 @@ function ExecutionLedgerGlyph() {
       <path className="ledger-line l1" d="M16 17H28" stroke="#93C5FD" strokeWidth="1.5" strokeLinecap="round" />
       <path className="ledger-line l2" d="M16 23H25" stroke="#93C5FD" strokeWidth="1.5" strokeLinecap="round" />
       <path className="ledger-line l3" d="M16 29H22" stroke="#93C5FD" strokeWidth="1.5" strokeLinecap="round" />
-      <circle className="ledger-dot" cx="30" cy="30" r="4" fill="#DBEAFE" stroke="#2563EB" strokeWidth="1.5" />
+      <circle className="ledger-dot" cx="30" cy="30" r="4" fill="rgba(59,130,246,0.18)" stroke="#60A5FA" strokeWidth="1.5" />
     </svg>
   );
 }
@@ -64,13 +64,13 @@ function ExecutionLedgerGlyph() {
 function MaskedDataGlyph() {
   return (
     <svg width="56" height="56" viewBox="0 0 56 56" fill="none" aria-hidden="true">
-      <rect x="10" y="14" width="36" height="28" rx="8" fill="#EFF6FF" />
-      <path d="M18 24H38" stroke="#2563EB" strokeWidth="2" strokeLinecap="round" />
-      <path d="M18 32H32" stroke="#93C5FD" strokeWidth="2" strokeLinecap="round" opacity=".5" />
-      <rect x="20" y="20" width="16" height="4" rx="2" fill="#2563EB" fillOpacity=".2" />
-      <circle cx="38" cy="20" r="4" fill="#2563EB" fillOpacity=".15" stroke="#2563EB" strokeWidth="1.5" />
-      <line x1="36" y1="18" x2="40" y2="22" stroke="#2563EB" strokeWidth="1.5" strokeLinecap="round" />
-      <line x1="40" y1="18" x2="36" y2="22" stroke="#2563EB" strokeWidth="1.5" strokeLinecap="round" />
+      <rect x="10" y="14" width="36" height="28" rx="8" fill="rgba(15,23,42,0.92)" stroke="rgba(96,165,250,0.34)" strokeWidth="1.2" />
+      <path d="M18 24H38" stroke="#60A5FA" strokeWidth="2" strokeLinecap="round" />
+      <path d="M18 32H32" stroke="#93C5FD" strokeWidth="2" strokeLinecap="round" opacity=".46" />
+      <rect x="20" y="20" width="16" height="4" rx="2" fill="rgba(59,130,246,0.24)" />
+      <circle cx="38" cy="20" r="4" fill="rgba(59,130,246,0.16)" stroke="#60A5FA" strokeWidth="1.5" />
+      <line x1="36" y1="18" x2="40" y2="22" stroke="#93C5FD" strokeWidth="1.5" strokeLinecap="round" />
+      <line x1="40" y1="18" x2="36" y2="22" stroke="#93C5FD" strokeWidth="1.5" strokeLinecap="round" />
     </svg>
   );
 }
@@ -78,11 +78,11 @@ function MaskedDataGlyph() {
 function PermissionBoundaryGlyph() {
   return (
     <svg className="permission-boundary" width="56" height="56" viewBox="0 0 56 56" fill="none" aria-hidden="true">
-      <rect x="10" y="12" width="36" height="32" rx="10" fill="#EFF6FF" />
-      <path d="M18 28H38" stroke="#2563EB" strokeWidth="2" strokeLinecap="round" />
-      <path d="M28 18V38" stroke="#2563EB" strokeWidth="2" strokeLinecap="round" opacity=".35" />
-      <circle className="moving-agent" cx="22" cy="28" r="4" fill="#2563EB" />
-      <path d="M38 20V36" stroke="#0F172A" strokeWidth="2" strokeLinecap="round" />
+      <rect x="10" y="12" width="36" height="32" rx="10" fill="rgba(15,23,42,0.92)" stroke="rgba(96,165,250,0.34)" strokeWidth="1.2" />
+      <path d="M18 28H38" stroke="#60A5FA" strokeWidth="2" strokeLinecap="round" />
+      <path d="M28 18V38" stroke="#93C5FD" strokeWidth="2" strokeLinecap="round" opacity=".35" />
+      <circle className="moving-agent" cx="22" cy="28" r="4" fill="#3B82F6" />
+      <path d="M38 20V36" stroke="#F1F5F9" strokeWidth="2" strokeLinecap="round" opacity=".82" />
     </svg>
   );
 }
@@ -90,12 +90,12 @@ function PermissionBoundaryGlyph() {
 function AuditTrailCardGlyph() {
   return (
     <svg width="56" height="56" viewBox="0 0 56 56" fill="none" aria-hidden="true">
-      <path d="M14 16H28C34 16 38 20 38 26C38 32 34 36 28 36H18" stroke="#2563EB" strokeWidth="2" strokeLinecap="round" />
+      <path d="M14 16H28C34 16 38 20 38 26C38 32 34 36 28 36H18" stroke="#60A5FA" strokeWidth="2" strokeLinecap="round" />
       <circle cx="14" cy="16" r="3" fill="#93C5FD" />
       <circle cx="38" cy="26" r="3" fill="#60A5FA" />
-      <circle cx="18" cy="36" r="3" fill="#2563EB" />
-      <circle cx="30" cy="26" r="6" fill="#DBEAFE" />
-      <path d="M27 26L29 28.5L33 23" stroke="#2563EB" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+      <circle cx="18" cy="36" r="3" fill="#3B82F6" />
+      <circle cx="30" cy="26" r="6" fill="rgba(59,130,246,0.18)" stroke="rgba(96,165,250,0.42)" strokeWidth="1" />
+      <path d="M27 26L29 28.5L33 23" stroke="#F1F5F9" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
@@ -177,14 +177,19 @@ export default function SecuritySection() {
     <section
       id="section-security"
       ref={sectionRef}
-      style={{ paddingTop: 'var(--space-section)', paddingBottom: 'var(--space-section)' }}
+      className="am-narrative-section am-narrative-peak"
+      style={{
+        paddingTop: 'var(--space-section)',
+        paddingBottom: 'var(--space-section)',
+        background: 'transparent',
+      }}
     >
       <div style={{ maxWidth: 900, margin: '0 auto', padding: '0 24px' }}>
         <h2
           className="font-semibold text-center"
           style={{
             fontSize: 'clamp(2rem, 4vw, 3rem)',
-            color: 'var(--color-text-primary)',
+            color: 'var(--color-text-on-dark)',
             lineHeight: 1.2,
             marginBottom: 16,
           }}
@@ -195,7 +200,7 @@ export default function SecuritySection() {
           className="text-center"
           style={{
             fontSize: '1.125rem',
-            color: 'var(--color-text-tertiary)',
+            color: 'var(--color-text-on-dark-muted)',
             lineHeight: 1.65,
             maxWidth: 600,
             margin: '0 auto 64px',
@@ -229,10 +234,10 @@ export default function SecuritySection() {
                 >
                   {stage.icon}
                 </div>
-                <span style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-text-primary)', marginBottom: 4 }}>
+                <span style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-text-on-dark)', marginBottom: 4 }}>
                   {stage.label}
                 </span>
-                <span style={{ fontSize: '0.75rem', color: 'var(--color-text-tertiary)', lineHeight: 1.4 }}>
+                <span style={{ fontSize: '0.75rem', color: 'var(--color-text-on-dark-muted)', lineHeight: 1.4 }}>
                   {stage.desc}
                 </span>
               </div>
@@ -298,7 +303,7 @@ export default function SecuritySection() {
               </div>
               <div>
                 <p style={{ fontSize: '0.875rem', fontWeight: 600 }}>{stage.label}</p>
-                <p style={{ fontSize: '0.75rem', color: 'var(--color-text-tertiary)' }}>{stage.desc}</p>
+                <p style={{ fontSize: '0.75rem', color: 'var(--color-text-on-dark-muted)' }}>{stage.desc}</p>
               </div>
             </div>
           ))}
@@ -311,8 +316,8 @@ export default function SecuritySection() {
               key={i}
               ref={(el) => { if (el) trustRefs.current[i] = el; }}
               style={{
-                background: 'var(--color-surface-card)',
-                border: '1px solid var(--color-border-default)',
+                background: 'linear-gradient(180deg, rgba(15, 23, 42, 0.90), rgba(11, 22, 40, 0.84))',
+                border: '1px solid rgba(148, 163, 184, 0.16)',
                 borderRadius: 'var(--radius-md)',
                 padding: 24,
                 textAlign: 'center',
@@ -321,10 +326,10 @@ export default function SecuritySection() {
               <div style={{ marginBottom: 12, display: 'flex', justifyContent: 'center' }}>
                 {card.icon}
               </div>
-              <h3 style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--color-text-primary)', marginBottom: 8 }}>
+              <h3 style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--color-text-on-dark)', marginBottom: 8 }}>
                 {card.title}
               </h3>
-              <p style={{ fontSize: '0.875rem', color: 'var(--color-text-tertiary)', lineHeight: 1.65 }}>
+              <p style={{ fontSize: '0.875rem', color: 'var(--color-text-on-dark-muted)', lineHeight: 1.65 }}>
                 {card.desc}
               </p>
             </div>
@@ -347,9 +352,9 @@ export default function SecuritySection() {
             gap: 12px;
             padding: 10px 16px 10px 10px;
             border-radius: 999px;
-            background: rgba(255, 255, 255, 0.78);
-            border: 1px solid rgba(148, 163, 184, 0.2);
-            box-shadow: 0 14px 40px rgba(15, 23, 42, 0.06);
+            background: rgba(15, 23, 42, 0.80);
+            border: 1px solid rgba(148, 163, 184, 0.18);
+            box-shadow: 0 24px 70px rgba(0, 0, 0, 0.26), inset 0 1px 0 rgba(255,255,255,0.05);
             backdrop-filter: blur(14px);
           }
 
@@ -370,14 +375,14 @@ export default function SecuritySection() {
             font-family: var(--font-console, ui-monospace, SFMono-Regular, Menlo, monospace);
             font-size: 13px;
             font-weight: 700;
-            color: var(--color-surface-dark);
+            color: var(--color-text-on-dark);
             line-height: 1;
           }
 
           .am-role-desc {
             margin-top: 4px;
             font-size: 12px;
-            color: var(--color-text-tertiary);
+            color: var(--color-text-on-dark-muted);
             white-space: nowrap;
           }
 

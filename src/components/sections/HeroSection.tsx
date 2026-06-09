@@ -279,8 +279,12 @@ export default function HeroSection() {
     <section
       ref={containerRef}
       id="section-hero"
-      className="relative flex items-center"
-      style={{ minHeight: '80vh' }}
+      className="am-narrative-section am-hero-section relative flex items-center"
+      style={{
+        minHeight: '88vh',
+        overflow: 'hidden',
+        background: 'transparent',
+      }}
     >
       <div
         className="mx-auto w-full max-w-7xl grid grid-cols-1 lg:grid-cols-12 gap-8 items-center"
@@ -291,7 +295,7 @@ export default function HeroSection() {
             className="font-semibold"
             style={{
               fontSize: 'clamp(2.5rem, 5vw, 4rem)',
-              color: 'var(--color-text-primary)',
+              color: 'var(--color-text-on-dark)',
               lineHeight: 1.1,
             }}
           >
@@ -309,11 +313,12 @@ export default function HeroSection() {
             <span
               ref={gradientRef}
               style={{
-                background: 'linear-gradient(135deg, var(--color-brand-primary) 0%, var(--color-brand-accent) 100%)',
+                background: 'linear-gradient(135deg, var(--color-text-on-dark) 0%, var(--color-glyph-stroke) 44%, var(--color-brand-cyan) 100%)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 backgroundClip: 'text',
                 display: 'inline-block',
+                filter: 'drop-shadow(0 0 14px rgba(96, 165, 250, 0.20))',
                 opacity: 0,
               }}
             >
@@ -326,7 +331,7 @@ export default function HeroSection() {
             className="mt-6"
             style={{
               fontSize: '1.125rem',
-              color: 'var(--color-text-tertiary)',
+              color: 'var(--color-text-on-dark-muted)',
               lineHeight: 1.65,
               opacity: 0,
             }}
@@ -339,15 +344,18 @@ export default function HeroSection() {
               href="#section-beta"
               className="group inline-flex items-center gap-2 font-medium text-white transition-colors duration-200 cursor-pointer"
               style={{
-                background: 'var(--color-brand-primary)',
+                background: 'linear-gradient(135deg, var(--color-brand-primary), var(--color-brand-accent))',
                 padding: '12px 32px',
                 borderRadius: 'var(--radius-md)',
+                boxShadow: '0 16px 48px rgba(37, 99, 235, 0.18)',
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.background = 'var(--color-brand-accent)';
+                e.currentTarget.style.background = 'linear-gradient(135deg, var(--color-brand-accent), var(--color-brand-cyan))';
+                e.currentTarget.style.boxShadow = '0 18px 56px rgba(59, 130, 246, 0.26)';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'var(--color-brand-primary)';
+                e.currentTarget.style.background = 'linear-gradient(135deg, var(--color-brand-primary), var(--color-brand-accent))';
+                e.currentTarget.style.boxShadow = '0 16px 48px rgba(37, 99, 235, 0.18)';
               }}
             >
               申请内测演示

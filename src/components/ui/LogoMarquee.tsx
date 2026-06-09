@@ -133,8 +133,8 @@ function SignalTrack() {
 export default function LogoMarquee() {
   return (
     <section
-      className="relative py-8"
-      style={{ background: 'var(--color-surface-deep)' }}
+      className="am-narrative-section relative py-8"
+      style={{ background: 'transparent' }}
       aria-label="组织信号流"
     >
       <div className="signal-bus">

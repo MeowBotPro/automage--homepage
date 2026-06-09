@@ -92,12 +92,13 @@ export default function StorySection() {
       id="section-story"
       ref={sectionRef}
       data-dark-story-section
+      className="am-narrative-section"
       style={{
         position: 'relative',
         overflow: 'hidden',
         paddingTop: 'calc(var(--space-section) + 16px)',
         paddingBottom: 'calc(var(--space-section) + 24px)',
-        background: 'var(--color-surface-command, #08111F)',
+        background: 'transparent',
         color: 'var(--color-text-on-dark)',
       }}
     >

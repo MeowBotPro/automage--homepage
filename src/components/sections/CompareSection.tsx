@@ -287,16 +287,21 @@ export default function CompareSection() {
     <section
       id="section-compare"
       ref={sectionRef}
-      className="relative"
+      className="am-narrative-section am-narrative-peak relative"
       data-transformed-noise-count={TRANSFORMED_NOISE_COUNT}
       data-retained-noise-count={RETAINED_NOISE_COUNT}
-      style={{ paddingTop: 'var(--space-section)', paddingBottom: 'var(--space-section)' }}
+      style={{
+        paddingTop: 'var(--space-section)',
+        paddingBottom: 'var(--space-section)',
+        background: 'transparent',
+        overflow: 'hidden',
+      }}
     >
       <h2
         className="font-semibold text-center mx-auto px-6"
         style={{
           fontSize: 'clamp(2rem, 4vw, 3rem)',
-          color: 'var(--color-text-primary)',
+          color: 'var(--color-text-on-dark)',
           lineHeight: 1.2,
           marginBottom: 64,
         }}
@@ -328,21 +333,26 @@ export default function CompareSection() {
                 left: frag.x,
                 top: frag.y,
                 transform: `rotate(${frag.rotate}deg)`,
-                background: 'var(--color-surface-elevated)',
+                background: frag.mode === 'convert'
+                  ? 'rgba(15, 23, 42, 0.42)'
+                  : 'rgba(15, 23, 42, 0.66)',
                 border: frag.mode === 'queue'
-                  ? '1px solid var(--color-brand-accent)'
-                  : '1px solid var(--color-border-default)',
+                  ? '1px solid rgba(59, 130, 246, 0.48)'
+                  : '1px solid rgba(148, 163, 184, 0.14)',
                 borderRadius: 'var(--radius-sm)',
                 padding: '10px 14px',
                 fontSize: '0.8125rem',
                 color: frag.mode === 'convert'
-                  ? 'var(--color-text-tertiary)'
-                  : 'var(--color-text-secondary)',
+                  ? 'rgba(148, 163, 184, 0.68)'
+                  : 'var(--color-text-on-dark-muted)',
                 maxWidth: 200,
                 whiteSpace: 'nowrap',
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
-                boxShadow: frag.mode === 'queue' ? '0 8px 24px rgba(59, 130, 246, 0.08)' : undefined,
+                boxShadow: frag.mode === 'queue'
+                  ? '0 0 0 1px rgba(59, 130, 246, 0.10), 0 18px 42px rgba(37, 99, 235, 0.16)'
+                  : '0 10px 28px rgba(0, 0, 0, 0.16)',
+                backdropFilter: 'blur(8px)',
               }}
             >
               {frag.text}
@@ -382,7 +392,7 @@ export default function CompareSection() {
               }} />
             </div>
             <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap"
-              style={{ fontSize: '0.75rem', color: 'var(--color-text-tertiary)', fontWeight: 500 }}>
+              style={{ fontSize: '0.75rem', color: 'var(--color-text-on-dark-muted)', fontWeight: 500 }}>
               AutoMage Core
             </div>
           </div>
@@ -396,15 +406,18 @@ export default function CompareSection() {
               ref={(el) => { if (el) decisionRefs.current[i] = el; }}
               data-decision-card
               style={{
-                background: 'var(--color-surface-card)',
+                background:
+                  'linear-gradient(180deg, rgba(15, 23, 42, 0.96), rgba(11, 22, 40, 0.92))',
+                border: '1px solid rgba(148, 163, 184, 0.16)',
                 borderLeft: '3px solid var(--color-brand-accent)',
                 borderRadius: 'var(--radius-md)',
                 padding: '20px',
+                boxShadow: '0 24px 70px rgba(0, 0, 0, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.05)',
               }}
             >
               <div className="flex items-center gap-3 mb-2">
-                <span style={{ fontSize: '0.75rem', color: 'var(--color-text-tertiary)' }}>责任人</span>
-                <span style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-text-primary)' }}>{d.owner}</span>
+                <span style={{ fontSize: '0.75rem', color: 'var(--color-text-on-dark-muted)' }}>责任人</span>
+                <span style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-text-on-dark)' }}>{d.owner}</span>
                 <span
                   style={{
                     fontSize: '0.6875rem',
@@ -419,11 +432,11 @@ export default function CompareSection() {
                 </span>
               </div>
               <div className="flex items-center gap-3 mb-1">
-                <span style={{ fontSize: '0.75rem', color: 'var(--color-text-tertiary)' }}>截止</span>
+                <span style={{ fontSize: '0.75rem', color: 'var(--color-text-on-dark-muted)' }}>截止</span>
                 <span style={{ fontSize: '0.8125rem', color: 'var(--color-text-secondary)' }}>{d.deadline}</span>
               </div>
               <div className="flex items-center gap-3">
-                <span style={{ fontSize: '0.75rem', color: 'var(--color-text-tertiary)' }}>行动</span>
+                <span style={{ fontSize: '0.75rem', color: 'var(--color-text-on-dark-muted)' }}>行动</span>
                 <span style={{ fontSize: '0.8125rem', color: 'var(--color-text-secondary)' }}>{d.action}</span>
               </div>
             </div>
@@ -445,18 +458,18 @@ export default function CompareSection() {
       {/* Mobile: Vertical stack */}
       <div className="md:hidden px-6 mx-auto" style={{ maxWidth: 480 }}>
         <div className="text-center mb-8">
-          <p style={{ fontSize: '0.875rem', color: 'var(--color-text-tertiary)', marginBottom: 16 }}>组织噪声</p>
+          <p style={{ fontSize: '0.875rem', color: 'var(--color-text-on-dark-muted)', marginBottom: 16 }}>组织噪声</p>
           <div className="flex flex-wrap justify-center gap-2">
             {NOISE_FRAGMENTS.slice(0, 4).map((frag, i) => (
               <span
                 key={i}
                 style={{
-                  background: 'var(--color-surface-elevated)',
-                  border: '1px solid var(--color-border-default)',
+                  background: 'rgba(15, 23, 42, 0.66)',
+                  border: '1px solid rgba(148, 163, 184, 0.14)',
                   borderRadius: 'var(--radius-sm)',
                   padding: '6px 10px',
                   fontSize: '0.75rem',
-                  color: 'var(--color-text-tertiary)',
+                  color: 'var(--color-text-on-dark-muted)',
                 }}
               >
                 {frag.text.split('：')[0]}
@@ -476,7 +489,7 @@ export default function CompareSection() {
             width: 64, height: 64, borderRadius: '50%', margin: '0 auto',
             background: 'linear-gradient(135deg, var(--color-brand-primary), var(--color-brand-accent))',
           }} />
-          <p style={{ fontSize: '0.75rem', color: 'var(--color-text-tertiary)', marginTop: 8 }}>AutoMage Core</p>
+          <p style={{ fontSize: '0.75rem', color: 'var(--color-text-on-dark-muted)', marginTop: 8 }}>AutoMage Core</p>
         </div>
 
         <div className="flex justify-center my-6">
@@ -490,7 +503,8 @@ export default function CompareSection() {
             <div
               key={i}
               style={{
-                background: 'var(--color-surface-card)',
+                background: 'var(--color-surface-panel-strong)',
+                border: '1px solid rgba(148, 163, 184, 0.16)',
                 borderLeft: `3px solid ${d.riskColor}`,
                 borderRadius: 'var(--radius-md)',
                 padding: '16px',
@@ -500,7 +514,7 @@ export default function CompareSection() {
                 <span style={{ fontWeight: 600, fontSize: '0.875rem' }}>{d.owner}</span>
                 <span style={{ fontSize: '0.6875rem', padding: '2px 6px', borderRadius: 'var(--radius-full)', background: d.riskColor, color: 'var(--color-text-on-dark)' }}>{d.risk}</span>
               </div>
-              <p style={{ fontSize: '0.8125rem', color: 'var(--color-text-tertiary)' }}>{d.action}</p>
+              <p style={{ fontSize: '0.8125rem', color: 'var(--color-text-on-dark-muted)' }}>{d.action}</p>
             </div>
           ))}
         </div>

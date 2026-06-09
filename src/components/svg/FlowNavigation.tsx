@@ -17,7 +17,7 @@ const LOOP_NODES: LoopNode[] = [
   { id: 'review', label: 'Review', zhLabel: '审阅', sectionId: 'section-loop', angle: 120 },
   { id: 'decide', label: 'Decide', zhLabel: '决策', sectionId: 'section-value', angle: 180 },
   { id: 'execute', label: 'Execute', zhLabel: '执行', sectionId: 'section-security', angle: 240 },
-  { id: 'learn', label: 'Learn', zhLabel: '学习', sectionId: 'section-cta', angle: 300 },
+  { id: 'learn', label: 'Learn', zhLabel: '学习', sectionId: 'section-faq', angle: 300 },
 ];
 
 const SVG_WIDTH = 80;

@@ -151,9 +151,11 @@ export default function FormSelect({
           padding: '14px 16px',
           border: `1px solid ${isOpen ? 'var(--color-border-brand)' : 'var(--color-border-default)'}`,
           borderRadius: 'var(--radius-md)',
-          background: isOpen ? 'var(--color-surface-card)' : 'var(--color-surface-elevated)',
-          boxShadow: isOpen ? 'var(--shadow-glow), var(--shadow-md)' : 'inset 0 1px 0 rgba(255,255,255,0.72)',
-          color: value ? 'var(--color-text-primary)' : 'var(--color-text-tertiary)',
+          background: isOpen ? 'rgba(15, 23, 42, 0.88)' : 'rgba(15, 23, 42, 0.58)',
+          boxShadow: isOpen
+            ? 'var(--shadow-glow), 0 18px 56px rgba(0,0,0,0.26)'
+            : 'inset 0 1px 0 rgba(255,255,255,0.05)',
+          color: value ? 'var(--color-text-on-dark)' : 'var(--color-text-on-dark-muted)',
           cursor: 'pointer',
           fontFamily: 'var(--font-sans)',
           fontSize: '1rem',
@@ -162,7 +164,15 @@ export default function FormSelect({
           transition: 'border-color var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out), background var(--duration-fast) var(--ease-out)',
         }}
       >
-        <span style={{ minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+        <span
+          style={{
+            minWidth: 0,
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'normal',
+            overflowWrap: 'anywhere',
+          }}
+        >
           {displayValue}
         </span>
         <span
@@ -174,8 +184,8 @@ export default function FormSelect({
             display: 'grid',
             placeItems: 'center',
             flexShrink: 0,
-            background: isOpen ? 'rgba(59, 130, 246, 0.10)' : 'rgba(15, 23, 42, 0.04)',
-            color: isOpen ? 'var(--color-brand-accent)' : 'var(--color-text-tertiary)',
+            background: isOpen ? 'rgba(59, 130, 246, 0.14)' : 'rgba(255, 255, 255, 0.04)',
+            color: isOpen ? 'var(--color-brand-cyan)' : 'var(--color-text-on-dark-muted)',
             transition: 'background var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out)',
           }}
         >
@@ -203,8 +213,8 @@ export default function FormSelect({
           padding: 8,
           border: '1px solid var(--color-border-default)',
           borderRadius: 'var(--radius-lg)',
-          background: 'var(--color-surface-card)',
-          boxShadow: '0 24px 64px rgba(15, 23, 42, 0.20), inset 0 1px 0 rgba(255,255,255,0.9)',
+          background: 'rgba(15, 23, 42, 0.98)',
+          boxShadow: '0 24px 64px rgba(0, 0, 0, 0.34), inset 0 1px 0 rgba(255,255,255,0.06)',
           opacity: isOpen ? 1 : 0,
           transform: isOpen ? 'translateY(0) scale(1)' : 'translateY(-6px) scale(0.98)',
           transformOrigin: 'top center',
@@ -236,8 +246,8 @@ export default function FormSelect({
                 border: 'none',
                 borderLeft: isSelected ? '3px solid var(--color-brand-accent)' : '3px solid transparent',
                 borderRadius: 'var(--radius-md)',
-                background: isActive || isSelected ? 'var(--color-surface-tinted)' : 'transparent',
-                color: isSelected ? 'var(--color-text-primary)' : 'var(--color-text-secondary)',
+                background: isActive || isSelected ? 'rgba(59, 130, 246, 0.14)' : 'transparent',
+                color: isSelected ? 'var(--color-text-on-dark)' : 'var(--color-text-secondary)',
                 cursor: 'pointer',
                 fontFamily: 'var(--font-sans)',
                 fontSize: '0.95rem',
