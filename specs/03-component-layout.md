@@ -207,12 +207,13 @@ CommandHeader 有 4 个状态维度，通过 `data-state` 和 `data-theme` 属�
 
 Boot 动画序列（GSAP timeline）：
 1. Logo 出现（`data-boot="logo"`, opacity 0→1, y 5→0）
-2. Brand mark 出现（scale 0.96→1）
-3. Brand mark 添加 `.am-booted` 类
-4. 名称 "AutoMage" 出现
-5. 导航项逐个出现（stagger 0.06）
-6. Status chip 出现
-7. CTA 按钮出现
+2. 完整品牌锁定 `.am-brand-mark` 出现（opacity 0→1, scale 0.96→1）
+3. `.am-brand-mark` 添加 `.am-booted` 类
+4. 导航项逐个出现（stagger 0.06）
+5. Status chip 出现
+6. CTA 按钮出现
+
+品牌锁定使用 `public/automage-logo-wordmark-white-2.svg`，来源为根目录 `logo-带名称/白底2.svg`。Header 内不再拆分为 icon + 文本节点；wordmark 容器宽度为 `clamp(138px, 34vw, 162px)`、高度 40px，SVG 使用 `next/image` 的 `width={437}` / `height={107}` 保留原始比例。
 
 > **证据来源**: `CommandHeader.tsx` L106-L111: 状态定义；L148-L149: scroll 阈值 80px；L163-L193: section 追踪和 Footer dark-theme 触发；L120-L143: boot 动画 timeline。
 
@@ -231,13 +232,10 @@ Boot 动画序列（GSAP timeline）：
 
 **Brand Mark hover（header hover 时）：**
 ```css
-box-shadow:
-  inset 0 0 0 1px rgba(255,255,255,.12),
-  0 10px 30px rgba(15,23,42,.16),
-  0 0 12px rgba(96,165,250,.18);
+filter: brightness(1.15);
 ```
 
-> **证据来源**: `CommandHeader.tsx` L228-L237: 毛玻璃参数；L229-L231: background 两种状态相同；L234: border 两种状态相同；`globals.css` L223-L228: hover shadow。
+> **证据来源**: `CommandHeader.tsx`: Header 毛玻璃参数与品牌锁定渲染；`globals.css`: `.am-command-header:hover .am-brand-mark` 使用亮度增强。
 
 #### Mobile drawer 的交互状态
 
@@ -253,7 +251,9 @@ box-shadow:
 
 打开时 `pointerEvents: 'auto'`，关闭时 `pointerEvents: 'none'`。打开时 `document.body.style.overflow = 'hidden'` 阻止背景滚动。
 
-> **证据来源**: `CommandHeader.tsx` L428-L450: drawer 容器和遮罩；L439-L451: 面板样式；L201-L204: body overflow 锁定。
+移动端菜单按钮为 36x36px 触发区，内部 24x24px 线条容器。关闭态三条线分别定位在 `top: 7px / 50% / 17px`；打开态上下两条线统一移动到中心并旋转 `45deg / -45deg`，中线 `opacity: 0` 且 `scaleX(0.25)`，避免 "打开菜单" 到 "关闭菜单" 时形成不完整交叉。线条动画使用 `top 0.24s var(--ease-out), transform 0.24s var(--ease-out), opacity 0.16s ease`。
+
+> **证据来源**: `CommandHeader.tsx`: drawer 容器、遮罩、面板样式、菜单按钮线条状态与 body overflow 锁定。
 
 #### 信号线动画规格
 
@@ -275,6 +275,21 @@ box-shadow:
 - 运动范围: 从 `-100%` 到 `400%`（穿越整个元素宽度）
 
 > **证据来源**: `globals.css` L194-L197: `signal-line-sweep` 关键帧定义；L210-L212: `.am-signal-line-inner` 应用。
+
+### SecuritySection Mobile Pipeline
+
+移动端下，SecuritySection 的 Pipeline 不使用自适应宽度的 `flex` 行。每一行固定为 `width: min(100%, 320px)` 的两列 grid：左列 `48px` 放置 icon，右列 `minmax(0, 1fr)` 放置标题与说明。这样竖向排列时所有 icon 保持同一条视觉轴线，文案长度只影响右侧文本列换行。
+
+`.am-dual-key` 是桌面叙事补充，移动端必须默认 `display: none`，只在 `@media (min-width: 768px)` 下恢复 `display: flex`。不能让 scoped CSS 的 `.am-dual-key { display: flex; }` 覆盖 Tailwind 的 `hidden md:flex`。
+
+| 属性 | 值 |
+|------|-----|
+| 行宽 | `min(100%, 320px)` |
+| 列结构 | `48px minmax(0, 1fr)` |
+| icon 容器 | 48x48px, `var(--color-surface-dark)`, `1px solid rgba(148,163,184,0.14)` |
+| 列间距 | 16px |
+
+> **证据来源**: `SecuritySection.tsx`: Mobile pipeline block 使用 `md:hidden` 和固定两列 grid。
 
 ### Footer
 
@@ -414,8 +429,7 @@ FlowNavigation 使用 ScrollTrigger（非 IntersectionObserver）检测 section 
 | **Inspector Panel (InfoLoop)** | — | `var(--color-surface-dark)` (`#0F172A`) | `1px solid rgba(255,255,255,0.06)` | — |
 | **LoopNodeCard (legacy light, deprecated)** | — | 历史白卡，不用于暗场官网主界面 | — | — |
 | **LoopNodeCard (dark)** | — | `var(--color-surface-dark)` (`#0F172A`) | `1px solid rgba(255,255,255,0.08)` | `0 4px 24px rgba(0,0,0,0.3)` |
-| **Brand Mark (light, idle)** | — | `radial-gradient(circle at 50% 45%, rgba(96,165,250,.28), transparent 60%), linear-gradient(180deg, rgba(15,23,42,.98), rgba(30,41,59,.92))` | `inset 0 0 0 1px rgba(255,255,255,.12), 0 8px 24px rgba(15,23,42,.18)` | — |
-| **Brand Mark (dark)** | — | `linear-gradient(180deg, rgba(15,23,42,.98), rgba(30,41,59,.92))` | `inset 0 0 0 1px rgba(255,255,255,.12)` | — |
+| **Brand wordmark halo** | — | `radial-gradient(circle, rgba(96,165,250,0.18), transparent 70%)` | — | — |
 
 > **证据来源**: 以上所有值均从对应组件的 inline style 和 `<style>` 标签中提取，已在各组件章节中标注具体行号。
 

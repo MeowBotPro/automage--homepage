@@ -24,7 +24,7 @@
 | Brand Role Logo (48px) | `0 0 48 48` | AILogo, HumanLogo |
 | Trust Card Glyph (56px) | `0 0 56 56` | MaskedData, PermissionBoundary, AuditTrail |
 | ValueCard Diagram | `0 0 180 64` | FidelityDiagram, CompressionDiagram, AuditDiagram |
-| Octopus Logo | `0 0 416.99 407.84` | 品牌章鱼标识，非正方形，保留原始路径坐标 |
+| Brand Wordmark | `0 0 436.82 106.61` | 当前 Header 使用的完整品牌锁定，来源 `logo-带名称/白底2.svg` |
 | Loop Rail | `0 0 80 {dynamicHeight}` | FlowNavigation，高度由页面总高动态计算 |
 | Loop Seal | `0 0 520 520` | Footer 环形轨道 (RING_CX*2, RING_CY*2) |
 | Particle Network | `0 0 1440 800` | Footer 背景粒子网络 |
@@ -68,7 +68,7 @@
 |---------|---------|------|
 | CSS Variable `var(--color-*)` | 语义色引用、可切换色 | 保持主题一致性、支持暗底/亮底切换 |
 | 硬编码 HEX / rgba | Glyph 内部暗场蓝色色阶 (`#60A5FA`, `#93C5FD`, `#3B82F6`, `rgba(59,130,246,...)`) | SVG `fill`/`stroke` 属性不支持 `var()` 在某些浏览器的 SVG 属性中 |
-| 硬编码 HEX | 品牌标识元素（Octopus Logo 眼睛 `#60A5FA`、章鱼路径 `#F8FAFC`） | 品牌核心标识不应受主题切换影响 |
+| 硬编码 HEX | 品牌锁定元素（Wordmark 白色主体 `#FFFFFF`、蓝色强调 `#00A0E9`） | 品牌核心标识不应受主题切换影响 |
 
 **SVG 属性限制说明**: SVG 元素的 `fill` 和 `stroke` 属性在 JSX 中接受字符串值。CSS Variable 可以在 `style` 对象中生效，但在 SVG 属性直接写 `var(--color-*)` 在部分浏览器中不被解析。当前代码采用混合策略：
 - 通过 `style` 对象引用 CSS var（如 FlowNavigation、PageParticles）
@@ -236,7 +236,7 @@
 | Loop Rail | 垂直轨道 + 6 节点 | 闭环导航：The Loop 的线性投影 |
 | Loop Seal | 环形轨道 + 6 节点 | 闭环确认：The Loop 的完整环形呈现 |
 | Particle Network | 5 条贝塞尔曲线 + 粒子 | 数据流动：组织信息的持续流动和连接 |
-| Octopus Logo | 章鱼形态 | 品牌标识：多触手 = 多信号源同时处理 |
+| Brand Wordmark | 章鱼图形 + AutoMage 字标 | 品牌标识：完整 lockup 承接 Header 识别 |
 
 ---
 
@@ -369,18 +369,18 @@
 | 确认勾 | `<path d="M147 46L151 50L158 41" stroke="#2563eb" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">` |
 | 语义 | 可追踪执行流程：路径的弯折（从 y=18 到 y=46）代表执行过程不是简单的直线，而是有转折和调整的复杂过程。3 个检查点代表关键审计节点，最终印章确认代表执行完成且全程可追溯。对应 Value Card "可追踪执行"。 |
 
-### 4.4.3 Brand Logo: Octopus (章鱼)
+### 4.4.3 Brand Logo: Wordmark Lockup
 
 | 属性 | 值 |
 |------|-----|
-| viewBox | `0 0 416.99 407.84` |
-| 渲染尺寸 | 21x21px (Header), 按需缩放 |
-| 形态 | 章鱼形态 -- 由多组圆环 (`<circle>`) 和连接路径 (`<path>`) 组成的复杂有机结构 |
-| 路径 | 主体为一个复杂的 SVG path，定义了章鱼的触手和身体轮廓 |
-| 填充 | `#F8FAFC` (主体白色，带蓝色调的近白) |
-| 眼睛 | 2 个 `<circle fill="#60A5FA">` (左眼 cx="162.19", 右眼 cx="254.8") -- 品牌眼色 |
-| 语义 | AutoMage 品牌标识：章鱼的多触手隐喻"同时处理多个信号源"的能力。眼睛使用品牌蓝 (`#60A5FA`) 代表"AI 的视觉洞察力"。章鱼形态避免了通用的科技图标（大脑/齿轮/拼图），建立了独特的品牌辨识度。 |
-| 容器 | 深色圆角方块 (34x34, rx=12)，背景 `linear-gradient(180deg, rgba(15,23,42,.98), rgba(30,41,59,.92))`，带内阴影 `inset 0 0 0 1px rgba(255,255,255,.12)` |
+| 源文件 | `logo-带名称/白底2.svg` |
+| 发布路径 | `public/automage-logo-wordmark-white-2.svg` |
+| viewBox | `0 0 436.82 106.61` |
+| Header 渲染尺寸 | 容器宽度 `clamp(138px, 34vw, 162px)`，高度 40px |
+| 形态 | 章鱼品牌图形 + AutoMage 字标的横向 lockup |
+| 填充 | 主体与字标为 `#FFFFFF`，局部强调为 `#00A0E9` |
+| 语义 | Header 使用完整品牌锁定承接识别，不再拆分为单独 icon 与文字节点。白色字标在连续暗场背景上保持清晰，蓝色局部强调保留品牌技术信号。 |
+| 容器 | 无图标底座；仅在图形左侧保留轻微 `rgba(96,165,250,0.18)` 径向 halo |
 | 动效规格 | 见 4.5.4 |
 
 ### 4.4.4 System Diagrams (4 个)
@@ -479,7 +479,7 @@
 | **FidelityDiagram** | 路径绘制 + 脉搏缩放 | 路径线绘制 + 节点脉冲 | `2.8s` | `ease-in-out` |
 | **CompressionDiagram** | 路径绘制 + 脉搏缩放 | 数据线绘制 + 节点脉冲 | `2.8s` | `ease-in-out` |
 | **AuditDiagram** | 路径绘制 + 脉搏缩放 | 审计路径绘制 + 节点脉冲 | `2.8s` | `ease-in-out` |
-| **Octopus Logo** | 入场揭示 | Logo 缩放入场 + 眼睛弹出 | `0.48s` + `0.3s` | `power2.out` + `back.out(2.5)` |
+| **Brand Wordmark** | 入场揭示 | 完整品牌锁定淡入 + 轻微缩放恢复 | `0.48s` | `power2.out` |
 | **Signal Console** | 入场揭示 + 信号旋转 | 整体渐入 + Pipeline 阶段轮换 | `0.4s` 入场, `3s` 轮换 | `power2.out` |
 | **Loop Rail** | 光点流动 + 脉冲呼吸 | 粒子沿轨道流动 + 节点光晕 | `3s` 流动, `1s` 脉冲 | `sine.inOut`, `sine.inOut` |
 | **Loop Seal** | 已废弃 | 旧版 Footer fixed reveal 使用 | -- | -- |
@@ -514,7 +514,7 @@
 | **power2.out** | `ease: 'power2.out'` | `cubic-bezier(0.16, 1, 0.3, 1)` ≈ `--ease-out` | 入场动画、状态切换（主缓动，80% 场景使用） |
 | **power2.in** | `ease: 'power2.in'` | `cubic-bezier(0.55, 0, 1, 0.45)` ≈ `--ease-in` | 退出/消失动画（噪声碎片被吸入核心） |
 | **sine.inOut** | `ease: 'sine.inOut'` | `cubic-bezier(0.37, 0, 0.63, 1)` | 粒子流动、脉冲呼吸（平滑往复运动） |
-| **back.out(2.5)** | `ease: 'back.out(2.5)'` | 无直接 CSS 等效 | 品牌标识特殊动画（Logo 眼睛弹出，仅此一处） |
+| **back.out(2.5)** | `ease: 'back.out(2.5)'` | 无直接 CSS 等效 | 旧版 Header logo 眼睛弹出；当前完整 wordmark 不使用 |
 | **back.out(2)** | `ease: 'back.out(2)'` | 无直接 CSS 等效 | 旧版 Footer Seal 节点内圆弹出（当前官网不使用） |
 | **linear** | `ease: 'linear'` | `linear` | 轨道旋转（AILogo 轨道点）、循环粒子 |
 | **power1.in/out** | `ease: 'power1.in'` / `'power1.out'` | -- | 粒子透明度变化、轻柔状态切换 |
@@ -522,20 +522,19 @@
 
 **禁止的缓动**: `bounce`, `elastic`, `steps` -- 违反"克制"调性。
 
-### 4.5.5 Octopus Logo 动效规格
+### 4.5.5 Brand Wordmark 动效规格
 
 Logo 启动动画（页面加载时触发）：
 
 | 阶段 | 动画 | 时长 | 缓动 | 延迟 |
 |------|------|------|------|------|
-| 1. Logo 容器 | `opacity: 0->1, y: -3->0, scale: 0.96->1` | `0.48s` | `power2.out` | `0.1s` |
-| 2. 眼睛出现 | `opacity: 0->1, scale: 0.5->1` (两眼 stagger 0.08s) | `0.3s` | `back.out(2.5)` | `-=0.15s` (与容器重叠) |
-| 3. 品牌名 | `opacity: 0->1, y: 5->0` | `0.3s` | `power2.out` | `-=-0.12s` |
-| 4. 导航项 | `opacity: 0->1, y: 5->0` (stagger 0.06s) | `0.25s` | `power2.out` | 依次 |
-| 5. 状态芯片 | `opacity: 0->1, y: 5->0` | `0.25s` | `power2.out` | `-=-0.05s` |
-| 6. CTA 按钮 | `opacity: 0->1, y: 5->0` | `0.3s` | `power2.out` | `-=-0.1s` |
+| 1. Logo link | `opacity: 0->1, y: 5->0` | `0.35s` | `power2.out` | `0.1s` |
+| 2. Wordmark lockup | `opacity: 0->1, y: -3->0, scale: 0.96->1` | `0.48s` | `power2.out` | `-=0.25s` |
+| 3. 导航项 | `opacity: 0->1, y: 5->0` (stagger 0.06s) | `0.25s` | `power2.out` | `-=0.1s` |
+| 4. 状态芯片 | `opacity: 0->1, y: 5->0` | `0.25s` | `power2.out` | `-=0.05s` |
+| 5. CTA 按钮 | `opacity: 0->1, y: 5->0` | `0.3s` | `power2.out` | `-=0.1s` |
 
-**品牌标记悬停态**: 仅在滚动后 (isDark) 添加 `box-shadow` 变化，不添加缩放或旋转。
+**品牌标记悬停态**: Header hover 时使用 `filter: brightness(1.15)`，不添加缩放或旋转。
 
 ### 4.5.6 Reduced Motion 回退
 
@@ -547,7 +546,7 @@ Logo 启动动画（页面加载时触发）：
 | GSAP `gsap.set()` 设置最终态 | HeroSection, CompareSection, SecuritySection 入场 | `if (reduced) { gsap.set(el, { opacity: 1, y: 0 }); return; }` |
 | 跳过 GSAP timeline 创建 | FlowNavigation, Footer | `if (reduced) return;` |
 | 移除粒子 | useParticles hook | `if (prefersReducedMotion) return;` 不创建粒子 |
-| 简化入场 | CommandHeader | `if (reducedMotion) { setBooted(true); return; }` 直接展示最终态 |
+| 简化入场 | CommandHeader | reduced motion 下跳过 GSAP 启动 timeline，`[data-boot]` 元素直接展示最终态 |
 
 **最终态规范**:
 - 所有元素 `opacity: 1`
@@ -590,7 +589,7 @@ Logo 启动动画（页面加载时触发）：
 |--------|------|---------|
 | **装饰性粒子雨/雪花** | 纯装饰动画违反"每个动画必须传达信息流语义" | 使用有路径约束的 Particle Flow (沿贝塞尔曲线运动)。例外：背景装饰粒子（如 InfoLoopSection 的 SIGNAL_PARTICLES）允许使用 CSS 漂浮动画，但必须有 reduced-motion 回退 |
 | **循环弹跳 (bounce)** | 违反"克制"调性 | 使用 `power2.out` 或 `sine.inOut` |
-| **弹性效果 (elastic)** | 过于活泼，破坏信任感 | 使用 `power2.out` 或 `back.out(2.5)` (仅限品牌标识) |
+| **弹性效果 (elastic)** | 过于活泼，破坏信任感 | 使用 `power2.out`；`back.out` 仅保留为 legacy 品牌特殊动效记录 |
 | **闪烁/抖动 (flash/shake)** | 破坏"精密"和"信任"调性 | StatusDot 的 `pulse` 除外（表达系统活跃状态） |
 | **无意义的几何漂浮** | 没有信息流语义的纯装饰 | 使用有明确路径和语义的 Particle Network |
 | **连续旋转 (spin)** | 像 loading spinner，暗示"等待"而非"运转" | 使用 AILogo 轨道点旋转（有几何约束的有意义旋转） |
@@ -636,7 +635,7 @@ Logo 启动动画（页面加载时触发）：
 | `#DBEAFE` / `#EFF6FF` | 浅底旧稿 | legacy only | 当前官网暗场禁用 |
 | `#0F172A` | AILogo, HumanLogo, PolicyGate, Ledger, PermissionBoundary | `var(--color-surface-dark)` | style 对象 |
 | `#3B82F6` | PageParticles, legacy Footer Network | `var(--color-brand-accent)` | Footer Network 已废弃 |
-| `#60A5FA` | Octopus Logo 眼睛 | `var(--color-brand-eye)` (待建) | style 对象 |
-| `#F8FAFC` | Octopus Logo 主体 | 保留硬编码 (品牌标识) | 不迁移 |
+| `#00A0E9` | Brand Wordmark 蓝色强调 | 保留硬编码 (品牌标识) | 不迁移 |
+| `#FFFFFF` | Brand Wordmark 主体与字标 | 保留硬编码 (品牌标识) | 不迁移 |
 
 > **迁移注意**: SVG 属性 `fill` 和 `stroke` 在 JSX 中直接写 `var(--color-*)` 在所有现代浏览器中均有效（Chrome 80+, Firefox 72+, Safari 13.1+）。但需注意 `fillOpacity` 和 `strokeWidth` 等属性不支持 CSS Variable。

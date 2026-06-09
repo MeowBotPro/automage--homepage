@@ -40,12 +40,12 @@
 | `ease-out` | `--ease-out` | `cubic-bezier(0.16, 1, 0.3, 1)` | 元素进入视野的减速感 | 大多数入场动画、hover 过渡、卡片出现 |
 | `ease-in` | `--ease-in` | `cubic-bezier(0.55, 0, 1, 0.45)` | 元素离开视野的加速感 | 信息消失（噪声碎片被吸入）、淡出 |
 | `ease-in-out` | `--ease-in-out` | `cubic-bezier(0.65, 0, 0.35, 1)` | 平滑的往返运动 | SVG path draw、Loop-back 路径绘制 |
-| `ease-spring` | `--ease-spring` | `cubic-bezier(0.34, 1.56, 0.64, 1)` | 微妙的弹性过冲 | 眼睛弹出（品牌标记启动）、节点 pop |
+| `ease-spring` | `--ease-spring` | `cubic-bezier(0.34, 1.56, 0.64, 1)` | 微妙的弹性过冲 | 保留给明确的品牌特殊动效；当前 Header wordmark 不使用 |
 
 **使用规则**:
 - `ease-out` 为默认缓动，覆盖 80% 以上的入场动画
 - `ease-in` 仅用于元素被"压缩/吸入"的语义（如 CompareSection 噪声碎片）
-- `ease-spring` 仅用于品牌标记眼睛弹出（`back.out(2.5)` 的 CSS 等效），限制使用范围
+- `ease-spring` 不作为通用弹跳缓动使用；当前 Header 完整 wordmark 启动只使用 `power2.out`
 - 所有 CSS 过渡默认使用 `var(--ease-out)`
 
 ### 6.2.2 GSAP 缓动映射
@@ -54,8 +54,8 @@
 |-----------|---------|------|-------------|
 | `power2.out` | `--ease-out` | 标准入场减速 | 所有 section 的 entrance 动画（默认） |
 | `power2.in` | `--ease-in` | 噪声碎片被吸入 | CompareSection 噪声碎片消失 |
-| `back.out(2)` | `--ease-spring` | 轻微弹性过冲 | Footer Loop Seal 节点 inner 弹出 |
-| `back.out(2.5)` | `--ease-spring` | 强弹性过冲 | CommandHeader 品牌标记眼睛弹出 |
+| `back.out(2)` | `--ease-spring` | 轻微弹性过冲 | 旧版 Footer Loop Seal 节点 inner 弹出（当前官网不使用） |
+| `back.out(2.5)` | `--ease-spring` | 强弹性过冲 | 旧版 Header logo 眼睛弹出（当前完整 wordmark 不使用） |
 | `sine.inOut` | `--ease-in-out` | 正弦缓入缓出 | FlowNavigation 垂直粒子流动 |
 | `power2.inOut` | `--ease-in-out` | 二次缓入缓出 | InfoLoopSection loop-back 路径绘制 |
 | `none` (linear) | `linear` | 匀速运动 | 粒子沿路径移动、ScrollTrigger scrub |
@@ -147,7 +147,7 @@ Lenis 滚动引擎提供平滑的滚动体验：
 
 | Section | 入场动画 | ScrollTrigger | Stagger | Duration | Easing | Reduced Motion |
 |---------|---------|---------------|---------|----------|--------|----------------|
-| **CommandHeader** | 逐级启动: logo -> brand mark -> eyes -> name -> nav -> status -> CTA | 无 (首次加载) | 0.06s (nav) | 0.25-0.48s | `power2.out`, `back.out(2.5)` (eyes) | 直接显示最终态 (`setBooted(true)`) |
+| **CommandHeader** | 逐级启动: logo link -> 完整 brand lockup -> nav -> status -> CTA | 无 (首次加载) | 0.06s (nav) | 0.25-0.48s | `power2.out` | JSX 初始 opacity 直接为 1 |
 | **HeroSection** | 标题逐字出现 + 渐变文字 + 副标题 + CTA | 无 (首次加载) | 0.03s (chars) | 0.4-0.8s | `power2.out` | `gsap.set` 直接显示 opacity:1 |
 | **HeroSection SignalConsole** | Console 滑入 + 芯片 stagger-in + 柱状图 scaleY + Pipeline 轮转 | 无 (延迟 1.2s) | 0.1s (chips/bars) | 0.3-0.6s | `power2.out` | CSS `animation: none !important` + 静态显示 |
 | **LogoMarquee** | 信号流无限滚动 | 无 (CSS infinite) | N/A | 28s 循环 | `linear` | `animation: none !important` |
@@ -417,7 +417,7 @@ const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)
 
 | Section | 回退行为 |
 |---------|---------|
-| **CommandHeader** | `setBooted(true)` 跳过启动动画，所有 `[data-boot]` 元素通过 JSX 初始 `opacity: reducedMotion ? 1 : 0` 直接可见 |
+| **CommandHeader** | 跳过 GSAP 启动动画，所有 `[data-boot]` 元素通过 JSX 初始 `opacity: reducedMotion ? 1 : 0` 直接可见 |
 | **HeroSection** | `gsap.set` 所有元素为 `{opacity: 1, y: 0}` |
 | **HeroSection SignalConsole** | CSS `animation: none !important` |
 | **CompareSection** | 3 张 `convert` 噪声直接进入隐藏终态；5 张 `retain` / `queue` 噪声直接进入可见残留终态；决策卡 `gsap.set({opacity: 1, x: 0})` |
@@ -550,7 +550,7 @@ Lenis **保持活跃**，即使在 reduced motion 模式下。原因：
 | FAQ 手风琴箭头 | rotate(0 -> 180deg) | 300ms | `--ease-out` | FAQSection (mobile) |
 | FAQ 手风琴面板 | `grid-template-rows: 0fr -> 1fr` | 300ms | `--ease-out` | FAQSection (mobile) |
 | Hero CTA | background `--primary` -> `--accent` | 200ms | CSS transition | HeroSection |
-| Header brand mark hover | box-shadow 增加 glow | 300ms | CSS `ease` | CommandHeader |
+| Header brand mark hover | `filter: brightness(1.15)` | 300ms | CSS `ease` | CommandHeader |
 | FlowNavigation 节点 | r 6->8 + fill active | 200ms | GSAP `power2.out` | FlowNavigation |
 | BetaSection 按钮 | background 变色 + glow shadow | 200ms | `--ease-out` | BetaSection |
 

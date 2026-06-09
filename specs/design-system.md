@@ -140,7 +140,7 @@ AutoMage 是**组织信息流 OS**，将前线噪声压缩为结构化判断，�
 | `ease-out` | `--ease-out` | `cubic-bezier(0.16, 1, 0.3, 1)` | 减速入场 | 80%+ 入场动画、hover 过渡（默认缓动） |
 | `ease-in` | `--ease-in` | `cubic-bezier(0.55, 0, 1, 0.45)` | 加速离场 | 噪声碎片被吸入、淡出 |
 | `ease-in-out` | `--ease-in-out` | `cubic-bezier(0.65, 0, 0.35, 1)` | 平滑往返 | SVG path draw、Loop-back 路径绘制 |
-| `ease-spring` | `--ease-spring` | `cubic-bezier(0.34, 1.56, 0.64, 1)` | 微妙弹性过冲 | 品牌标记眼睛弹出（仅限此处） |
+| `ease-spring` | `--ease-spring` | `cubic-bezier(0.34, 1.56, 0.64, 1)` | 微妙弹性过冲 | 保留给明确的品牌特殊动效；当前 Header wordmark 不使用 |
 
 **GSAP 缓动与 CSS 近似映射**:
 
@@ -148,7 +148,7 @@ AutoMage 是**组织信息流 OS**，将前线噪声压缩为结构化判断，�
 |-----------|-------------|-------------|---------|
 | `power2.out` | `--ease-out` | 数学近似 | 所有 section 入场（默认） |
 | `power2.in` | `--ease-in` | 数学近似 | 噪声碎片被吸入 |
-| `back.out(2.5)` | `--ease-spring` | GSAP 特有过冲 | Logo 眼睛弹出（仅此一处） |
+| `back.out(2.5)` | `--ease-spring` | GSAP 特有过冲 | 旧版 Header logo 眼睛弹出（当前完整 wordmark 不使用） |
 | `back.out(2)` | `--ease-spring` | GSAP 特有过冲 | 旧版 Footer Seal 节点弹出（当前官网不使用） |
 | `sine.inOut` | `--ease-in-out` (语义近似) | 不同数学曲线 | 粒子流动、脉冲呼吸 |
 | `power2.inOut` | `--ease-in-out` (语义近似) | 不同数学曲线 | InfoLoop loop-back 路径绘制 |
@@ -220,7 +220,7 @@ The Loop 有两层命名，概念层用于品牌叙事，技术层用于代码�
 2. **禁止 AI 大脑/神经网络插画** -- 暗示"AI 替代人类"，与核心立场矛盾。使用六角几何 + 轨道旋转的 AI Logo。
 3. **禁止对话气泡** -- 暗示"聊天工具"定位。使用 Pipeline 流程图和 Loop 路径。
 4. **禁止装饰性动画** -- 每个动画必须传达信息流语义。粒子沿路径流动（非随机漂浮），节点激活有几何约束。
-5. **禁止 `bounce`/`elastic` 缓动** -- 破坏"克制"和"精密"调性。`back.out` 仅限品牌标识特殊动画（Logo 眼睛弹出），其他场景禁止使用。
+5. **禁止 `bounce`/`elastic` 缓动** -- 破坏"克制"和"精密"调性。`back.out` 仅限明确的品牌特殊动效或 legacy 记录，当前 Header wordmark 启动不使用。
 
 **动画禁区补充**:
 - 禁止闪烁/抖动（StatusDot 的 pulse 除外 -- 表达系统活跃状态）
@@ -441,7 +441,7 @@ Glyph 专用色阶（蓝色光谱）：
 
 | Section | 入场缓动 | ScrollTrigger | Reduced Motion 回退 |
 |---------|---------|---------------|-------------------|
-| CommandHeader | `power2.out`, `back.out(2.5)` (eyes) | 首次加载 | `setBooted(true)` 直接展示 |
+| CommandHeader | `power2.out` | 首次加载 | reduced motion 下直接展示 |
 | HeroSection | `power2.out` | 首次加载 | `gsap.set` opacity:1, y:0 |
 | CompareSection | `power2.out`, `power2.in` (吸入) | `start: top 70%` | 3 张高价值信号吸入隐藏，5 张残留/队列噪声保持可见，决策卡直接显示 |
 | InfoLoopSection | `power2.out`, `none` (scrub) | `pin: true, scrub: 0.5` | 跳过 timeline |
@@ -463,7 +463,7 @@ Glyph 专用色阶（蓝色光谱）：
 | 禁止项 | 替代方案 |
 |--------|---------|
 | `bounce` / `elastic` 缓动 | `power2.out` / `sine.inOut` |
-| `back.out` 用于非品牌标识元素 | 当前仅限 Logo 眼睛弹出；旧版 Footer Seal 已废弃 |
+| `back.out` 用于非品牌标识元素 | 当前 Header wordmark 不使用；旧版 Logo 眼睛与 Footer Seal 仅作为 legacy 记录 |
 | 装饰性粒子雨/雪花 | 沿贝塞尔路径约束的 Particle Flow |
 | 无限循环 hover 动画 | hover 仅使用 150-200ms 的 transform/shadow |
 | 滚动视差 | ScrollTrigger scrub 驱动的序贯揭示 |

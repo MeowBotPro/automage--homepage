@@ -305,7 +305,7 @@ The Loop 不仅是页面结构，更是 AutoMage 的世界观：
 | 禁区 | 规则 | 违规示例 |
 |------|------|---------|
 | **禁止装饰性动画** | 每个动画必须传达信息流语义，不能纯粹为了"好看" | 粒子雨、几何粒子漂浮、纯装饰性背景动画 |
-| **禁止循环弹跳** | 禁止 `bounce` 和 `elastic` 缓动函数。`back.out` 仅限品牌标识特殊动画（如 Logo 眼睛弹出、Footer Seal 节点弹出），其他场景禁止使用 | 不在品牌标识场景中使用 `back.out`、不使用 `bounce`、`elastic` |
+| **禁止循环弹跳** | 禁止 `bounce` 和 `elastic` 缓动函数。`back.out` 仅限明确的品牌特殊动效或 legacy 记录；当前 Header wordmark 启动不使用 | 不在品牌标识场景中使用 `back.out`、不使用 `bounce`、`elastic` |
 | **禁止闪烁/抖动** | 品牌调性为"克制"和"精密"，闪烁和抖动破坏信任感 | 不使用 `shake`、`flash`、`blink`（StatusDot 的 pulse 除外，其表达系统活跃状态） |
 | **必须有 reduced-motion 回退** | 所有动画在 `prefers-reduced-motion: reduce` 下必须禁用，展示最终态 | 不允许没有 reduced-motion 处理的动画 |
 
