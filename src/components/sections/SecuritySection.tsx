@@ -290,20 +290,34 @@ export default function SecuritySection() {
         </div>
 
         {/* Mobile pipeline */}
-        <div className="md:hidden flex flex-col items-center gap-6 mb-12">
+        <div className="md:hidden flex flex-col items-center gap-5 mb-12" style={{ width: '100%' }}>
           {PIPELINE_STAGES.map((stage, i) => (
-            <div key={i} className="flex items-center gap-4">
+            <div
+              key={i}
+              style={{
+                width: 'min(100%, 320px)',
+                display: 'grid',
+                gridTemplateColumns: '48px minmax(0, 1fr)',
+                alignItems: 'center',
+                columnGap: 16,
+              }}
+            >
               <div style={{
-                width: 40, height: 40, borderRadius: 'var(--radius-sm)',
+                width: 48, height: 48, borderRadius: 'var(--radius-sm)',
                 background: 'var(--color-surface-dark)',
+                border: '1px solid rgba(148, 163, 184, 0.14)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 overflow: 'visible',
               }}>
                 {stage.icon}
               </div>
-              <div>
-                <p style={{ fontSize: '0.875rem', fontWeight: 600 }}>{stage.label}</p>
-                <p style={{ fontSize: '0.75rem', color: 'var(--color-text-on-dark-muted)' }}>{stage.desc}</p>
+              <div style={{ minWidth: 0 }}>
+                <p style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-text-on-dark)', lineHeight: 1.35 }}>
+                  {stage.label}
+                </p>
+                <p style={{ fontSize: '0.75rem', color: 'var(--color-text-on-dark-muted)', lineHeight: 1.45 }}>
+                  {stage.desc}
+                </p>
               </div>
             </div>
           ))}
@@ -340,10 +354,16 @@ export default function SecuritySection() {
           /* ── Dual-Key Authorization ── */
           .am-dual-key {
             margin: 40px auto 64px;
-            display: flex;
+            display: none;
             align-items: center;
             justify-content: center;
             gap: 18px;
+          }
+
+          @media (min-width: 768px) {
+            .am-dual-key {
+              display: flex;
+            }
           }
 
           .am-role-card {

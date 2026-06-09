@@ -47,17 +47,17 @@ function getReducedMotionSnapshot() {
     : false;
 }
 
-/* ── Brand Mark: bare icon with subtle halo ── */
+/* ── Brand Mark: full lockup with subtle signal halo ── */
 function BrandMark() {
   return (
     <span
       className="am-brand-mark"
       style={{
         position: 'relative',
-        width: 33,
-        height: 33,
-        display: 'grid',
-        placeItems: 'center',
+        width: 'clamp(138px, 34vw, 162px)',
+        height: 40,
+        display: 'flex',
+        alignItems: 'center',
         flexShrink: 0,
       }}
     >
@@ -65,7 +65,11 @@ function BrandMark() {
         aria-hidden="true"
         style={{
           position: 'absolute',
-          inset: -9,
+          left: -10,
+          top: '50%',
+          width: 60,
+          height: 60,
+          transform: 'translateY(-50%)',
           borderRadius: 999,
           background: 'radial-gradient(circle, rgba(96,165,250,0.18), transparent 70%)',
           filter: 'blur(4px)',
@@ -73,13 +77,19 @@ function BrandMark() {
         }}
       />
       <Image
-        src="/automage-logo.svg"
-        alt=""
-        width={32}
-        height={32}
-        className="am-logo-colink"
-        aria-hidden="true"
-        style={{ position: 'relative', zIndex: 1, opacity: 0.95 }}
+        src="/automage-logo-wordmark-white-2.svg"
+        alt="AutoMage"
+        width={437}
+        height={107}
+        className="am-logo-lockup"
+        style={{
+          position: 'relative',
+          zIndex: 1,
+          width: '100%',
+          height: 'auto',
+          display: 'block',
+          opacity: 0.96,
+        }}
       />
     </span>
   );
@@ -134,7 +144,6 @@ export default function CommandHeader() {
         const mark = document.querySelector('.am-brand-mark');
         if (mark) mark.classList.add('am-booted');
       })
-      .to('[data-boot="name"]', { opacity: 1, y: 0, duration: 0.3, ease: 'power2.out' }, '-=0.12')
       .to('[data-boot="nav"]', { opacity: 1, y: 0, duration: 0.25, stagger: 0.06, ease: 'power2.out' }, '-=0.1')
       .to('[data-boot="status"]', { opacity: 1, y: 0, duration: 0.25, ease: 'power2.out' }, '-=0.05')
       .to('[data-boot="cta"]', { opacity: 1, y: 0, duration: 0.3, ease: 'power2.out' }, '-=0.1');
@@ -239,24 +248,13 @@ export default function CommandHeader() {
           href="/"
           data-boot="logo"
           style={{
-            display: 'flex', alignItems: 'center', gap: 8,
+            display: 'flex', alignItems: 'center', gap: 0,
             flexShrink: 0, textDecoration: 'none', color: 'inherit',
-            paddingLeft: 4, minWidth: 140,
+            paddingLeft: 4, minWidth: 0,
             opacity: reducedMotion ? 1 : 0,
           }}
         >
           <BrandMark />
-          <span
-            data-boot="name"
-            style={{
-              fontWeight: 700, fontSize: 21, letterSpacing: 0,
-              lineHeight: 1, color: '#F8FAFC',
-              fontFamily: 'var(--font-sans)',
-              opacity: reducedMotion ? 1 : 0,
-            }}
-          >
-            AutoMage
-          </span>
         </Link>
 
         {/* ── Nav ── */}
@@ -395,25 +393,46 @@ export default function CommandHeader() {
             style={{
               background: 'none', border: 'none', cursor: 'pointer',
               width: 36, height: 36,
-              display: 'flex', flexDirection: 'column', alignItems: 'center',
-              justifyContent: 'center', gap: 5, padding: 0,
+              display: 'grid', placeItems: 'center', padding: 0,
             }}
           >
-            {[
-              { transform: menuOpen ? 'translateY(3.25px) rotate(45deg)' : 'none', opacity: 1 },
-              { transform: 'none', opacity: menuOpen ? 0 : 1 },
-              { transform: menuOpen ? 'translateY(-3.25px) rotate(-45deg)' : 'none', opacity: 1 },
-            ].map((s, i) => (
-              <span
-                key={i}
-                style={{
-                  display: 'block', width: 20, height: 1.5,
-                  backgroundColor: 'var(--color-text-on-dark)', borderRadius: 1,
-                  transition: 'transform 0.3s, opacity 0.3s',
-                  transform: s.transform, opacity: s.opacity,
-                }}
-              />
-            ))}
+            <span aria-hidden="true" style={{ position: 'relative', width: 24, height: 24, display: 'block' }}>
+              {[
+                {
+                  top: menuOpen ? '50%' : '7px',
+                  transform: menuOpen ? 'translateY(-50%) rotate(45deg)' : 'translateY(-50%) rotate(0deg)',
+                  opacity: 1,
+                },
+                {
+                  top: '50%',
+                  transform: menuOpen ? 'translateY(-50%) scaleX(0.25)' : 'translateY(-50%) scaleX(1)',
+                  opacity: menuOpen ? 0 : 1,
+                },
+                {
+                  top: menuOpen ? '50%' : '17px',
+                  transform: menuOpen ? 'translateY(-50%) rotate(-45deg)' : 'translateY(-50%) rotate(0deg)',
+                  opacity: 1,
+                },
+              ].map((s, i) => (
+                <span
+                  key={i}
+                  style={{
+                    position: 'absolute',
+                    left: 2,
+                    top: s.top,
+                    display: 'block',
+                    width: 20,
+                    height: 1.5,
+                    backgroundColor: 'var(--color-text-on-dark)',
+                    borderRadius: 1,
+                    transform: s.transform,
+                    transformOrigin: '50% 50%',
+                    opacity: s.opacity,
+                    transition: 'top 0.24s var(--ease-out), transform 0.24s var(--ease-out), opacity 0.16s ease',
+                  }}
+                />
+              ))}
+            </span>
           </button>
         </div>
       </header>
