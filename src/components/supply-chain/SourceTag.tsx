@@ -2,7 +2,7 @@
 
 import { useEffect, useId, useRef } from "react";
 import type { Source } from "@/lib/supply-chain-world";
-import styles from "./SupplyChain.module.css";
+import styles from "./SourceTag.module.css";
 
 export default function SourceTag({ source }: { source: Source }) {
   const popId = `source-${useId().replace(/[^a-zA-Z0-9]/g, "")}`;

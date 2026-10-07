@@ -1,0 +1,1175 @@
+/* Homepage. One strong place: the stage, where scattered messages become one light work object and the
+   same change then forks under two delegation boundaries. Everything after the stage is quiet:
+   whitespace, hairlines, no cards. The work object uses the same light-surface values, type roles and
+   source tags as the supply-chain world. Observations from this round, not a global design system.
+
+   Scrubbing: the stage sets --p (screens scrolled into the stage). A part that moves with the scroll
+   reads its own progress as clamp(0, (p - start) / length, 1), so every scroll shows at once and
+   scrolling back plays it backwards. */
+
+.main {
+  --label: #8fa4be;
+  --body: #b8c6d8;
+  --hair: rgba(148, 163, 184, 0.16);
+  --ai-ground: #74afff;
+  --risk-ground: #ff8f84;
+  --human-ground: #e6ecf4;
+  overflow-x: clip;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* ── Stage ── */
+
+/* A runway the frame stays in view along: one screen of frame plus --runway screens of scrolling. */
+.stage {
+  --head: 84px;
+  --p: 0;
+  position: relative;
+  height: calc(100vh - var(--head) + var(--runway, 3) * 100vh);
+}
+
+.frame {
+  position: sticky;
+  top: var(--head);
+  height: calc(100vh - var(--head));
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 8px 24px 24px;
+  display: grid;
+  grid-template-columns: minmax(0, 11fr) minmax(0, 13fr);
+  column-gap: 64px;
+}
+
+/* The parts' texts share one place. Each comes in and goes out with the scroll (--si/--li in,
+   --so/--lo out); the outgoing one is gone before the next arrives, so the column never holds two. */
+.story {
+  min-width: 0;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr);
+  align-items: center;
+}
+
+.scene {
+  --in: clamp(0, calc((var(--p) - var(--si)) / var(--li)), 1);
+  --out: clamp(0, calc((var(--p) - var(--so)) / var(--lo)), 1);
+  grid-area: 1 / 1;
+  opacity: calc(var(--in) - var(--out));
+  translate: 0 calc((1 - var(--in)) * 28px - var(--out) * 28px);
+}
+
+.scene:not([data-active]) {
+  pointer-events: none;
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(36px, 3.3vw, 50px);
+  line-height: 1.16;
+  letter-spacing: -0.035em;
+  font-weight: 700;
+  color: #f4f8fd;
+}
+
+.title span {
+  display: block;
+  color: #8cc4ff;
+}
+
+.lead {
+  margin: 24px 0 0;
+  max-width: 30em;
+  font-size: 17px;
+  line-height: 1.8;
+  color: #c6d2e0;
+  text-wrap: pretty;
+}
+
+.hint {
+  margin-top: 40px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: #9ecbff;
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.hint:hover {
+  color: #ffffff;
+}
+
+/* Each part quotes the half of the title it shows. */
+.kicker {
+  margin: 0 0 12px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #8cc4ff;
+}
+
+.dirTag {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 8px;
+  border: 1px solid rgba(116, 175, 255, 0.45);
+  border-radius: 5px;
+  color: var(--ai-ground);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.claim h2 {
+  margin: 0;
+  font-size: clamp(26px, 2.2vw, 32px);
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+  font-weight: 700;
+  color: #f1f5f9;
+  text-wrap: balance;
+  word-break: keep-all;
+}
+
+.claimText {
+  margin: 16px 0 0;
+  max-width: 30em;
+  font-size: 15.5px;
+  line-height: 1.85;
+  color: var(--body);
+  text-wrap: pretty;
+}
+
+/* ── Right column: the caption, then one place where the work is shown ── */
+
+.visual {
+  position: relative;
+  align-self: center;
+  height: min(100%, 860px);
+  min-height: 0;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  row-gap: 14px;
+}
+
+.visualCaption {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12.5px;
+  color: var(--label);
+}
+
+.demoChip {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 8px;
+  border: 1px solid rgba(246, 196, 83, 0.5);
+  border-radius: 5px;
+  color: #f6c453;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* Before the work forms, the messages sit scattered around the alert that started it all. As the page
+   scrolls, the alert lands on the work's title and every other message shrinks into the source tag of
+   the line it became, top to bottom (--i), each straightening as it flies. Later the change arrives the
+   same way and lands on the premise it breaks. */
+
+.field {
+  position: absolute;
+  inset: 40px 0 16px;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.frag {
+  --s: calc(0.03 + var(--i) * 0.055);
+  --l: 0.34;
+  --a: -1;
+  --t: clamp(0, calc((var(--p) - var(--s)) / var(--l)), 1);
+  --e: calc(var(--t) * var(--t) * (3 - 2 * var(--t)));
+  --here: clamp(0, calc((var(--p) - var(--a)) / 0.06), 1);
+  --gone: clamp(0, calc((var(--t) - 0.72) / 0.28), 1);
+  position: absolute;
+  width: min(264px, 40%);
+  padding: 10px 13px 11px;
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  border-radius: 10px;
+  background: rgba(12, 24, 42, 0.94);
+  color: #d3deeb;
+  font-size: 13px;
+  line-height: 1.55;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.28);
+  transform-origin: 0 0;
+  transform: translate(calc(var(--dx, 0px) * var(--e)), calc(var(--dy, 0px) * var(--e))) rotate(calc(var(--r, 0) * (1 - var(--e)) * 1deg)) scale(calc(1 - (1 - var(--sx, 0.4)) * var(--e)));
+  opacity: calc((var(--rest, 1) + (1 - var(--rest, 1)) * var(--e)) * var(--here) * (1 - var(--gone)));
+}
+
+/* On load the messages arrive in the order they were sent (days 0–2), once. Only `backwards` fill,
+   so the scroll-driven opacity takes over as soon as each one has arrived. */
+.frag {
+  animation: fragIn 0.55s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+  animation-delay: calc(var(--n) * 150ms + 250ms);
+}
+
+@keyframes fragIn {
+  from {
+    opacity: 0;
+    translate: 0 14px;
+  }
+}
+
+.frag small {
+  display: block;
+  margin-bottom: 3px;
+  color: var(--label);
+  font-size: 11.5px;
+}
+
+.frag[data-far] {
+  --rest: 0.5;
+}
+
+/* The alert is the trigger: larger, brighter, first. The change later looks the same. */
+.frag[data-alert] {
+  width: min(318px, 48%);
+  padding: 13px 16px 14px;
+  border-color: rgba(255, 143, 132, 0.6);
+  background: rgba(40, 18, 24, 0.94);
+  color: #fff3f1;
+  font-size: 15px;
+  font-weight: 600;
+  box-shadow: 0 0 0 6px rgba(255, 143, 132, 0.07), 0 18px 44px rgba(0, 0, 0, 0.35);
+  z-index: 1;
+}
+
+.frag[data-alert] small {
+  color: #ffb4ab;
+  font-weight: 500;
+}
+
+.frag[data-alert] small::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: 6px;
+  border-radius: 50%;
+  background: var(--risk-ground);
+  vertical-align: 1px;
+}
+
+/* The change shows up once the record has folded to the plan, then flies onto the premise it breaks. */
+.frag[data-change] {
+  --a: 1.42;
+  --s: 1.5;
+  --l: 0.28;
+  width: min(300px, 46%);
+  animation: none;
+}
+
+.fieldNote {
+  --t: clamp(0, calc(var(--p) / 0.1), 1);
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  margin: 0;
+  font-size: 15px;
+  color: #d3deeb;
+  opacity: calc(1 - var(--t));
+}
+
+.fieldNote b {
+  display: none;
+}
+
+/* The two views of the work share one place: the record as the messages make it, and the record
+   folded to the plan with the fork under it. */
+.slot {
+  grid-row: 2;
+  position: relative;
+  display: grid;
+  align-items: start;
+  min-height: 0;
+}
+
+.slot::before {
+  content: "";
+  position: absolute;
+  inset: 6% 8% 10%;
+  z-index: -1;
+  border-radius: 40px;
+  background: radial-gradient(closest-side, rgba(96, 165, 250, 0.2), transparent);
+  filter: blur(36px);
+}
+
+.workView,
+.changeView {
+  grid-area: 1 / 1;
+  min-width: 0;
+}
+
+/* The record appears empty, each place fills in as its message lands, and the status arrives last:
+   from then on the work is AutoMage's to follow. Later it folds up from the bottom into the plan. */
+.workView {
+  --t: clamp(0, calc((var(--p) - 0.12) / 0.2), 1);
+  --fold: clamp(0, calc((var(--p) - 1.18) / 0.2), 1);
+  opacity: calc(var(--t) * (1 - var(--fold)));
+  clip-path: inset(-100px -100px calc(var(--fold) * 62% - (1 - var(--fold)) * 100px) -100px);
+}
+
+.workView [data-land] {
+  --t: clamp(0, calc((var(--p) - 0.28 - var(--i) * 0.055) / 0.09), 1);
+  opacity: var(--t);
+}
+
+.workView [data-taken] {
+  --t: clamp(0, calc((var(--p) - 0.7) / 0.08), 1);
+  opacity: var(--t);
+}
+
+/* --c: the change has landed. The premise is struck through as it lands; the status turns. */
+.changeView {
+  --t: clamp(0, calc((var(--p) - 1.3) / 0.12), 1);
+  --k: clamp(0, calc((var(--p) - 1.74) / 0.08), 1);
+  --c: clamp(0, calc((var(--p) - 1.78) / 0.08), 1);
+  opacity: var(--t);
+}
+
+.changeView [data-before] {
+  opacity: calc(1 - var(--c));
+}
+
+.changeView [data-after],
+.changeView [data-land="change"] {
+  opacity: var(--c);
+}
+
+/* ── Work object (light surface) ── */
+
+.obj,
+.fork {
+  --paper: #f2f5f9;
+  --paper-line: #d5dce6;
+  --ink: #0f1a2b;
+  --ink-2: #3f4b5e;
+  --ink-3: #5b6779;
+  --human: #1e3a5f;
+  --ai: #2457c5;
+  --unknown: #9a4d06;
+  --risk: #b42318;
+}
+
+.obj {
+  padding: 22px 26px 24px;
+  border-radius: 16px;
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.36);
+}
+
+.objHead {
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--paper-line);
+}
+
+.objMeta {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  color: var(--ink-3);
+}
+
+.mono {
+  font-family: var(--font-mono);
+  letter-spacing: 0.02em;
+}
+
+.objDemo {
+  padding: 0 6px;
+  border: 1px solid #c9a24a;
+  border-radius: 4px;
+  color: #8a5a00;
+  font-size: 11px;
+  line-height: 18px;
+}
+
+.objStatus {
+  padding: 3px 10px;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.objMeta > .objStatus,
+.objMeta > .swap {
+  margin-left: auto;
+}
+
+.objStatus[data-tone="human"] {
+  color: var(--human);
+  background: rgba(30, 58, 95, 0.06);
+}
+
+.objStatus[data-tone="risk"] {
+  color: var(--risk);
+  background: rgba(180, 35, 24, 0.06);
+}
+
+.objStatus[data-tone="ai"] {
+  color: var(--ai);
+  background: rgba(36, 87, 197, 0.07);
+}
+
+/* Two states in one place: the one before the change and the one after. */
+.swap {
+  display: inline-grid;
+  justify-items: end;
+}
+
+.swap > * {
+  grid-area: 1 / 1;
+}
+
+.objHead h3 {
+  margin: 8px 0 0;
+  font-size: 21px;
+  line-height: 1.35;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+.objGoal {
+  margin: 4px 0 0;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--ink-2);
+}
+
+.objRows {
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.objRow {
+  display: grid;
+  grid-template-columns: 62px minmax(0, 1fr);
+  align-items: baseline;
+  gap: 10px;
+  padding: 7px 0;
+  border-top: 1px solid var(--paper-line);
+}
+
+.objRows > .objRow:first-child {
+  border-top: 0;
+}
+
+.objKind {
+  font-size: 12px;
+  color: var(--ink-3);
+}
+
+.objKind.swap {
+  justify-items: start;
+}
+
+.objRow[data-kind="inference"] .objKind {
+  color: var(--ai);
+}
+
+.objRow[data-kind="unknown"] .objKind {
+  color: var(--unknown);
+  font-weight: 600;
+}
+
+.objRow[data-kind="premise"] .objKind {
+  color: var(--human);
+}
+
+.objRow[data-kind="premise"] .objKind [data-after] {
+  color: var(--risk);
+  font-weight: 600;
+}
+
+.objText {
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--ink-2);
+}
+
+.objText b {
+  margin-right: 8px;
+  color: var(--ink);
+  font-weight: 600;
+}
+
+/* Source tags sit right after what they back, and look openable. */
+.obj button[popovertarget] {
+  margin-left: 8px;
+  height: 21px;
+  vertical-align: 1px;
+  font-size: 12px;
+  color: var(--ink-2);
+  border-color: #9aa7b8;
+}
+
+.obj button[popovertarget]::after {
+  content: "›";
+  margin-left: 5px;
+  font-size: 13px;
+  line-height: 1;
+  color: var(--ink-3);
+}
+
+.obj button[popovertarget]:hover {
+  background: #ffffff;
+}
+
+.objNext {
+  margin: 10px 0 0;
+  padding-top: 10px;
+  border-top: 1px solid var(--paper-line);
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--ink-2);
+}
+
+.objNext span {
+  margin-right: 8px;
+  font-weight: 600;
+  color: var(--ink-3);
+}
+
+.objNext b {
+  color: var(--human);
+}
+
+.objPlan {
+  margin: 12px 0 4px;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--ink-2);
+}
+
+.objPlan span {
+  margin-right: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-3);
+}
+
+.objPlan b {
+  margin-right: 8px;
+  color: var(--ink);
+}
+
+/* The strike is drawn as the change lands (--k); a still frame shows it drawn. */
+.strike {
+  position: relative;
+}
+
+.strike::after {
+  content: "";
+  position: absolute;
+  left: -2px;
+  right: -2px;
+  top: 52%;
+  height: 1.5px;
+  background: var(--risk);
+  transform-origin: left center;
+  transform: scaleX(var(--k, 1));
+}
+
+.objText em {
+  display: block;
+  font-style: normal;
+  font-weight: 600;
+  color: var(--risk);
+}
+
+.objFolded {
+  margin: 4px 0 0;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--ink-3);
+}
+
+.obj[data-still] {
+  padding: 18px 18px 20px;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.32);
+}
+
+.obj[data-still] .strike {
+  text-decoration: line-through;
+  text-decoration-color: var(--risk);
+  text-decoration-thickness: 1.5px;
+}
+
+.obj[data-still] .strike::after {
+  display: none;
+}
+
+/* ── The fork: the same change under two delegation boundaries ── */
+
+.forkLines {
+  display: block;
+  max-width: 100%;
+  overflow: visible;
+}
+
+.forkLines path {
+  --d: clamp(0, calc((var(--p) - var(--s)) / var(--l)), 1);
+  stroke: rgba(203, 213, 225, 0.6);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-dasharray: 1 1;
+  stroke-dashoffset: calc(1 - var(--d));
+  opacity: min(1, calc(var(--d) * 40));
+}
+
+.forkLines [data-seg="trunk"] {
+  --s: 1.86;
+  --l: 0.07;
+}
+
+.forkLines [data-seg="back"] {
+  --s: 1.92;
+  --l: 0.14;
+  stroke: var(--human-ground);
+}
+
+.forkLines [data-seg="within"] {
+  --s: 1.98;
+  --l: 0.14;
+  stroke: var(--ai-ground);
+  filter: drop-shadow(0 0 5px rgba(91, 156, 255, 0.5));
+}
+
+.branches {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.branch {
+  padding: 14px 16px 16px;
+  border-top: 3px solid var(--human);
+  border-radius: 12px;
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: 0 22px 54px rgba(0, 0, 0, 0.32);
+}
+
+.branch[data-tone="ai"] {
+  border-top-color: var(--ai);
+}
+
+/* On the stage each branch arrives after its line has reached it. */
+.changeView .branch {
+  --t: clamp(0, calc((var(--p) - var(--b)) / 0.14), 1);
+  opacity: var(--t);
+  translate: 0 calc((1 - var(--t)) * 12px);
+}
+
+.changeView .branch[data-branch="back"] {
+  --b: 2.04;
+}
+
+.changeView .branch[data-branch="within"] {
+  --b: 2.14;
+}
+
+/* The delegation's line: the only thing that differs between the two. */
+.branchRule {
+  margin: 0;
+  padding: 8px 10px 9px;
+  border: 1px dashed #9aa7b8;
+  border-radius: 8px;
+  background: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--ink);
+}
+
+.branchRule span {
+  display: block;
+  margin-bottom: 2px;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--ink-3);
+}
+
+.branchResult {
+  margin: 12px 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px 10px;
+}
+
+.branchResult b {
+  font-size: 16px;
+  color: var(--human);
+}
+
+.branch[data-tone="ai"] .branchResult b {
+  color: var(--ai);
+}
+
+.branchDetail {
+  margin: 6px 0 0;
+  font-size: 13px;
+  line-height: 1.65;
+  color: var(--ink-2);
+}
+
+/* ── Still frames (narrow and short screens) ── */
+
+.still {
+  display: none;
+}
+
+.still .fork {
+  margin-top: 14px;
+}
+
+.noiseStill ul {
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 8px;
+}
+
+.noiseStill li {
+  padding: 9px 12px 10px;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 10px;
+  background: rgba(12, 24, 42, 0.9);
+  color: #d3deeb;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.noiseStill li:nth-child(even) {
+  margin-left: 18px;
+}
+
+.noiseStill li[data-alert] {
+  border-color: rgba(255, 143, 132, 0.45);
+}
+
+.noiseStill small {
+  display: block;
+  margin-bottom: 2px;
+  color: var(--label);
+  font-size: 11.5px;
+}
+
+.stillNote {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  color: #d3deeb;
+}
+
+/* ── After the stage: quiet. Headings on the left, as on the stage; what they say on the right. ── */
+
+.after {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 120px 24px 104px;
+  display: grid;
+  row-gap: 80px;
+}
+
+.fit,
+.now {
+  display: grid;
+  grid-template-columns: minmax(0, 11fr) minmax(0, 13fr);
+  column-gap: 64px;
+  align-items: start;
+}
+
+.bridge {
+  margin: 0 0 12px;
+  max-width: 24em;
+  font-size: 14.5px;
+  line-height: 1.7;
+  color: var(--label);
+}
+
+.fit h2,
+.now h2 {
+  margin: 0;
+  font-size: clamp(26px, 2.3vw, 34px);
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+  font-weight: 700;
+  color: #f1f5f9;
+  text-wrap: balance;
+  word-break: keep-all;
+}
+
+.fitList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 26px 36px;
+}
+
+.fitList li {
+  padding-top: 16px;
+  border-top: 1px solid var(--hair);
+  font-size: 14.5px;
+  line-height: 1.8;
+  color: #b3c1d3;
+}
+
+.fitList b {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #f1f5f9;
+}
+
+.now dl {
+  margin: 0;
+}
+
+.now dl > div {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr);
+  gap: 18px;
+  padding: 16px 0;
+  border-top: 1px solid var(--hair);
+}
+
+.now dl > div:last-child {
+  border-bottom: 1px solid var(--hair);
+}
+
+.now dt {
+  justify-self: start;
+  align-self: start;
+  margin-top: 2px;
+  padding: 0 8px;
+  border: 1px solid rgba(110, 231, 183, 0.5);
+  border-radius: 5px;
+  color: #6ee7b7;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 22px;
+}
+
+.now dt[data-kind="direction"] {
+  border-color: rgba(116, 175, 255, 0.45);
+  color: var(--ai-ground);
+}
+
+.now dt[data-kind="demo"] {
+  border-color: rgba(246, 196, 83, 0.5);
+  color: #f6c453;
+}
+
+.now dd {
+  margin: 0;
+  max-width: 40em;
+  font-size: 14.5px;
+  line-height: 1.8;
+  color: #b3c1d3;
+}
+
+.exits {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.door {
+  display: block;
+  padding: 34px 40px 36px 0;
+  border-top: 1px solid var(--hair);
+  color: inherit;
+  text-decoration: none;
+}
+
+.door + .door {
+  padding-left: 40px;
+  border-left: 1px solid var(--hair);
+}
+
+.door span {
+  font-size: 12.5px;
+  color: var(--label);
+}
+
+.door strong {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 12px;
+  font-size: clamp(24px, 2.2vw, 32px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #f4f8fd;
+  transition: color 0.15s;
+}
+
+.door strong svg {
+  flex-shrink: 0;
+  transition: transform 0.2s;
+}
+
+.door:hover strong {
+  color: #9ecbff;
+}
+
+.door:hover strong svg {
+  transform: translateX(4px);
+}
+
+.door p {
+  margin: 12px 0 0;
+  max-width: 30em;
+  font-size: 15px;
+  line-height: 1.8;
+  color: #b3c1d3;
+}
+
+/* ── Fallback: no live stage ── */
+
+@media (max-width: 1023px), (max-height: 619px) {
+  .stage {
+    height: auto;
+  }
+
+  .frame {
+    position: static;
+    height: auto;
+    max-width: 808px;
+    padding: 0 24px;
+    display: block;
+  }
+
+  .story {
+    display: block;
+  }
+
+  .scene {
+    opacity: 1;
+    translate: none;
+  }
+
+  .visual,
+  .hint {
+    display: none;
+  }
+
+  .still {
+    display: block;
+    margin-top: 24px;
+  }
+
+  .opening {
+    padding: 40px 0 8px;
+  }
+
+  .claim {
+    margin-top: 40px;
+    padding: 32px 0 0;
+    border-top: 1px solid var(--hair);
+  }
+
+  .after {
+    max-width: 808px;
+    padding-top: 88px;
+    row-gap: 64px;
+  }
+
+  .fit,
+  .now {
+    display: block;
+  }
+
+  .fitList,
+  .now dl {
+    margin-top: 28px;
+  }
+}
+
+/* Shorter laptop screens: the live stage keeps the record, drops what it can spare. */
+@media (max-height: 820px) and (min-width: 1024px) {
+  .visual .objGoal,
+  .visual .objFolded {
+    display: none;
+  }
+
+  .visual .obj {
+    padding: 18px 22px 20px;
+  }
+
+  .visual .objRow {
+    padding: 5px 0;
+  }
+
+  .visual .branch {
+    padding: 12px 14px 14px;
+  }
+
+  .visual .branchDetail {
+    font-size: 12.5px;
+    line-height: 1.6;
+  }
+}
+
+/* Laptop screens around 650–700px tall: the record tightens further; the work object carries its own
+   演示 chip, and the field note carries it at the start. */
+@media (max-height: 700px) and (min-width: 1024px) {
+  .visual {
+    row-gap: 10px;
+  }
+
+  .visualCaption {
+    display: none;
+  }
+
+  .field {
+    inset: 0 0 12px;
+  }
+
+  .frag {
+    width: min(236px, 37%);
+    padding: 7px 10px 8px;
+    font-size: 12px;
+  }
+
+  .frag small {
+    font-size: 11px;
+  }
+
+  .frag[data-alert] {
+    font-size: 13.5px;
+  }
+
+  .fieldNote b {
+    display: inline;
+    margin-right: 10px;
+  }
+
+  .visual .obj {
+    padding: 14px 20px 16px;
+  }
+
+  .visual .objHead {
+    padding-bottom: 10px;
+  }
+
+  .visual .objHead h3 {
+    font-size: 18px;
+    margin-top: 4px;
+  }
+
+  .visual .objRow {
+    padding: 4px 0;
+  }
+
+  .visual .objNext {
+    margin-top: 6px;
+    padding-top: 6px;
+  }
+
+  .visual .objPlan {
+    margin-top: 8px;
+  }
+
+  .visual .branchRule {
+    padding: 6px 9px 7px;
+  }
+
+  .visual .branchResult {
+    margin-top: 8px;
+  }
+}
+
+@media (max-width: 900px) {
+  .exits {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .door,
+  .door + .door {
+    padding: 28px 0 30px;
+    border-left: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .branches,
+  .fitList {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .now dl > div {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+  }
+}
+
+@media (max-width: 560px) {
+  .title {
+    font-size: 34px;
+  }
+
+  .lead {
+    font-size: 16px;
+  }
+
+  .objRow {
+    grid-template-columns: 56px minmax(0, 1fr);
+  }
+
+  .objMeta {
+    flex-wrap: wrap;
+  }
+}
+
+/* Without motion the stage still answers the scroll, but each part is shown settled (the stage sets
+   --p to the part's resting value) and nothing animates on its own. */
+@media (prefers-reduced-motion: reduce) {
+  .frag {
+    animation: none;
+  }
+
+  .door strong,
+  .door strong svg {
+    transition: none;
+  }
+}

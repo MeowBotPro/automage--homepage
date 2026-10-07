@@ -235,18 +235,12 @@ textarea::placeholder {
   color: rgba(148, 163, 184, 0.78);
 }
 
-/* ── Hide default scrollbar ── */
+/* ── Scrollbar: thin and quiet, but there. It is where people see how far down a page they are and
+   that their scroll did something; the gutter stays reserved so pages do not shift between routes. ── */
 html {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-
-html::-webkit-scrollbar {
-  display: none;
-}
-
-body::-webkit-scrollbar {
-  display: none;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.4) transparent;
+  scrollbar-gutter: stable;
 }
 
 /* ── AutoMage Glyph System Animations ── */
