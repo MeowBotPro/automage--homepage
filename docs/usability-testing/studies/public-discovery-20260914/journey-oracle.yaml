@@ -1,0 +1,27 @@
+study_id: public-discovery-20260914
+coordinator_only: true
+status: frozen
+milestones:
+- milestone_id: M-SYSTEM
+  description: 能够用自己的话说明系统与已有工作入口的关系。
+  required: true
+- milestone_id: M-FIT
+  description: 识别与自身问题相关的工作，或说明当前为何不适用。
+  required: true
+- milestone_id: M-DIFFERENCE
+  description: 根据任务时机、产出或条件说明相近能力的差异。
+  required: true
+- milestone_id: M-OUTPUT
+  description: 能说明一项能力所需资料及预期交付。
+  required: true
+- milestone_id: M-INTENT
+  description: 需要讨论的能力与业务问题被带到沟通准备中，并理解当前状态。
+  required: true
+handoffs: []
+risks:
+- risk_id: R-IDENTITY
+  description: 把整个系统等同于孤立工具目录。
+- risk_id: R-SAMENESS
+  description: 同质能力缺少可用于选择的差异。
+- risk_id: R-HANDOFF
+  description: 已做的选择丢失或被误解为其他系统状态。

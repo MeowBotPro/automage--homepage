@@ -1,0 +1,15 @@
+study_id: supply-chain-slice-20261007
+coordinator_only: true
+status: frozen
+branches:
+- branch_id: B-mfg-free-explore
+  goal_id: G-mfg-understand
+  description: 制造企业负责人自由选择方案与是否使用拆开/重放。
+  invariants:
+  - 任一方案选择下，前提失效都发生在第 6 天且工作回到负责人面前（第一次的规矩）。
+  - 页面不得出现企业真实身份；演示/真实背景/方向三类标注可见。
+- branch_id: B-svc-transfer
+  goal_id: G-svc-transfer
+  description: 非供应链行业负责人以「能否用于自家业务」为目标浏览。
+  invariants:
+  - 不提供除页面以外的产品解释。

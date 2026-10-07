@@ -1,0 +1,46 @@
+study_id: public-hierarchy-direct-20260915
+coordinator_only: true
+status: frozen
+rows:
+- coverage_id: C-DIRECT-MARKET
+  goal_id: G-MARKET
+  role_id: partner-capability-evaluator
+  milestone_ids:
+  - M-FIRST
+  - M-PARENT
+  - M-FIT
+  - M-OUTPUT
+  - M-RECALL
+  branch_ids:
+  - B-MARKET
+  capability_ids:
+  - discover
+  - assess
+  - inquiry
+  risk_ids:
+  - R-DIRECT-PARENT
+  - R-SHIFT
+  planned_run_ids:
+  - market-I01
+  readiness: ready
+- coverage_id: C-DIRECT-DETAIL
+  goal_id: G-DETAIL
+  role_id: ceo-services
+  milestone_ids:
+  - M-FIRST
+  - M-PARENT
+  - M-FIT
+  - M-OUTPUT
+  - M-RECALL
+  branch_ids:
+  - B-DETAIL
+  capability_ids:
+  - discover
+  - assess
+  - inquiry
+  risk_ids:
+  - R-DIRECT-PARENT
+  planned_run_ids:
+  - detail-I01
+  readiness: ready
+waivers: []

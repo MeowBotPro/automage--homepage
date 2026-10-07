@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { skillCatalog } from '../skill-catalog';
 
 const emptyStringToUndefined = (value: unknown) => {
   if (typeof value !== 'string') {
@@ -35,6 +36,7 @@ const rawBetaApplicationSchema = z.object({
   contact: trimmedRequiredString(128, '请输入联系方式'),
   invite_code: trimmedOptionalString(64),
   source: trimmedOptionalString(64),
+  skill_ids: z.array(z.string().refine((id) => Boolean(skillCatalog.getById(id)), '所选 Skill 不在目录中')).max(20, '一次最多咨询 20 项能力').default([]),
 });
 
 export type InviteCodeStatus = 'none' | 'valid' | 'not_found' | 'inactive' | 'expired' | 'exhausted';
@@ -78,7 +80,11 @@ export function normalizeBetaApplicationInput(payload: unknown): NormalizedBetaA
     contact: parsed.contact,
     invite_code: parsed.invite_code ? parsed.invite_code.toUpperCase() : null,
     source: parsed.source ?? 'landing_page',
-    raw_payload: isRecord(payload) ? payload : {},
+    raw_payload: {
+      ...(isRecord(payload) ? payload : {}),
+      skill_ids: [...new Set(parsed.skill_ids)],
+      selected_skills: [...new Set(parsed.skill_ids)].map((id) => ({ id, title: skillCatalog.getById(id)!.title })),
+    },
   };
 }
 

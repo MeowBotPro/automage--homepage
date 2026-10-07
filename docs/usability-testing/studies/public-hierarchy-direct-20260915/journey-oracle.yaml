@@ -1,0 +1,25 @@
+study_id: public-hierarchy-direct-20260915
+coordinator_only: true
+status: frozen
+milestones:
+- milestone_id: M-FIRST
+  description: 短暂首次曝光后公开说出页面第一印象。
+  required: true
+- milestone_id: M-PARENT
+  description: 说明当前页面与 AutoMage 产品及能力层的关系。
+  required: true
+- milestone_id: M-FIT
+  description: 找到或排除与自身业务相关的工作。
+  required: true
+- milestone_id: M-OUTPUT
+  description: 说明一项能力的产出与所需资料。
+  required: true
+- milestone_id: M-RECALL
+  description: 延迟后仍能保留产品与页面层级关系。
+  required: true
+handoffs: []
+risks:
+- risk_id: R-DIRECT-PARENT
+  description: 直接进入能力页时父级产品身份不够明显。
+- risk_id: R-SHIFT
+  description: 参与者离开能力页寻找产品上下文，导致能力层理解缺失。

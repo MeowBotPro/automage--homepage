@@ -1,0 +1,43 @@
+study_id: public-discovery-20260914
+coordinator_only: true
+status: frozen
+rows:
+- coverage_id: C-OVERVIEW
+  goal_id: G-OVERVIEW
+  role_id: ceo-manufacturing
+  milestone_ids:
+  - M-SYSTEM
+  - M-FIT
+  - M-OUTPUT
+  branch_ids:
+  - B-FIT
+  capability_ids:
+  - overview
+  - discover
+  - assess
+  risk_ids:
+  - R-IDENTITY
+  planned_run_ids:
+  - ceo-manufacturing-I01
+  readiness: ready
+- coverage_id: C-CHOICE
+  goal_id: G-CHOICE
+  role_id: ceo-services
+  milestone_ids:
+  - M-DIFFERENCE
+  - M-OUTPUT
+  - M-INTENT
+  branch_ids:
+  - B-COMPARE
+  - B-INTENT
+  capability_ids:
+  - discover
+  - assess
+  - inquiry
+  risk_ids:
+  - R-SAMENESS
+  - R-HANDOFF
+  planned_run_ids:
+  - ceo-services-I01
+  readiness: ready
+waivers: []

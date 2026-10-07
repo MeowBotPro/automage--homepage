@@ -1,0 +1,56 @@
+schema_version: usability-implementation/v1
+request_id: supply-chain-slice-20261007-I02-R1
+study_id: supply-chain-slice-20261007
+iteration_id: I02
+status: frozen
+profile: patch
+patch_lineage:
+  full_baseline_ref: docs/automage-website-implementation-handoff-20261007.md
+  surface_keys: [scenarios-supply-chain]
+  prior_patch_request_ids: [supply-chain-slice-20261007-I01-R1]
+  cumulative_dimensions_changed: [discoverability, terminology, decision-transparency, mobile-layout, mobile-pacing, evidence-placement, scenario-realism]
+baseline_refs:
+  - path: docs/usability-testing/studies/supply-chain-slice-20261007/iterations/I02/findings.md
+    role: findings
+finding_ids: [F-009, F-010, F-011, F-012, F-013, F-014]
+observed_problem: 拆开看的动作清单被截断；手机端低熟练度参与者两轮都没到达第 6 天；v1 含义不明；「已实现」说明仍只在页尾被读到；同事不回话的情况没有演；直达访客不知道 AutoMage 是什么。
+affected:
+  role_ids: [ceo-manufacturing, ceo-services]
+  goal_ids: [G-mfg-understand, G-svc-transfer]
+  milestone_ids: [M2-first-decision, M3-reopen, M5-lens]
+  capability_ids: [scenario-world]
+  journey_ids: []
+  journey_step_ids: []
+scope:
+  routes: [/scenarios/supply-chain]
+  modules: [src/components/supply-chain, src/lib/supply-chain-world.ts, src/app/scenarios/supply-chain/page.tsx]
+  include: [F-009..F-014]
+  exclude: [首页, /market, /contact, 全局 design system]
+requirements_delta:
+  - 拆开看列出全部动作；手机端拆开看紧凑显示，不遮住半屏。
+  - 手机端从第 1 天起只显示回到负责人的两条委托（可展开全部 7 条）；手机端隐藏首屏阅读说明列表；库存图在手机上按真实宽度绘制。
+  - 决策面板写明 v1/v2 的含义。
+  - 首屏常驻一行「已实现 / 产品方向（本页为模拟）」，措辞与页尾一致。
+  - 第 1 天 AutoMage 催问未回复的同事。
+  - 引导语用一句白话说明 AutoMage 是什么（冻结定义的转述）。
+design_delta:
+  required: false
+  design_repo_refs: []
+  changed_states: [mobile-compact-delegation, mobile-compact-lens]
+  forbidden_patterns: [在演示 UI 上逐块标注已实现, 新增产品本体定义, 跳过签批直达第 6 天的快捷入口]
+business_invariants:
+  - 首次与重放在第 0–5 天（含新增的第 1 天催问）及第 6 天的变化事件上完全相同。
+  - 任一方案组合下，第 6 天前提失效，第 14 天全部回执后关闭。
+verification:
+  assertion_refs: [tests/supply-chain-world.test.cjs]
+  unit: [node --test tests/supply-chain-world.test.cjs]
+  runtime: [next build --webpack, agent-browser 走查桌面首屏与手机第 0、1 天]
+  journey_steps: []
+  teardown_required: false
+retest_contract: I03 为针对性复测，两名全新参与者：手机低熟练度制造业负责人（检验 F-010，能否到达第 6 天）和桌面订阅服务负责人（检验 F-012、F-014 与重放）。角色、任务、预算不变；工具说明补充「用快照 ref，不用 find text」（E-001）。
+full_cr_triggers: []
+approval:
+  mode: manual
+  status: frozen
+  approved_by: coordinator-within-owner-handoff-20261007
+  approved_at: '2026-10-07'

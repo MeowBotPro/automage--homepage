@@ -1,0 +1,64 @@
+study_id: public-hierarchy-20260915
+coordinator_only: true
+status: frozen
+rows:
+- coverage_id: C-HOME
+  goal_id: G-HOME
+  role_id: ceo-manufacturing
+  milestone_ids:
+  - M-FIRST-IMPRESSION
+  - M-PRODUCT
+  - M-FIT
+  - M-TRANSFER
+  branch_ids:
+  - B-HOME
+  capability_ids:
+  - overview
+  - discover
+  - assess
+  risk_ids:
+  - R-HIERARCHY
+  - R-TRANSFER
+  planned_run_ids:
+  - home-I01
+  readiness: ready
+- coverage_id: C-MARKET
+  goal_id: G-MARKET
+  role_id: partner-capability-evaluator
+  milestone_ids:
+  - M-FIRST-IMPRESSION
+  - M-LAYER
+  - M-FIT
+  - M-INQUIRY
+  branch_ids:
+  - B-MARKET
+  capability_ids:
+  - discover
+  - assess
+  - inquiry
+  risk_ids:
+  - R-HIERARCHY
+  - R-DIRECT-ENTRY
+  planned_run_ids:
+  - market-I01
+  readiness: ready
+- coverage_id: C-DETAIL
+  goal_id: G-DETAIL
+  role_id: ceo-services
+  milestone_ids:
+  - M-FIRST-IMPRESSION
+  - M-LAYER
+  - M-DIFFERENCE
+  - M-INQUIRY
+  branch_ids:
+  - B-DETAIL
+  capability_ids:
+  - discover
+  - assess
+  - inquiry
+  risk_ids:
+  - R-DIRECT-ENTRY
+  planned_run_ids:
+  - detail-I01
+  readiness: ready
+waivers: []

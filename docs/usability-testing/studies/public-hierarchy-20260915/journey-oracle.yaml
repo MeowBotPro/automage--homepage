@@ -1,0 +1,33 @@
+study_id: public-hierarchy-20260915
+coordinator_only: true
+status: frozen
+milestones:
+- milestone_id: M-FIRST-IMPRESSION
+  description: 在短暂首次曝光后，能够公开说出对页面的第一印象。
+  required: true
+- milestone_id: M-PRODUCT
+  description: 能够用自己的话说明 AutoMage 的类别和它处理的组织工作。
+  required: true
+- milestone_id: M-LAYER
+  description: 能够说明当前页面与产品、场景或能力层的关系。
+  required: true
+- milestone_id: M-FIT
+  description: 能够找到与自身业务问题相关的工作，或说明为什么暂不适合。
+  required: true
+- milestone_id: M-DIFFERENCE
+  description: 能够依据任务时机、产出或条件区分相近能力。
+  required: true
+- milestone_id: M-TRANSFER
+  description: 能够把理解迁移到一个非供应链组织问题。
+  required: true
+- milestone_id: M-INQUIRY
+  description: 能够带着业务问题和选定能力准备后续沟通，不把公开浏览当成已启用。
+  required: true
+handoffs: []
+risks:
+- risk_id: R-HIERARCHY
+  description: Market具体内容成为参与者对AutoMage的唯一记忆。
+- risk_id: R-DIRECT-ENTRY
+  description: 直接进入能力库或详情时丢失父级产品身份。
+- risk_id: R-TRANSFER
+  description: 参与者只能复述供应链案例，不能理解可迁移机制。

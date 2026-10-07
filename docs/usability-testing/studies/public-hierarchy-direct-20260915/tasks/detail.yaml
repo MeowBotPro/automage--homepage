@@ -1,0 +1,20 @@
+task_id: detail-I01
+goal_id: G-DETAIL
+role_id: ceo-services
+starting_url: http://127.0.0.1:3000/market/churn-autopsy
+goal: 在不离开当前页面前，先判断这项能力与哪个产品有关、能交付什么；之后自行比较相近做法，准备一份可以带去沟通的需求。
+business_context: 你经营一家订阅服务企业，最近有客户取消合作，团队还没有完整复盘；你也关心未来怎样改进客户挽回。你熟悉销售和客户服务，不懂软件实现。
+success_definition:
+- 形成有页面证据支撑的判断。
+- 说明仍需确认的问题。
+must_not_reveal:
+- click-path
+- selectors
+- deep-url
+- oracle
+- expected-product-category
+allowed_help: []
+data_contract: fresh browser-local selection; no external business writes
+side_effect_policy: isolated_write
+teardown: close owned browser session
+status: frozen

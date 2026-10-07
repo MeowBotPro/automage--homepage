@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useRef, useState, useCallback, useSyncExternalStore } from 'react';
-import { gsap, ScrollTrigger, gsapReady } from '@/lib/gsap';
+import { gsap, gsapReady } from '@/lib/gsap';
 
 /* ── Navigation items ── */
 interface NavItem {
@@ -12,11 +12,17 @@ interface NavItem {
   sectionId: string;
 }
 
+const SITE_LINKS = [
+  { href: '/', label: '首页' },
+  { href: '/scenarios/supply-chain', label: '场景' },
+  { href: '/market', label: 'Skill Market' },
+] as const;
+
 const NAV_ITEMS: NavItem[] = [
-  { label: '产品逻辑', sublabel: '从噪声到决策', sectionId: 'section-compare' },
-  { label: '信息闭环', sublabel: '六个节点，一个闭环', sectionId: 'section-loop' },
-  { label: '安全边界', sublabel: 'AI 可以建议，但不能越权', sectionId: 'section-security' },
-  { label: '决策说明书', sublabel: '关于 AutoMage 的问题', sectionId: 'section-faq' },
+  { label: '事件路径', sublabel: '从预警到可审阅对象', sectionId: 'section-compare' },
+  { label: '探索循环', sublabel: '六个节点，一个事件', sectionId: 'section-loop' },
+  { label: '授权与执行', sublabel: '人类门禁与结果回执', sectionId: 'section-security' },
+  { label: '系统边界', sublabel: 'Demo、系统与责任边界', sectionId: 'section-faq' },
 ];
 
 /* ── Status chip states ── */
@@ -26,12 +32,15 @@ interface StatusState {
 }
 
 const STATUS_MAP: Record<string, StatusState> = {
-  hero:     { label: 'Signal intake',  color: 'var(--color-brand-accent)' },
-  compare:  { label: 'Compressing',    color: 'var(--color-brand-accent)' },
-  loop:     { label: 'Loop active',    color: 'var(--color-brand-accent)' },
-  security: { label: 'Human gate',     color: 'var(--color-brand-accent-alt)' },
-  faq:      { label: 'Decision manual', color: 'var(--color-brand-accent)' },
-  footer:   { label: 'Loop closed',    color: 'var(--color-signal-success)' },
+  hero:     { label: 'Event incoming',       color: 'var(--color-brand-accent)' },
+  compare:  { label: 'Context compression',  color: 'var(--color-brand-accent)' },
+  loop:     { label: 'Explore loop',          color: 'var(--color-brand-accent)' },
+  security: { label: 'Human authorization',  color: 'var(--color-brand-accent-alt)' },
+  story:    { label: 'Execution trace',       color: 'var(--color-brand-accent)' },
+  value:    { label: 'Core transfer',         color: 'var(--color-brand-accent)' },
+  beta:     { label: 'Bring one event',       color: 'var(--color-brand-accent)' },
+  faq:      { label: 'System boundary',       color: 'var(--color-brand-accent)' },
+  footer:   { label: 'Journey viewed',        color: 'var(--color-brand-accent)' },
 };
 
 function subscribeReducedMotion(onChange: () => void) {
@@ -167,36 +176,53 @@ export default function CommandHeader() {
   }, []);
 
   useEffect(() => {
-    if (typeof window === 'undefined' || !gsapReady()) return;
-    const triggers: ScrollTrigger[] = [];
+    if (typeof window === 'undefined') return;
 
-    const heroEl = document.getElementById('section-hero');
-    if (heroEl) {
-      triggers.push(ScrollTrigger.create({
-        trigger: heroEl, start: 'top center', end: 'bottom center',
-        onEnter: () => updateStatus('hero'), onEnterBack: () => updateStatus('hero'),
-      }));
-    }
+    const trackedSections = [
+      ['hero', 'section-hero'],
+      ['compare', 'section-compare'],
+      ['loop', 'section-loop'],
+      ['security', 'section-security'],
+      ['story', 'section-story'],
+      ['value', 'section-value'],
+      ['beta', 'section-event-fit'],
+      ['beta', 'section-beta'],
+      ['faq', 'section-faq'],
+    ] as const;
 
-    for (const key of ['compare', 'loop', 'security', 'faq'] as const) {
-      const el = document.getElementById(`section-${key}`);
-      if (!el) continue;
-      triggers.push(ScrollTrigger.create({
-        trigger: el, start: 'top center', end: 'bottom center',
-        onEnter: () => updateStatus(key), onEnterBack: () => updateStatus(key),
-      }));
-    }
+    let frame = 0;
+    const syncSection = () => {
+      if (frame) return;
+      frame = window.requestAnimationFrame(() => {
+        frame = 0;
+        const marker = window.innerHeight * 0.5;
+        let current = 'hero';
 
-    const footerEl = document.querySelector('footer');
-    if (footerEl) {
-      triggers.push(ScrollTrigger.create({
-        trigger: footerEl, start: 'top bottom', end: 'bottom bottom',
-        onEnter: () => { setIsDark(true); updateStatus('footer'); },
-        onLeaveBack: () => { setIsDark(false); },
-      }));
-    }
+        for (const [key, sectionId] of trackedSections) {
+          const section = document.getElementById(sectionId);
+          if (section && section.getBoundingClientRect().top <= marker) current = key;
+        }
 
-    return () => { for (const st of triggers) st.kill(); };
+        const footer = document.querySelector('footer');
+        const footerRect = footer?.getBoundingClientRect();
+        const footerVisible = Boolean(
+          footerRect && footerRect.top < window.innerHeight && footerRect.bottom > 0,
+        );
+
+        setIsDark(footerVisible);
+        updateStatus(footerVisible ? 'footer' : current);
+      });
+    };
+
+    syncSection();
+    window.addEventListener('scroll', syncSection, { passive: true });
+    window.addEventListener('resize', syncSection);
+
+    return () => {
+      window.removeEventListener('scroll', syncSection);
+      window.removeEventListener('resize', syncSection);
+      if (frame) window.cancelAnimationFrame(frame);
+    };
   }, [updateStatus]);
 
   const handleNavClick = useCallback((sectionId: string) => {
@@ -264,6 +290,25 @@ export default function CommandHeader() {
           role="navigation"
           aria-label="页面导航"
         >
+          {SITE_LINKS.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              data-boot="nav"
+              style={{
+                padding: '7px 12px',
+                fontSize: 13,
+                fontWeight: 560,
+                color: '#F8FAFC',
+                fontFamily: 'var(--font-sans)',
+                textDecoration: 'none',
+                borderRadius: 999,
+                opacity: reducedMotion ? 1 : 0,
+              }}
+            >
+              {item.label}
+            </Link>
+          ))}
           {NAV_ITEMS.map((item) => {
             const isActive = `section-${activeSection}` === item.sectionId;
             return (
@@ -325,7 +370,7 @@ export default function CommandHeader() {
           data-boot="cta"
           style={{ gap: 10, flexShrink: 0, marginLeft: 12, opacity: reducedMotion ? 1 : 0 }}
         >
-          {/* 预约演示 — ghost */}
+          {/* 带来事件 — ghost */}
           <button
             onClick={() => handleNavClick('section-beta')}
             style={{
@@ -346,9 +391,9 @@ export default function CommandHeader() {
               e.currentTarget.style.color = 'rgba(248,250,252,0.78)';
             }}
           >
-            预约演示
+            带来事件
           </button>
-          {/* 申请内测 — primary white */}
+          {/* 参与内测 — primary white */}
           <button
             className="am-cta-primary"
             onClick={() => handleNavClick('section-beta')}
@@ -370,7 +415,7 @@ export default function CommandHeader() {
               e.currentTarget.style.boxShadow = 'none';
             }}
           >
-            申请内测
+            参与内测
             <span style={{ display: 'inline-block', transition: 'transform 0.2s' }}>
               &rarr;
             </span>
@@ -441,6 +486,8 @@ export default function CommandHeader() {
       <div
         className="am-command-drawer lg:hidden"
         data-open={menuOpen}
+        aria-hidden={!menuOpen}
+        inert={!menuOpen}
         style={{ position: 'fixed', inset: 0, zIndex: 99, pointerEvents: menuOpen ? 'auto' : 'none' }}
       >
         <div
@@ -484,6 +531,23 @@ export default function CommandHeader() {
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+            {SITE_LINKS.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={() => setMenuOpen(false)}
+                style={{
+                  padding: '12px 14px',
+                  borderRadius: 12,
+                  color: '#F8FAFC',
+                  textDecoration: 'none',
+                  fontSize: 15,
+                  fontWeight: 600,
+                }}
+              >
+                {item.label}
+              </Link>
+            ))}
             {NAV_ITEMS.map((item, i) => {
               const isActive = `section-${activeSection}` === item.sectionId;
               return (
@@ -541,7 +605,7 @@ export default function CommandHeader() {
               fontSize: 14, fontWeight: 500, cursor: 'pointer',
               color: 'var(--color-text-on-dark-muted)', fontFamily: 'var(--font-sans)',
             }}>
-              预约演示
+              带来事件
             </button>
             <button onClick={() => handleNavClick('section-beta')} style={{
               flex: 1, background: 'linear-gradient(135deg, var(--color-brand-primary), var(--color-brand-accent))', color: 'var(--color-text-on-dark)',
@@ -549,7 +613,7 @@ export default function CommandHeader() {
               fontSize: 14, fontWeight: 600, cursor: 'pointer',
               fontFamily: 'var(--font-sans)',
             }}>
-              申请内测
+              参与内测
             </button>
           </div>
 

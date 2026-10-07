@@ -1,0 +1,19 @@
+schema_version: 1
+status: coordinator_only
+study_id: market-ceo-scan
+journeys:
+  - id: ceo-ops-understand
+    role: manufacturing-ceo
+    semantic_milestones:
+      - 能说出页面是基座上的 Skill 目录，不是仓库软件
+      - 不把勾选理解成已经安装或部署
+      - 能指出至少两个业务域
+  - id: ceo-trade-compose
+    role: trade-services-ceo
+    semantic_milestones:
+      - 找到销售或客服相关项
+      - 打开一项并读到输入或产出
+      - 若存在了解清单，能放入至少两项且不出现安装成功
+invariants:
+  - 页面不得出现 Console 开通或安装命令
+  - 选择不得被理解成部署成功

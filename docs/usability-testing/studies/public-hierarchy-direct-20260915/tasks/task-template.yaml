@@ -1,0 +1,13 @@
+task_id: replace-me
+goal_id: replace-me
+role_id: replace-me
+starting_url: https://example.invalid/
+goal: Describe the real-world goal without UI instructions.
+business_context: Describe only context the real user would have.
+success_definition: []
+must_not_reveal: [click-path, selectors, deep-url, oracle]
+allowed_help: []
+data_contract: isolated-fixture
+side_effect_policy: read_only
+teardown: none
+status: proposed

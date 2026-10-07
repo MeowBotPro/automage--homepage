@@ -1,0 +1,15 @@
+study_id: supply-chain-slice-20261007
+status: blocked
+current_iteration: I03
+iteration_cap: 3
+next_action: owner-decision-on-targeted-retest-of-F-010-F-016
+developer_approval:
+  status: frozen
+  approved_by: coordinator-within-owner-handoff-20261007
+  approved_at: '2026-10-07'
+cap_change:
+  from: 2
+  to: 3
+  reason: I02 中 A/B 已经成立，但 F-010（手机端到不了第 6 天的核心时刻）两轮表现一致，修正尚未经过参与者验证。为此增加一轮针对性复测，只跑两名参与者，之后不再扩展。
+  decided_by: coordinator-within-owner-handoff-20261007
+  decided_at: '2026-10-07'

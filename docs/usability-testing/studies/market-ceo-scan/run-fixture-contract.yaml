@@ -1,0 +1,37 @@
+study_id: market-ceo-scan
+coordinator_only: true
+status: proposed
+fixture_mode: required
+identity_strategy:
+  source: proposed
+  required_identities: []
+  relationship_requirements: []
+  credential_delivery: out_of_band
+  secrets_location: repository_external
+  browser_profile_strategy: fresh_per_run
+data_boundary:
+  baseline: empty
+  allowed_seed: []
+  prohibited_seed: []
+  participant_outcomes_precreated: false
+  ownership_discovery: []
+stage_audits: []
+runtime_contract:
+  entrypoint: ""
+  version_probe: ""
+  expected_version: ""
+teardown:
+  required: true
+  supported_lifecycle: ""
+  cleanup_scope: []
+  credentials_cleanup: required
+  browser_state_cleanup: required
+  residue_verification: ""
+readiness:
+  status: blocked
+  evidence_refs: []
+  blocker: Freeze and implement the repository-specific run fixture before participant preparation.
+developer_approval:
+  status: proposed
+  approved_by: ""
+  approved_at: ""

@@ -1,0 +1,19 @@
+study_id: public-hierarchy-20260915
+coordinator_only: true
+status: frozen
+branches:
+- branch_id: B-HOME
+  goal_id: G-HOME
+  invariants:
+  - 产品类别先于能力目录被理解。
+  - 供应链可以是案例，不得被当成唯一产品边界。
+- branch_id: B-MARKET
+  goal_id: G-MARKET
+  invariants:
+  - 直接进入能力页仍能找到父级产品身份。
+  - 能力展示不等于组织启用。
+- branch_id: B-DETAIL
+  goal_id: G-DETAIL
+  invariants:
+  - 相近能力按实际任务差异选择。
+  - 咨询准备不代表提交或部署。

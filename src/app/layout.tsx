@@ -1,9 +1,5 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
-import FlowNavigation from "@/components/svg/FlowNavigation";
-import PageParticles from "@/components/svg/PageParticles";
-import LenisProvider from "@/components/ui/LenisProvider";
-import CommandHeader from "@/components/ui/CommandHeader";
 import "./globals.css";
 
 const inter = Inter({
@@ -31,7 +27,6 @@ export default function RootLayout({
   return (
     <html lang="zh-CN" className={`${inter.variable} ${jetbrainsMono.variable} antialiased`}>
       <body>
-        <LenisProvider>
           <div
             className="main-content-wrapper"
             style={{
@@ -40,12 +35,8 @@ export default function RootLayout({
               background: 'var(--color-surface-page)',
             }}
           >
-            <CommandHeader />
-            <PageParticles />
-            <FlowNavigation />
             {children}
           </div>
-        </LenisProvider>
       </body>
     </html>
   );

@@ -1,0 +1,20 @@
+task_id: home-I01
+goal_id: G-HOME
+role_id: ceo-manufacturing
+starting_url: http://127.0.0.1:3000/
+goal: 第一次收到同事发来的这个网站。自行判断它是什么、是否值得带给业务团队讨论，以及你还想确认什么。
+business_context: 你管理一家有工厂和供应商的制造企业，团队经常花时间追问进度、补资料和处理跨部门协作。你熟悉业务，不懂软件实现。
+success_definition:
+- 形成有页面证据支撑的业务判断。
+- 说明仍需确认的条件或问题。
+must_not_reveal:
+- click-path
+- selectors
+- deep-url
+- oracle
+- expected-product-category
+allowed_help: []
+data_contract: fresh browser-local selection; no external business writes
+side_effect_policy: isolated_write
+teardown: close owned browser session
+status: frozen

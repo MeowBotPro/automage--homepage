@@ -1,3 +1,6 @@
 - [Supabase database endpoint](supabase-database-endpoint.md) — use the ap-southeast-1 session pooler; direct db host did not resolve locally.
 - [Beta invite code scarcity](beta-invite-code-scarcity.md) — invite codes need lifecycle state, expiry, usage count, and submit-time validation.
 - [Surface command token fallback](surface-command-token-fallback.md) — critical dark-section backgrounds should use `var(--color-surface-command, #08111F)`.
+- [Homepage journey invariants](homepage-journey-invariants.md) — preserve the supply-chain narrative order, Compare 3/5 motion balance, responsive InfoLoop behavior, and standalone Beta conversion path.
+- [Skill corpus inventory](skill-corpus-inventory.md) — 191 third-party role skills in `skill/*.zip`; not Core and not the homepage WMS story; full table in `.workflow/.scratchpad/skill-inventory.md`.
+- [Public entry direction](public-entry-direction.md) — website first; supply-chain is a scenario page not the product; base + composable Skills; not a deploy/cluster story.

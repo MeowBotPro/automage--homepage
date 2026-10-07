@@ -1,0 +1,18 @@
+study_id: public-hierarchy-direct-20260915
+coordinator_only: true
+status: frozen
+goals:
+- goal_id: G-MARKET
+  role_id: partner-capability-evaluator
+  goal: 从直接进入的公开能力页面判断其所属产品和合作价值，并准备一个合作问题。
+  required_capability_ids:
+  - discover
+  - assess
+  - inquiry
+- goal_id: G-DETAIL
+  role_id: ceo-services
+  goal: 从直接进入的能力详情判断适用性、产出和所属产品，并准备咨询意向。
+  required_capability_ids:
+  - discover
+  - assess
+  - inquiry

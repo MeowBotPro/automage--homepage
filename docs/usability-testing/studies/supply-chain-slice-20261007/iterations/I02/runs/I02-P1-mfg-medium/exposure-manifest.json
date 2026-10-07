@@ -1,0 +1,9 @@
+{
+  "isolation_level": "best_effort",
+  "fresh_model_session": true,
+  "fresh_browser_profile": true,
+  "evidence_output_root": "/tmp/rcut-sc-20261007/I02-P1-mfg-medium",
+  "exposed_files": [
+    "/tmp/rcut-sc-20261007/I02-P1-mfg-medium/packet.md"
+  ]
+}

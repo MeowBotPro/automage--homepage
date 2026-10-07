@@ -1,0 +1,32 @@
+role_id: replace-me
+display_name: Replace Me
+real_world_context: Describe the real-world context.
+domain_knowledge:
+  knows: []
+  does_not_know: []
+product_knowledge:
+  prior_exposure: none
+  knows: []
+  does_not_know: []
+digital_fluency: medium
+permissions:
+  allowed_product_tools: [agent-browser]
+  allowed_evidence_tools: [scoped-evidence-writer]
+  evidence_output_root: <system-temp>/rcut/<study-id>/<iteration-id>/<run-id>
+  allowed_entrypoints: []
+  allowed_external_help: []
+  forbidden_tools: [shell, source-code, api, database]
+  forbidden_information: [oracle, implementation, selectors, prior-runs]
+sidecar_policy:
+  enabled: false
+  allowed_topics: []
+  forbidden_topics: [click-path, deep-url, implementation, oracle]
+stop_conditions:
+  - task_completed
+  - two_no_progress_attempts
+  - forbidden_knowledge_required
+  - unsafe_or_irreversible_action
+developer_approval:
+  status: proposed
+  approved_by: ""
+  approved_at: ""

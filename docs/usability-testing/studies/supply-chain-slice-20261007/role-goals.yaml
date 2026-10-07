@@ -1,0 +1,12 @@
+study_id: supply-chain-slice-20261007
+coordinator_only: true
+status: frozen
+goals:
+- goal_id: G-mfg-understand
+  role_id: ceo-manufacturing
+  outcome: 读完这个例子后，能说清交给 AutoMage 之后它替企业做了什么、自己还要管什么，并能判断类似工作能否交给它。
+  required_capability_ids: [scenario-world]
+- goal_id: G-svc-transfer
+  role_id: ceo-services
+  outcome: 读完这个供应链例子后，能判断 AutoMage 是否也能接手自己订阅服务业务里的工作，以及交给它时要定下哪些边界。
+  required_capability_ids: [scenario-world]

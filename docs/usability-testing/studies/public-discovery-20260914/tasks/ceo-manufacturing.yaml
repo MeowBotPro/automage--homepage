@@ -1,0 +1,18 @@
+task_id: ceo-manufacturing-task
+goal_id: G-OVERVIEW
+role_id: ceo-manufacturing
+starting_url: http://127.0.0.1:3000/
+goal: 自行了解它是否值得带给业务团队讨论。说清它能参与哪些工作、你会期待得到什么，以及还想确认什么。允许判断不适合。
+business_context: 你管理一家有工厂和供应商的制造企业。团队经常花时间追问进度、补资料、处理采购沟通。你熟悉业务，不懂开发工具。第一次收到同事发来的这个网站。
+success_definition:
+- 形成有页面证据支撑的业务判断；准备必要的沟通信息。
+must_not_reveal:
+- click-path
+- selectors
+- deep-url
+- oracle
+allowed_help: []
+data_contract: fresh browser-local selection; no external business writes
+side_effect_policy: isolated_write
+teardown: close owned browser session
+status: frozen

@@ -1,42 +1,11 @@
-import HeroSection from '@/components/sections/HeroSection';
-import LogoMarquee from '@/components/ui/LogoMarquee';
-import CompareSection from '@/components/sections/CompareSection';
-import InfoLoopSection from '@/components/sections/InfoLoopSection';
-import ValueCardsSection from '@/components/sections/ValueCardsSection';
-import MetricsBar from '@/components/sections/MetricsBar';
-import StorySection from '@/components/sections/StorySection';
-import SocialProof from '@/components/sections/SocialProof';
-import SecuritySection from '@/components/sections/SecuritySection';
-import BetaSection from '@/components/sections/BetaSection';
-import FAQSection from '@/components/sections/FAQSection';
-import Footer from '@/components/sections/Footer';
+import type { Metadata } from "next";
+import SystemHome from "@/components/system-home/SystemHome";
 
-export default function Home() {
-  return (
-    <main>
-      <HeroSection />
+export const metadata: Metadata = {
+  title: "AutoMage",
+  description: "组织信息流协作与执行基座。让分散信息变成有人负责、能够推进、可以追踪结果的工作。",
+};
 
-      <LogoMarquee />
-
-      <CompareSection />
-
-      <InfoLoopSection />
-
-      <ValueCardsSection />
-
-      <MetricsBar />
-
-      <SecuritySection />
-
-      <StorySection />
-
-      <SocialProof />
-
-      <BetaSection />
-
-      <FAQSection />
-
-      <Footer />
-    </main>
-  );
+export default function Page() {
+  return <SystemHome />;
 }

@@ -21,7 +21,7 @@ interface NoiseFragment {
 
 const NOISE_FRAGMENTS = [
   {
-    text: '日报：今天客户说交付要延期…',
+    text: 'WMS：PA66 库存 126t',
     x: '5%',
     y: '10%',
     rotate: -3,
@@ -33,7 +33,7 @@ const NOISE_FRAGMENTS = [
     settledOpacity: 0,
   },
   {
-    text: '群聊消息：@所有人 项目进度？',
+    text: 'ERP：在途订单 80t',
     x: '60%',
     y: '5%',
     rotate: 2,
@@ -45,7 +45,7 @@ const NOISE_FRAGMENTS = [
     settledOpacity: 0.62,
   },
   {
-    text: 'Excel：Q2预算表_v3_最终版_改',
+    text: 'MES：下周排产上调',
     x: '15%',
     y: '45%',
     rotate: -2,
@@ -57,7 +57,7 @@ const NOISE_FRAGMENTS = [
     settledOpacity: 0,
   },
   {
-    text: '会议纪要：讨论了但没结论',
+    text: 'SRM：主供应商延迟 4 天',
     x: '55%',
     y: '40%',
     rotate: 4,
@@ -69,7 +69,7 @@ const NOISE_FRAGMENTS = [
     settledOpacity: 0,
   },
   {
-    text: '口头传达：老板说尽快搞定',
+    text: '财务：加急溢价上限 8%',
     x: '8%',
     y: '75%',
     rotate: -1,
@@ -81,7 +81,7 @@ const NOISE_FRAGMENTS = [
     settledOpacity: 0.86,
   },
   {
-    text: '邮件：FW: FW: FW: 请确认',
+    text: '销售：客户订单不可延期',
     x: '65%',
     y: '70%',
     rotate: 3,
@@ -93,7 +93,7 @@ const NOISE_FRAGMENTS = [
     settledOpacity: 0.6,
   },
   {
-    text: '钉钉：已读未回',
+    text: '群聊：是否能跨仓调拨？',
     x: '35%',
     y: '20%',
     rotate: -4,
@@ -105,7 +105,7 @@ const NOISE_FRAGMENTS = [
     settledOpacity: 0.58,
   },
   {
-    text: '周报：这周做了很多事情…',
+    text: '采购：备选供应商待确认',
     x: '40%',
     y: '60%',
     rotate: 1,
@@ -123,9 +123,9 @@ const RETAINED_NOISE_COUNT = NOISE_FRAGMENTS.length - TRANSFORMED_NOISE_COUNT;
 
 /* ── Decision Cards ── */
 const DECISIONS = [
-  { owner: '张明', deadline: '5月15日', risk: '高', action: '协调交付资源，通知客户', riskColor: 'var(--color-signal-risk)' },
-  { owner: '李华', deadline: '5月18日', risk: '中', action: '更新Q2预算，提交审批', riskColor: 'var(--color-signal-warning)' },
-  { owner: '王磊', deadline: '5月20日', risk: '低', action: '安排下周复盘会议', riskColor: 'var(--color-signal-success)' },
+  { owner: '方案 A', deadline: '3 天', risk: '待确认', action: '跨仓调拨 42t，确认华南仓最低安全库存', riskColor: 'var(--color-signal-warning)' },
+  { owner: '方案 B', deadline: '2 天', risk: '溢价', action: '主供应商加急 50t，确认书面交期承诺', riskColor: 'var(--color-signal-risk)' },
+  { owner: '采购负责人', deadline: '授权后', risk: '门禁', action: '审阅当前版本，决定批准、驳回或要求补证', riskColor: 'var(--color-signal-success)' },
 ];
 
 export default function CompareSection() {
@@ -306,7 +306,7 @@ export default function CompareSection() {
           marginBottom: 64,
         }}
       >
-        从噪声到决策
+        散落事实，如何成为可审阅的决定
       </h2>
 
       {/* Desktop: 3-zone layout */}

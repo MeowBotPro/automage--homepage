@@ -1,0 +1,57 @@
+study_id: supply-chain-slice-20261007
+coordinator_only: true
+status: frozen
+comprehension_targets:
+- target_id: A
+  required: true
+  expected: AutoMage 接手的是「原料缺料风险」这一项工作本身——从预警持续跟进到风险解除：取数、核对、追问同事、推演、整理方案、分派任务、跟进回执、发现变化、保留上下文。
+  failure_modes: [只说「做数据分析/给建议」, 把它说成替人做决定, 说成一套供应链系统]
+- target_id: B
+  required: true
+  expected: 企业原有＝WMS/ERP/MES/SRM 等系统、同事与角色、安全库存线/合同/预算等规则；AutoMage 行为＝取数、核对、追问、推演、整理、分派、跟进；委托边界＝企业规定它能自己做到哪、什么必须回来找人、什么不能做、怎样算完成。
+  failure_modes: [只分出两类（企业/AI）, 把系统或规则归给 AutoMage, 认为 AutoMage 就是供应链软件]
+- target_id: C
+  required: false
+  expected: 依据委托规则预测。第一次的规矩下任何执行中变化都回来找人；改为 5% 规矩后，额外成本 ≤5% 自行调整并报备，>5% 或需改客户交期仍回来找人。
+  failure_modes: [凭「AI 很聪明/重要程度」预测而不看规则, 无法给出依据]
+- target_id: D
+  required: false
+  expected: 识别「改规矩重放」为演示/情景模拟和产品方向，不是现在就能用的设置页。
+milestones:
+- milestone_id: M1-time
+  name: 推进时间，并看到工作状态随每天的事实变化（含原因）
+  required: true
+- milestone_id: M2-first-decision
+  name: 作为负责人作出初次决定（选择方案、处理未书面确认的条件、签批）
+  required: true
+  requires: [M1-time]
+- milestone_id: M3-reopen
+  name: 经历已批准方案的前提失效，工作回到自己面前，并同时看到原判断依据与变化内容
+  required: true
+  requires: [M2-first-decision]
+- milestone_id: M4-continuity
+  name: 重新决定后，执行、回执与关闭仍在同一项工作中，且两次决定都被保留
+  required: true
+  requires: [M3-reopen]
+- milestone_id: M5-lens
+  name: 使用拆开视图区分页面元素的归属
+  required: false
+  requires: [M1-time]
+- milestone_id: M6-replay
+  name: 改变一条自主边界后重历同一变化，感知「这次没有被打扰，只收到报备」
+  required: false
+  requires: [M3-reopen]
+handoffs: []
+risks:
+- risk_id: R-supply-chain-software
+  severity: P1
+  description: 页面被理解为一套供应链软件，而不是可配置的工作委托框架。
+- risk_id: R-fake-config
+  severity: P1
+  description: 重放被误认为已上线的客户配置界面。
+- risk_id: R-stall-decision
+  severity: P2
+  description: 访客卡在初次决定或重新决定，无法推进时间。
+- risk_id: R-lens-ignored
+  severity: P2
+  description: 访客没有发现或不理解拆开视图，三层区分只能靠回访追问得到。

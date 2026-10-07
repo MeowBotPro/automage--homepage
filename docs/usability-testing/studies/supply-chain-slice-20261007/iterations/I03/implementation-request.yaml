@@ -1,0 +1,53 @@
+schema_version: usability-implementation/v1
+request_id: supply-chain-slice-20261007-I03-R1
+study_id: supply-chain-slice-20261007
+iteration_id: I03
+status: frozen
+profile: patch
+patch_lineage:
+  full_baseline_ref: docs/automage-website-implementation-handoff-20261007.md
+  surface_keys: [scenarios-supply-chain]
+  prior_patch_request_ids: [supply-chain-slice-20261007-I01-R1, supply-chain-slice-20261007-I02-R1]
+  cumulative_dimensions_changed: [discoverability, terminology, decision-transparency, mobile-layout, mobile-pacing, evidence-placement, scenario-realism, replay-gating]
+baseline_refs:
+  - path: docs/usability-testing/studies/supply-chain-slice-20261007/iterations/I03/findings.md
+    role: findings
+finding_ids: [F-010, F-012, F-015, F-016]
+observed_problem: 手机端固定底栏遮住页面末尾；重放要等 v2 签批后才解锁；首屏说明对低熟练度读者太术语化；手机端每天的阅读量偏大。
+affected:
+  role_ids: [ceo-manufacturing, ceo-services]
+  goal_ids: [G-mfg-understand, G-svc-transfer]
+  milestone_ids: [M3-reopen, M6-replay]
+  capability_ids: [scenario-world]
+  journey_ids: []
+  journey_step_ids: []
+scope:
+  routes: [/scenarios/supply-chain]
+  modules: [src/components/supply-chain, src/lib/supply-chain-world.ts, src/app/scenarios/supply-chain/page.tsx]
+  include: [F-010, F-012, F-015, F-016]
+  exclude: [首页, /market, /contact, 全局 design system]
+requirements_delta:
+  - 手机端滚过场景区后时间条让开，返回场景区时恢复。
+  - 第 6 天退回发生后即可进入重放；第一次未签 v2 时，对照表显示「还没定」，退出后恢复到待决定的第 6 天。
+  - 首屏「已实现 / 产品方向」改为白话，措辞保守。
+  - 手机端「依据」默认只显示当天新增的条目和仍未知的条目；邀请只在相关当天和次日出现。
+design_delta:
+  required: false
+  design_repo_refs: []
+  changed_states: [mobile-bar-away, replay-unlocked-at-reopen, mobile-compact-basis]
+  forbidden_patterns: [在演示 UI 上逐块标注已实现]
+business_invariants:
+  - 首次与重放在第 0–5 天和第 6 天的变化事件上完全相同；未签 v2 时，重放对照不得替访客编造 v2。
+verification:
+  assertion_refs: [tests/supply-chain-world.test.cjs]
+  unit: [node --test tests/supply-chain-world.test.cjs]
+  runtime: [next build --webpack, 生产构建 E2E：四种决策组合到第 14 天、两种 v1 的重放、未签 v2 时的重放与返回、手机底栏、减少动态效果与键盘]
+  journey_steps: []
+  teardown_required: false
+retest_contract: 已达 iteration_cap；本轮实现没有参与者复测，在收敛报告中列为未验证。
+full_cr_triggers: []
+approval:
+  mode: manual
+  status: frozen
+  approved_by: coordinator-within-owner-handoff-20261007
+  approved_at: '2026-10-07'

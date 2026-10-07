@@ -1,0 +1,39 @@
+study_id: supply-chain-slice-20261007
+coordinator_only: true
+status: frozen
+rows:
+- coverage_id: C-mfg
+  role_id: ceo-manufacturing
+  goal_id: G-mfg-understand
+  milestone_ids: [M1-time, M2-first-decision, M3-reopen, M4-continuity, M5-lens, M6-replay]
+  branch_ids: [B-mfg-free-explore]
+  capability_ids: [scenario-world]
+  risk_ids: [R-supply-chain-software, R-fake-config, R-stall-decision, R-lens-ignored]
+  planned_run_ids: [I01-P1-mfg-medium, I01-P2-mfg-low, I02-P1-mfg-medium, I02-P2-mfg-low, I03-P2-mfg-low]
+  readiness: ready
+- coverage_id: C-svc
+  role_id: ceo-services
+  goal_id: G-svc-transfer
+  milestone_ids: [M1-time, M3-reopen]
+  branch_ids: [B-svc-transfer]
+  capability_ids: [scenario-world]
+  risk_ids: [R-supply-chain-software, R-fake-config]
+  planned_run_ids: [I01-P3-svc, I02-P3-svc, I03-P3-svc]
+  readiness: ready
+waivers:
+- type: capability
+  id: overview
+  reason: 本研究只评估场景页 vertical slice（handoff §1.6），首页不在范围内。
+  approved_by: coordinator-within-owner-handoff-20261007
+- type: capability
+  id: discover
+  reason: Capability 阶段另行研究。
+  approved_by: coordinator-within-owner-handoff-20261007
+- type: capability
+  id: assess
+  reason: Capability 阶段另行研究。
+  approved_by: coordinator-within-owner-handoff-20261007
+- type: capability
+  id: inquiry
+  reason: 联系页行为不在本 slice 范围；本研究不提交任何表单。
+  approved_by: coordinator-within-owner-handoff-20261007

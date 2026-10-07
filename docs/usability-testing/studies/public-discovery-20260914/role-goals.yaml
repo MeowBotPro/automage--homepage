@@ -1,0 +1,18 @@
+study_id: public-discovery-20260914
+coordinator_only: true
+status: frozen
+goals:
+- goal_id: G-OVERVIEW
+  role_id: ceo-manufacturing
+  goal: 判断系统能如何参与企业工作，以及是否值得带给业务团队讨论。
+  required_capability_ids:
+  - overview
+  - discover
+  - assess
+- goal_id: G-CHOICE
+  role_id: ceo-services
+  goal: 针对客户流失选择合适的支持方式，分清相近选择并准备沟通材料。
+  required_capability_ids:
+  - discover
+  - assess
+  - inquiry

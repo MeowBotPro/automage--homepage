@@ -1,0 +1,14 @@
+study_id: public-hierarchy-direct-20260915
+coordinator_only: true
+status: frozen
+branches:
+- branch_id: B-MARKET
+  goal_id: G-MARKET
+  invariants:
+  - 第一印象在离开入口前记录。
+  - 公开能力不被理解为组织已启用。
+- branch_id: B-DETAIL
+  goal_id: G-DETAIL
+  invariants:
+  - 详情产出与父级关系都能自包含说明。
+  - 咨询准备不等于真实提交。

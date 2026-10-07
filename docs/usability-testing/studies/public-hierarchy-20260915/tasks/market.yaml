@@ -1,0 +1,20 @@
+task_id: market-I01
+goal_id: G-MARKET
+role_id: partner-capability-evaluator
+starting_url: http://127.0.0.1:3000/market
+goal: 自行判断这个页面对什么产品和工作有帮助，找到一个值得继续讨论的方向，并说明你会向合作方问什么。
+business_context: 你负责评估企业数字化合作机会，关心组织协作、已有工作入口和可展示成果。你第一次接触这个网站。
+success_definition:
+- 形成有页面证据支撑的业务判断。
+- 说明仍需确认的条件或问题。
+must_not_reveal:
+- click-path
+- selectors
+- deep-url
+- oracle
+- expected-product-category
+allowed_help: []
+data_contract: fresh browser-local selection; no external business writes
+side_effect_policy: isolated_write
+teardown: close owned browser session
+status: frozen

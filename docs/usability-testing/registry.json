@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "maturity": "alpha",
+  "studies": [
+    {
+      "study_id": "market-ceo-scan",
+      "status": "planning",
+      "path": "studies/market-ceo-scan"
+    },
+    {
+      "study_id": "public-discovery-20260914",
+      "status": "planning",
+      "path": "studies/public-discovery-20260914"
+    },
+    {
+      "study_id": "public-hierarchy-20260915",
+      "status": "planning",
+      "path": "studies/public-hierarchy-20260915"
+    },
+    {
+      "study_id": "public-hierarchy-direct-20260915",
+      "status": "planning",
+      "path": "studies/public-hierarchy-direct-20260915"
+    },
+    {
+      "study_id": "supply-chain-slice-20261007",
+      "status": "blocked",
+      "path": "studies/supply-chain-slice-20261007"
+    }
+  ]
+}

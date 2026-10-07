@@ -1,0 +1,163 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: automage
+  labels:
+    app.kubernetes.io/name: automage-webpage
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: automage-webpage
+  namespace: automage
+  labels:
+    app.kubernetes.io/name: automage-webpage
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: automage-webpage
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: automage-webpage
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - deepseek1
+                      - neko-dashboard
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - deepseek1
+            - weight: 50
+              preference:
+                matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - neko-dashboard
+      initContainers:
+        - name: migrate
+          image: docker.io/automage-local/homepage:20260825-r6
+          imagePullPolicy: IfNotPresent
+          command:
+            - sh
+            - -c
+          args:
+            - cd /app/migrate && ./node_modules/.bin/prisma migrate deploy
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: automage-database
+                  key: DATABASE_URL
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            runAsNonRoot: true
+      containers:
+        - name: homepage
+          image: docker.io/automage-local/homepage:20260825-r6
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 3000
+              protocol: TCP
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: automage-database
+                  key: DATABASE_URL
+            - name: HOSTNAME
+              value: 0.0.0.0
+            - name: PORT
+              value: "3000"
+            - name: NEXT_TELEMETRY_DISABLED
+              value: "1"
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 3
+            periodSeconds: 5
+            timeoutSeconds: 2
+            failureThreshold: 6
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 15
+            timeoutSeconds: 3
+            failureThreshold: 3
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 1
+              memory: 512Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            runAsNonRoot: true
+      securityContext:
+        runAsUser: 1001
+        runAsGroup: 1001
+        seccompProfile:
+          type: RuntimeDefault
+      terminationGracePeriodSeconds: 30
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: automage-webpage
+  namespace: automage
+  labels:
+    app.kubernetes.io/name: automage-webpage
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: automage-webpage
+  ports:
+    - name: http
+      port: 8080
+      targetPort: http
+      protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: automage-webpage
+  namespace: neko-service
+  labels:
+    app.kubernetes.io/name: automage-webpage
+spec:
+  type: ExternalName
+  externalName: automage-webpage.automage.svc.cluster.local
+  ports:
+    - name: http
+      port: 8080
+      protocol: TCP

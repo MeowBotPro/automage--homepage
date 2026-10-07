@@ -1,0 +1,48 @@
+schema_version: usability-implementation/v1
+request_id: public-hierarchy-20260915-I01-pending
+study_id: public-hierarchy-20260915
+iteration_id: I01
+status: draft
+profile: patch
+patch_lineage:
+  full_baseline_ref: docs/usability-testing/studies/public-hierarchy-20260915/study-spec.md
+  surface_keys: [pending]
+  prior_patch_request_ids: []
+  cumulative_dimensions_changed: []
+baseline_refs:
+  - path: docs/usability-testing/studies/public-hierarchy-20260915/study-spec.md
+    role: study
+finding_ids: [pending]
+observed_problem: pending
+affected:
+  role_ids: []
+  goal_ids: []
+  milestone_ids: []
+  capability_ids: []
+  journey_ids: []
+  journey_step_ids: []
+scope:
+  routes: []
+  modules: []
+  include: []
+  exclude: []
+requirements_delta: [pending]
+design_delta:
+  required: false
+  design_repo_refs: []
+  changed_states: []
+  forbidden_patterns: []
+business_invariants: [pending]
+verification:
+  assertion_refs: []
+  unit: []
+  runtime: []
+  journey_steps: []
+  teardown_required: false
+retest_contract: pending
+full_cr_triggers: [shared-contract-eligibility-failed]
+approval:
+  mode: manual
+  status: proposed
+  approved_by: ""
+  approved_at: ""

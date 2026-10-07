@@ -1,0 +1,58 @@
+schema_version: usability-implementation/v1
+request_id: supply-chain-slice-20261007-I01-R1
+study_id: supply-chain-slice-20261007
+iteration_id: I01
+status: frozen
+profile: patch
+patch_lineage:
+  full_baseline_ref: docs/automage-website-implementation-handoff-20261007.md
+  surface_keys: [scenarios-supply-chain]
+  prior_patch_request_ids: []
+  cumulative_dimensions_changed: [discoverability, terminology, decision-transparency, mobile-layout]
+baseline_refs:
+  - path: docs/usability-testing/studies/supply-chain-slice-20261007/study-spec.md
+    role: study
+  - path: docs/usability-testing/studies/supply-chain-slice-20261007/iterations/I01/findings.md
+    role: findings
+finding_ids: [F-001, F-002, F-003, F-004, F-005, F-006, F-007, F-008]
+observed_problem: 三名合成参与者都没有用到拆开视图和改规矩重放；签批前看不到前提；人的决定不在当天记录里；第 6 天沿用第 2 天的报价；工作单归属不明；术语负担重；窄屏折叠了委托条款；「哪些已经实现」离首屏太远。
+affected:
+  role_ids: [ceo-manufacturing, ceo-services]
+  goal_ids: [G-mfg-understand, G-svc-transfer]
+  milestone_ids: [M2-first-decision, M3-reopen, M5-lens, M6-replay]
+  capability_ids: [scenario-world]
+  journey_ids: []
+  journey_step_ids: []
+scope:
+  routes: [/scenarios/supply-chain]
+  modules: [src/components/supply-chain, src/lib/supply-chain-world.ts, src/app/scenarios/supply-chain/page.tsx]
+  include: [F-001..F-008]
+  exclude: [首页, /market, /contact, 全局 design system]
+requirements_delta:
+  - 拆开视图与重放在相关时刻出现浏览控件样式的邀请；重放在处理完第 6 天后即可进入，未解锁时说明原因。
+  - 方案在签批前列出前提，建议附理由；签批后的决定 v1/v2 含义写明。
+  - 人的签批进入当天的消息流，与 AutoMage 动作、系统消息区分。
+  - 第 6 天先复核供应商 C 的现货与价格，再给办法或自行调整；首次与重放共享这段事件。
+  - 工作单标明归属；「推演」改为「测算」；引导语不用「浅色纸面」；回执解释为对方的确认。
+  - 窄屏显示全部 7 条委托；「回到你这里」改为非交互标记；首屏提供「哪些已经实现？」链接。
+design_delta:
+  required: false
+  design_repo_refs: []
+  changed_states: [lens-invite, replay-invite, replay-locked-explanation]
+  forbidden_patterns: [把重放做成已上线的设置页, 在演示 UI 上逐块标注已实现, 常驻动画]
+business_invariants:
+  - 首次与重放在第 0–5 天及第 6 天的变化事件（含复核）完全相同，差异只来自委托第 5 条。
+  - 任一方案组合下，第 6 天前提失效，并在第 14 天以全部回执关闭。
+verification:
+  assertion_refs: [tests/supply-chain-world.test.cjs]
+  unit: [node --test tests/supply-chain-world.test.cjs]
+  runtime: [next build --webpack, agent-browser 走查第 0、3、6 天与手机视口]
+  journey_steps: []
+  teardown_required: false
+retest_contract: I02 使用全新参与者（同角色、同任务、同 40 次操作预算），参与者包只增加 agent-browser 屏幕外点击的工具说明（E-001）。
+full_cr_triggers: []
+approval:
+  mode: manual
+  status: frozen
+  approved_by: coordinator-within-owner-handoff-20261007
+  approved_at: '2026-10-07'

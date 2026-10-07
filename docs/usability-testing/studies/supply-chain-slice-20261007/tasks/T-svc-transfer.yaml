@@ -1,0 +1,15 @@
+task_id: T-svc-transfer
+goal_id: G-svc-transfer
+role_id: ceo-services
+starting_url: http://127.0.0.1:3108/scenarios/supply-chain
+goal: 弄明白 AutoMage 在这个例子里替那家企业做了什么，判断它能不能接手你们公司的某项工作。
+business_context: 你经营一家订阅服务公司，常为客户取消、续费跟进、销售和客服交接头疼。有人说 AutoMage 能接手公司里的具体工作，发来这个页面作为例子，虽然例子是制造业的。你以前没听说过 AutoMage。
+success_definition:
+- 参与者自己认为已经看明白，或在时间预算内停下。
+- 回访回答作为理解证据，由协调者对照 oracle 判断，不告知参与者。
+must_not_reveal: [click-path, selectors, deep-url, oracle, three-layer-model, replay-feature, lens-feature]
+allowed_help: []
+data_contract: deterministic-frontend-demo
+side_effect_policy: read_only
+teardown: close-browser-session
+status: frozen

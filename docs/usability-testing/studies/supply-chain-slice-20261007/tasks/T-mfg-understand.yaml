@@ -1,0 +1,15 @@
+task_id: T-mfg-understand
+goal_id: G-mfg-understand
+role_id: ceo-manufacturing
+starting_url: http://127.0.0.1:3108/scenarios/supply-chain
+goal: 弄明白如果把类似的工作交给 AutoMage，它会替你做什么、你自己还要管什么；判断值不值得继续了解。
+business_context: 你经营一家有工厂、仓库和多家供应商的制造企业，经常遇到缺料、交期变化和跨部门扯皮。一位朋友把这个页面发给你，说这是 AutoMage 的一个完整例子，建议你花十来分钟看看。你以前没听说过 AutoMage。
+success_definition:
+- 参与者自己认为已经看明白，或在时间预算内停下。
+- 回访回答作为理解证据，由协调者对照 oracle 判断，不告知参与者。
+must_not_reveal: [click-path, selectors, deep-url, oracle, three-layer-model, replay-feature, lens-feature]
+allowed_help: []
+data_contract: deterministic-frontend-demo
+side_effect_policy: read_only
+teardown: close-browser-session
+status: frozen

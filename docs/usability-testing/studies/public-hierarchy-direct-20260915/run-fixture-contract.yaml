@@ -1,0 +1,47 @@
+study_id: public-hierarchy-direct-20260915
+coordinator_only: true
+status: frozen
+fixture_mode: required
+identity_strategy:
+  source: fresh anonymous browser/model session per direct-entry role
+  required_identities:
+  - market-I01
+  - detail-I01
+  relationship_requirements: []
+  credential_delivery: not_needed_anonymous
+  secrets_location: repository_external
+  browser_profile_strategy: fresh_per_run
+data_boundary:
+  baseline: No saved inquiry Skills in fresh profiles
+  allowed_seed: []
+  prohibited_seed:
+  - prior inquiry selection
+  - completed consultation
+  - prefilled outcome
+  participant_outcomes_precreated: false
+  ownership_discovery:
+  - Only browser-local inquiry selection may change.
+stage_audits:
+- Coordinator verifies starting URL and clean browser before each run.
+runtime_contract:
+  entrypoint: http://127.0.0.1:3000/
+  version_probe: current production Webpack source fingerprint
+  expected_version: hierarchy-candidate-current
+teardown:
+  required: true
+  supported_lifecycle: Close each owned browser session and discard temporary profile.
+  cleanup_scope:
+  - browser session and temporary profile
+  credentials_cleanup: required
+  browser_state_cleanup: required
+  residue_verification: Verdict and close output recorded; no database writes.
+readiness:
+  status: ready
+  evidence_refs:
+  - study-spec.md
+  blocker: null
+developer_approval:
+  status: frozen
+  approved_by: owner-authorized-current-session-plan
+  approved_at: '2026-09-15'
+  basis: Owner authorized implementation and made the plan revisable.

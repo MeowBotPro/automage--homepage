@@ -39,69 +39,100 @@ interface FlowStep {
 
 const STEPS: FlowStep[] = [
   {
-    id: 'staff', label: 'Staff', Icon: FileText, iconType: 'staff',
-    title: 'Staff 提交日报', text: '今天提交了 23 条一线记录', angle: 0,
+    id: 'event',
+    label: '事件',
+    Icon: FileText,
+    iconType: 'staff',
+    title: '事件持续存在',
+    text: 'WMS 缺料预警进入同一条事件轨迹。',
+    angle: -30,
     inspector: {
-      input: ['一线信息 23 条', '覆盖 5 个项目线'],
-      output: ['信号已录入系统', '等待 AI 处理'],
-      status: '信息捕获完成',
+      input: ['来源：WMS / Demo', 'PA66 库存 126t'],
+      output: ['事件身份与时间已记录', '等待上下文补齐'],
+      status: '事件已捕获',
     },
   },
   {
-    id: 'ai', label: 'AI', Icon: ScanLine, iconType: 'ai',
-    title: 'AI 自动汇总', text: '识别 4 个风险、2 个依赖、1 个异常', angle: 60,
+    id: 'context',
+    label: '上下文',
+    Icon: ScanLine,
+    iconType: 'ai',
+    title: '补齐业务上下文',
+    text: '关联 ERP、MES、SRM 与现行规则。',
+    angle: 30,
     inspector: {
-      input: ['23 条原始信号', '上下文：项目历史 + 团队状态'],
-      output: ['4 个风险识别', '2 个依赖关系', '1 个异常标记'],
-      status: '语义压缩完成',
+      input: ['库存与在途订单', '排产与供应承诺'],
+      output: ['跨系统事实已汇集', '来源与更新时间已保留'],
+      status: '上下文补齐',
     },
   },
   {
-    id: 'manager', label: 'Manager', Icon: Eye, iconType: 'manager',
-    title: 'Manager 审阅确认', text: '审阅通过 3 条，标记 1 条需补充', angle: 120,
+    id: 'evidence',
+    label: '证据',
+    Icon: Eye,
+    iconType: 'manager',
+    title: '区分证据强度',
+    text: '观察、派生与推断被分别标记。',
+    angle: 90,
     inspector: {
-      input: ['AI 汇总报告', '风险优先级排序'],
-      output: ['3 条审阅通过', '1 条标记补充'],
-      status: '人工校验完成',
+      input: ['系统原始记录', '规则计算与人员判断'],
+      output: ['事实可追溯', '推断不会伪装成事实'],
+      status: '证据已分层',
     },
   },
   {
-    id: 'dream', label: 'Dream', Icon: Sparkles, iconType: 'draft',
-    title: 'Dream 生成草案', text: '生成 A/B 两个决策选项', angle: 180,
+    id: 'unknowns',
+    label: '未知',
+    Icon: AlertTriangle,
+    iconType: 'draft',
+    title: '把未知显式暴露',
+    text: '缺口不会被静默补齐，而是成为待确认项。',
+    angle: 150,
     inspector: {
-      input: ['审阅确认的情报', 'Boss 决策偏好模型'],
-      output: ['方案 A：延期 + 资源增补', '方案 B：范围调整 + 优先级重排'],
-      status: '决策草案就绪',
+      input: ['华南仓安全库存未知', '供应商书面交期未确认'],
+      output: ['关键未知进入清单', '阻断条件已标记'],
+      status: '未知已暴露',
     },
   },
   {
-    id: 'boss', label: 'Boss', Icon: CheckCircle, iconType: 'boss',
-    title: 'Boss 确认决策', text: '选择 B，并设定优先级', angle: 240,
+    id: 'options',
+    label: '方案',
+    Icon: GitBranch,
+    iconType: 'boss',
+    title: '形成可比较方案',
+    text: '调拨与加急方案共享同一组事实与边界。',
+    angle: 210,
     inspector: {
-      input: ['A/B 两个方案', '优先级：High', '截止时间：本周五'],
-      output: ['确认方案 B', '设定交付优先级'],
-      status: '决策锁定',
+      input: ['共同事实底座', '不同成本、时效与风险'],
+      output: ['方案 A：跨仓调拨', '方案 B：供应商加急'],
+      status: '方案可比较',
     },
   },
   {
-    id: 'task', label: 'Task', Icon: GitBranch, iconType: 'workflow',
-    title: '任务自动回流', text: '自动生成 5 个任务，分配到 3 人', angle: 300,
+    id: 'review',
+    label: '审阅',
+    Icon: CheckCircle,
+    iconType: 'workflow',
+    title: '进入人工审阅',
+    text: '系统准备决定，人保留批准与责任。',
+    angle: 270,
     inspector: {
-      input: ['Boss 确认方案 B', '优先级：High', '截止时间：本周五'],
-      output: ['任务 01：同步客户延期风险', '任务 02：补充项目依赖说明', '任务 03：更新交付计划'],
-      status: '闭环完成，一线信息回到一线',
+      input: ['当前方案版本', '证据、未知与授权边界'],
+      output: ['批准 / 驳回 / 要求补证', '结果写回事件轨迹'],
+      status: '准备进入 Human Gate',
     },
   },
 ];
 
-/* ── Orbit geometry ── */
+
 const LOOP_RADIUS = 230;
 const CENTER = 320;
 const SVG_SIZE = 640;
 const SLOT_SIZE = 52;
+const ORBIT_START_ANGLE = -30;
 
 function nodePosition(angleDeg: number): { x: number; y: number } {
-  const rad = ((angleDeg - 90) * Math.PI) / 180;
+  const rad = (angleDeg * Math.PI) / 180;
   return {
     x: CENTER + LOOP_RADIUS * Math.cos(rad),
     y: CENTER + LOOP_RADIUS * Math.sin(rad),
@@ -110,7 +141,10 @@ function nodePosition(angleDeg: number): { x: number; y: number } {
 
 function buildCirclePath(): string {
   const r = LOOP_RADIUS;
-  return `M ${CENTER} ${CENTER - r} A ${r} ${r} 0 1 1 ${CENTER - 0.001} ${CENTER - r}`;
+  const start = nodePosition(ORBIT_START_ANGLE);
+  const opposite = nodePosition(ORBIT_START_ANGLE + 180);
+
+  return `M ${start.x} ${start.y} A ${r} ${r} 0 1 1 ${opposite.x} ${opposite.y} A ${r} ${r} 0 1 1 ${start.x} ${start.y}`;
 }
 
 const CIRCLE_PATH_D = buildCirclePath();
@@ -124,12 +158,12 @@ interface BgNodeDef {
 }
 
 const BG_NODES: BgNodeDef[] = [
-  { label: 'Sales', Icon: Send, top: '16%', left: '8%' },
-  { label: 'Support', Icon: Users, top: '22%', left: '82%' },
-  { label: 'Project', Icon: Target, top: '52%', left: '4%' },
-  { label: 'Finance', Icon: Shield, top: '72%', left: '86%' },
-  { label: 'Risk', Icon: AlertTriangle, top: '85%', left: '14%' },
-  { label: 'Delivery', Icon: CheckSquare, top: '40%', left: '90%' },
+  { label: 'ERP', Icon: Send, top: '16%', left: '8%' },
+  { label: 'WMS', Icon: Users, top: '22%', left: '82%' },
+  { label: 'MES', Icon: Target, top: '52%', left: '4%' },
+  { label: 'SRM', Icon: Shield, top: '72%', left: '86%' },
+  { label: 'Finance', Icon: AlertTriangle, top: '85%', left: '14%' },
+  { label: 'Procurement', Icon: CheckSquare, top: '40%', left: '90%' },
 ];
 
 /* ── Signal particles (decorative) ── */
@@ -151,9 +185,9 @@ const SIGNAL_PARTICLES: SignalParticleDef[] = [
 
 /* ── Stats data ── */
 const STATS = [
-  { value: '23', label: 'Signals captured' },
-  { value: '4', label: 'Risks compressed' },
-  { value: '5', label: 'Tasks assigned' },
+  { value: '8', label: '系统事实' },
+  { value: '3', label: '关键未知' },
+  { value: '2', label: '可审阅方案' },
 ];
 
 /* ── Component ── */
@@ -171,6 +205,15 @@ export default function InfoLoopSection() {
 
   const [activeIndex, setActiveIndex] = useState(0);
   const [isComplete, setIsComplete] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(false);
+
+  useEffect(() => {
+    const media = window.matchMedia('(min-width: 1024px)');
+    const syncViewport = () => setIsDesktop(media.matches);
+    syncViewport();
+    media.addEventListener('change', syncViewport);
+    return () => media.removeEventListener('change', syncViewport);
+  }, []);
 
   const prefersReducedMotion = useCallback(() => {
     if (typeof window === 'undefined') return true;
@@ -184,6 +227,8 @@ export default function InfoLoopSection() {
     if (!section || !svg) return;
 
     const reduced = prefersReducedMotion();
+    if (!isDesktop) return;
+
     const ctx = safeContext(() => {
       if (reduced) return;
 
@@ -191,8 +236,8 @@ export default function InfoLoopSection() {
       const PARTICLE_DURATION = 6;
 
       const placeAtProgress = (el: SVGCircleElement, p: number) => {
-        const angleDeg = Math.min(1, Math.max(0, p)) * 360;
-        const rad = ((angleDeg - 90) * Math.PI) / 180;
+        const angleDeg = ORBIT_START_ANGLE + Math.min(1, Math.max(0, p)) * 360;
+        const rad = (angleDeg * Math.PI) / 180;
         el.setAttribute('cx', String(CENTER + LOOP_RADIUS * Math.cos(rad)));
         el.setAttribute('cy', String(CENTER + LOOP_RADIUS * Math.sin(rad)));
       };
@@ -210,7 +255,7 @@ export default function InfoLoopSection() {
 
       // Initialize particle + trail
       if (particleRef.current) {
-        const startRad = ((-90) * Math.PI) / 180;
+        const startRad = (ORBIT_START_ANGLE * Math.PI) / 180;
         const startX = CENTER + LOOP_RADIUS * Math.cos(startRad);
         const startY = CENTER + LOOP_RADIUS * Math.sin(startRad);
         [particleRef.current, ...trailEls].forEach((el) => {
@@ -307,7 +352,7 @@ export default function InfoLoopSection() {
     }, section);
 
     return () => ctx.revert();
-  }, [prefersReducedMotion]);
+  }, [prefersReducedMotion, isDesktop]);
 
   // ── Inspector cross-fade ──
   useEffect(() => {
@@ -328,7 +373,7 @@ export default function InfoLoopSection() {
     <section
       id="section-loop"
       ref={sectionRef}
-      aria-label="组织信息回路模拟器"
+      aria-label="事件探索循环"
       className="am-narrative-section am-narrative-peak"
       style={{
         background: 'transparent',
@@ -417,9 +462,7 @@ export default function InfoLoopSection() {
               marginBottom: 20,
               letterSpacing: 0,
             }}
-          >
-            信息如何在你的组织中流动
-          </h2>
+          >同一事件，沿着一个循环被逐步补全</h2>
           <p
             style={{
               fontSize: '1.0625rem',
@@ -428,9 +471,7 @@ export default function InfoLoopSection() {
               maxWidth: 640,
               margin: '0 auto',
             }}
-          >
-            从一线记录，到管理判断，再到任务回流，AutoMage 把组织里的每一次输入变成可追踪的决策闭环。
-          </p>
+          >系统持续补齐来源、证据与未知，形成可比较方案；直到人工审阅，执行边界才真正闭合。</p>
         </div>
 
         {/* ═══ Desktop: Orbit + Inspector ═══ */}

@@ -1,0 +1,18 @@
+task_id: ceo-services-task
+goal_id: G-CHOICE
+role_id: ceo-services
+starting_url: http://127.0.0.1:3000/market
+goal: 自行找到适合当前问题的支持方式。如果有相近选择，判断如何取舍；准备一份可进一步沟通的需求。
+business_context: 你经营一家订阅服务企业。最近有客户取消合作，团队还没有完整复盘；你也关心未来怎样改进客户挽回。你熟悉销售和客户服务，第一次接触这个网站。
+success_definition:
+- 形成有页面证据支撑的业务判断；准备必要的沟通信息。
+must_not_reveal:
+- click-path
+- selectors
+- deep-url
+- oracle
+allowed_help: []
+data_contract: fresh browser-local selection; no external business writes
+side_effect_policy: isolated_write
+teardown: close owned browser session
+status: frozen

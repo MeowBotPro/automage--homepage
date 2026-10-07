@@ -1,0 +1,25 @@
+study_id: public-hierarchy-20260915
+coordinator_only: true
+status: frozen
+goals:
+- goal_id: G-HOME
+  role_id: ceo-manufacturing
+  goal: 判断这个公开产品是否值得带给制造业务团队讨论，并形成自己的产品理解。
+  required_capability_ids:
+  - overview
+  - discover
+  - assess
+- goal_id: G-MARKET
+  role_id: partner-capability-evaluator
+  goal: 从公开能力页面判断是否存在值得进一步讨论的组织协作能力，并准备一个合作问题。
+  required_capability_ids:
+  - discover
+  - assess
+  - inquiry
+- goal_id: G-DETAIL
+  role_id: ceo-services
+  goal: 为近期客户流失问题找到合适的支持方式，比较相近能力并准备咨询意向。
+  required_capability_ids:
+  - discover
+  - assess
+  - inquiry

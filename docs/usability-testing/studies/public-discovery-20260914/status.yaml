@@ -1,0 +1,11 @@
+study_id: public-discovery-20260914
+status: synthesized
+current_iteration: I01
+iteration_cap: 2
+next_action: review-I01-evidence-and-retest-representative-card-if-release-convergence-is-required
+developer_approval:
+  status: frozen
+  approved_by: coordinator-within-owner-authorized-redesign
+  approved_at: '2026-09-14'
+  basis: User authorized implementation; role/fixture choices are coordinator assumptions,
+    not an additional user approval.

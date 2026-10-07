@@ -1,0 +1,10 @@
+study_id: public-hierarchy-direct-20260915
+status: synthesized
+current_iteration: I01
+iteration_cap: 1
+next_action: no-further-direct-entry-change; consider-larger-homepage-cohort-for-release-convergence
+developer_approval:
+  status: frozen
+  approved_by: owner-authorized-current-session-plan
+  approved_at: '2026-09-15'
+  basis: Owner authorized implementation and made the plan revisable.

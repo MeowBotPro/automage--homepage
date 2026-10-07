@@ -1,0 +1,37 @@
+study_id: supply-chain-slice-20261007
+coordinator_only: true
+status: frozen
+fixture_mode: not_required
+identity_strategy:
+  source: none
+  required_identities: []
+  relationship_requirements: []
+  credential_delivery: out_of_band
+  secrets_location: repository_external
+  browser_profile_strategy: fresh_per_run
+data_boundary:
+  baseline: 前端确定性演示数据，每次打开页面从第 0 天开始
+  allowed_seed: []
+  prohibited_seed: []
+  participant_outcomes_precreated: false
+  ownership_discovery: []
+stage_audits: []
+runtime_contract:
+  entrypoint: http://127.0.0.1:3108/scenarios/supply-chain
+  version_probe: curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:3108/scenarios/supply-chain
+  expected_version: /tmp/am-build production build synced from working tree src/ on 2026-10-07
+teardown:
+  required: false
+  supported_lifecycle: 关闭参与者 agent-browser session
+  cleanup_scope: []
+  credentials_cleanup: not_applicable
+  browser_state_cleanup: required
+  residue_verification: agent-browser session list 不含参与者 session
+readiness:
+  status: not_required
+  evidence_refs: []
+  blocker: ""
+developer_approval:
+  status: frozen
+  approved_by: coordinator-within-owner-handoff-20261007
+  approved_at: '2026-10-07'

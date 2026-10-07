@@ -1,0 +1,19 @@
+study_id: public-discovery-20260914
+coordinator_only: true
+status: frozen
+branches:
+- branch_id: B-FIT
+  goal_id: G-OVERVIEW
+  invariants:
+  - 允许根据材料得出不适合。
+  - 演示与实际运行能力须可区分。
+- branch_id: B-COMPARE
+  goal_id: G-CHOICE
+  invariants:
+  - 近似能力允许择一；不要求数量最多。
+  - 不得借测试提示才能解释差异。
+- branch_id: B-INTENT
+  goal_id: G-CHOICE
+  invariants:
+  - 沟通准备保留用户选择。
+  - 在真实对外提交之前结束。

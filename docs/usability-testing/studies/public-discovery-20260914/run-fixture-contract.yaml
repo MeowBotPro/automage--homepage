@@ -1,0 +1,52 @@
+study_id: public-discovery-20260914
+coordinator_only: true
+status: frozen
+fixture_mode: required
+identity_strategy:
+  source: Two anonymous business visitors, using fresh isolated browser profiles
+  required_identities:
+  - ceo-manufacturing-I01
+  - ceo-services-I01
+  relationship_requirements: []
+  credential_delivery: not_needed_anonymous
+  secrets_location: repository_external
+  browser_profile_strategy: fresh_per_run
+data_boundary:
+  baseline: No saved inquiry Skills in either fresh browser profile
+  allowed_seed: []
+  prohibited_seed:
+  - saved Skill selection
+  - completed consultation
+  - prefilled task outcome
+  participant_outcomes_precreated: false
+  ownership_discovery:
+  - Each local selection is owned by the fresh browser cookie, no account or database
+    entity.
+stage_audits:
+- Inspect visible initial inquiry count and subsequent visible selected titles. Do
+  not modify state on behalf of the participant.
+runtime_contract:
+  entrypoint: http://127.0.0.1:3000/
+  version_probe: source fingerprint + coordinator browser-checks.json
+  expected_version: 25fae1580062a6c968fd69cb751378ff3a202e487ca76a640261a50ae4783104
+teardown:
+  required: true
+  supported_lifecycle: Close only the owned fresh browser session; anonymous temporary
+    profile is removed by agent-browser.
+  cleanup_scope:
+  - participant browser session and temporary profile
+  credentials_cleanup: required
+  browser_state_cleanup: required
+  residue_verification: Record owned browser close output; no database/API consultation
+    submission allowed.
+readiness:
+  status: ready
+  evidence_refs:
+  - iterations/I01/implementation-return.md
+  blocker: null
+developer_approval:
+  status: frozen
+  approved_by: coordinator-within-owner-authorized-redesign
+  approved_at: '2026-09-14'
+  basis: User authorized implementation; role/fixture choices are coordinator assumptions,
+    not an additional user approval.

@@ -38,14 +38,14 @@ const occupationOptions = [
 ];
 
 const useCaseOptions = [
-  '企业内部知识库 / 文档自动化',
-  '飞书 / 办公流程自动化',
-  '项目管理 / 团队协作',
-  '内容生产 / 营销自动化',
-  '客服 / 销售支持',
-  '研发 / 代码或工程提效',
-  '个人效率工具',
-  '其他，请补充说明',
+  '供应链缺料 / 库存与交付',
+  '跨系统运营异常 / 例外处理',
+  '项目风险 / 跨团队协作',
+  '客户承诺 / 销售与交付',
+  '审批授权 / 执行与回执',
+  '企业知识 / 流程自动化',
+  '研发 / 工程协同',
+  '其他真实业务事件',
 ];
 
 const betaFormFields: BetaFormField[] = [
@@ -62,14 +62,14 @@ const betaFormFields: BetaFormField[] = [
     label: '工作背景',
     required: false,
     kind: 'textarea',
-    placeholder: '简单说说你的行业、团队或过往相关经验',
+    placeholder: '说说你的行业、涉及的系统，以及这类事件通常如何被处理',
   },
   {
     name: 'useCase',
     label: '应用场景',
     required: true,
     kind: 'select',
-    placeholder: '选择你最想用 AutoMage 做什么',
+    placeholder: '选择你想带来的真实事件',
     options: useCaseOptions,
   },
   {
@@ -398,7 +398,7 @@ export default function BetaSection() {
               marginBottom: 48,
             }}
           >
-            我们正在开放第一批 AutoMage 内测名额。告诉我们你的身份、场景和联系方式，我们会优先邀请最匹配的用户体验。
+              带来一条真实发生过的事件：它涉及哪些系统、缺少什么确认，以及最终由谁负责。我们会优先邀请最适合共同验证的团队。
           </p>
 
           {submitted ? (

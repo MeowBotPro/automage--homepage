@@ -1,0 +1,76 @@
+schema_version: 1
+repository_id: automage-homepage
+status: frozen
+roles:
+- role_id: ceo-manufacturing
+  name: 制造企业负责人
+  knowledge: 了解工厂和供应商协同，不懂产品实现。
+  evidence_refs:
+  - memory/public-entry-direction.md
+  - changes/CR-PUBLIC-SKILL-MARKET/design-reassessment-20260914.md
+- role_id: ceo-services
+  name: 订阅服务企业负责人
+  knowledge: 了解客户成功与收入；没有接触过 AutoMage。
+  evidence_refs:
+  - memory/public-entry-direction.md
+  - changes/CR-PUBLIC-SKILL-MARKET/design-reassessment-20260914.md
+- role_id: partner-capability-evaluator
+  name: 外部合作方 / 业务数字化负责人
+  knowledge: 评估组织协作系统的合作价值，不懂内部实现。
+  evidence_refs:
+  - changes/CR-PUBLIC-SKILL-MARKET/hierarchy-redesign-plan-20260915.md
+capabilities:
+- capability_id: overview
+  name: 理解整体协作方式
+  status: implemented
+  in_scope: true
+  evidence: src/components/system-home/SystemHome.tsx
+  evidence_refs:
+  - src/components/system-home/SystemHome.tsx
+- capability_id: discover
+  name: 按任务发现并比较能力
+  status: implemented
+  in_scope: true
+  evidence: src/components/market/MarketCatalog.tsx
+  evidence_refs:
+  - src/components/market/MarketCatalog.tsx
+- capability_id: assess
+  name: 评估具体产出与条件
+  status: implemented
+  in_scope: true
+  evidence: src/components/market/SkillDetail.tsx
+  evidence_refs:
+  - src/components/market/SkillDetail.tsx
+- capability_id: inquiry
+  name: 保存咨询意向并带入沟通
+  status: implemented
+  in_scope: true
+  evidence: src/app/contact/page.tsx
+  evidence_refs:
+  - src/app/contact/page.tsx
+- capability_id: scenario-world
+  name: 跟完一项交给 AutoMage 的具体工作（14 天场景、拆开看、改规矩重放）
+  status: implemented
+  in_scope: true
+  evidence: src/app/scenarios/supply-chain/page.tsx
+  evidence_refs:
+  - src/app/scenarios/supply-chain/page.tsx
+  - src/components/supply-chain/SupplyChainWorld.tsx
+  - docs/automage-website-implementation-handoff-20261007.md
+existing_journeys:
+- public overview
+- task discovery and assessment
+- inquiry preparation
+entrypoints:
+- http://127.0.0.1:3108/scenarios/supply-chain
+- http://127.0.0.1:3000/
+- http://127.0.0.1:3000/market
+gaps:
+- Integration maturity of each third-party Skill is not certified by this website.
+- No live consultation submission is in study scope.
+developer_approval:
+  status: frozen
+  approved_by: coordinator-within-owner-authorized-redesign
+  approved_at: '2026-09-14'
+  basis: User authorized implementation; role/fixture choices are coordinator assumptions,
+    not an additional user approval.

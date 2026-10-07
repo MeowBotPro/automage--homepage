@@ -1,0 +1,54 @@
+study_id: public-hierarchy-20260915
+coordinator_only: true
+status: frozen
+fixture_mode: required
+identity_strategy:
+  source: fresh anonymous browser/model sessions per role
+  required_identities:
+  - home-I01
+  - market-I01
+  - detail-I01
+  relationship_requirements: []
+  credential_delivery: not_needed_anonymous
+  secrets_location: repository_external
+  browser_profile_strategy: fresh_per_run
+data_boundary:
+  baseline: No saved inquiry Skills in each fresh profile
+  allowed_seed: []
+  prohibited_seed:
+  - prior inquiry selection
+  - completed consultation
+  - prefilled business outcome
+  participant_outcomes_precreated: false
+  ownership_discovery:
+  - Only browser-local inquiry selection may be changed; no account or database entity
+    is created.
+stage_audits:
+- Coordinator verifies fresh browser session and visible page baseline before each
+  run.
+- Participants stop before any real contact submission.
+runtime_contract:
+  entrypoint: production Webpack preview at http://127.0.0.1:3000/
+  version_probe: source fingerprint recorded in implementation return
+  expected_version: 7138a455226a41a074b4db721c03a5fb325177e153baeae0d21b84817dd27697
+teardown:
+  required: true
+  supported_lifecycle: Close each owned browser session and discard its temporary
+    profile.
+  cleanup_scope:
+  - browser session and temporary profile
+  credentials_cleanup: required
+  browser_state_cleanup: required
+  residue_verification: Run verdict and browser close output recorded; no database
+    writes.
+readiness:
+  status: ready
+  evidence_refs:
+  - iterations/I01/implementation-return.md
+  blocker: null
+developer_approval:
+  status: frozen
+  approved_by: owner-authorized-current-session-plan
+  approved_at: '2026-09-15'
+  basis: The owner authorized implementation and explicitly made the attached plan
+    revisable.

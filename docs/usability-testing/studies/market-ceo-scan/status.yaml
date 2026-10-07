@@ -1,0 +1,9 @@
+study_id: market-ceo-scan
+status: planning
+current_iteration: I01
+iteration_cap: 3
+next_action: freeze-study-contract
+developer_approval:
+  status: proposed
+  approved_by: ""
+  approved_at: ""
