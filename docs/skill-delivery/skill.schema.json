@@ -1,0 +1,126 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:automage:skill:1",
+  "title": "AutoMage skill 交付清单（skill.json）",
+  "description": "每个交给官网的 skill 压缩包里都有这一份。listing 里的内容会原样出现在官网上；skill 里的内容只存档，不公开。规则说明见同目录 README.md。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["format", "id", "version", "changes", "listing", "media", "skill"],
+  "properties": {
+    "$schema": { "type": "string", "description": "可写 ./skill.schema.json，让编辑器给出提示。" },
+    "format": { "const": "automage.skill/1", "description": "清单格式的版本，固定写 automage.skill/1。" },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "minLength": 3,
+      "maxLength": 48,
+      "description": "skill 的标识：小写字母、数字和连字符。也是官网地址 /market/<id> 和文件夹名；上架后不再改。"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$",
+      "description": "版本号，如 1.0.0。发布过的版本不能覆盖：任何改动（含换视频、改文案）都要升版本号再交。"
+    },
+    "changes": { "type": "string", "minLength": 2, "maxLength": 200, "description": "这一版改了什么。首次交付写“首次上架”。" },
+    "listing": {
+      "type": "object",
+      "description": "官网展示的内容：能力库列表、详情页和搜索都用这里的文字。",
+      "additionalProperties": false,
+      "required": ["title", "summary", "domain", "groups", "inputs", "output", "story"],
+      "properties": {
+        "title": { "type": "string", "minLength": 2, "maxLength": 16, "description": "名称，说它做成什么事，如“客户流失复盘”。" },
+        "summary": { "type": "string", "minLength": 8, "maxLength": 48, "description": "一句话：拿什么、做成什么。出现在列表卡片上。" },
+        "domain": {
+          "enum": ["销售", "CRM", "客服", "外贸", "电商", "法律", "财税", "图文", "视频", "交付"],
+          "description": "原分类，详情页标题上方显示，也用于按分类筛选。"
+        },
+        "groups": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 3,
+          "uniqueItems": true,
+          "description": "放在能力库的哪类工作下，第一个是主要的那类。只能从现有的 32 类里选，新增分类要先找官网负责人。",
+          "items": {
+            "enum": ["customer-retention", "sourcing", "video-writing", "inbound-sales", "contracts", "customer-support", "account-research", "outreach", "crm-records", "commercial-decisions", "growth", "sales-reporting", "service-operations", "supplier-evaluation", "trade-research", "trade-documents", "product-research", "listing", "store-improvement", "product-creative", "finance-operations", "tax-filing", "investment-research", "legal-research", "compliance", "office-documents", "video-editing", "video-production", "image-production", "social-creative", "brand-interface", "brand-discovery"]
+          }
+        },
+        "inputs": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 4,
+          "description": "需要用户提供的资料，短词，如“客户沟通记录”。用于搜索。",
+          "items": { "type": "string", "minLength": 2, "maxLength": 20 }
+        },
+        "output": { "type": "string", "minLength": 2, "maxLength": 16, "description": "交付物的名字，如“流失复盘报告”。" },
+        "keywords": {
+          "type": "array",
+          "maxItems": 10,
+          "description": "可选。用户可能搜的词，标题和一句话里没有的才写。",
+          "items": { "type": "string", "minLength": 1, "maxLength": 12 }
+        },
+        "subSkills": { "type": "integer", "minimum": 0, "description": "可选。技能包里包含的子技能数量；单个 skill 写 0 或不写。" },
+        "story": {
+          "type": "object",
+          "description": "详情页的说明。",
+          "additionalProperties": false,
+          "required": ["scenario", "description", "audience", "inputs", "outcomes", "steps", "requirements", "boundary"],
+          "properties": {
+            "scenario": { "type": "string", "minLength": 6, "maxLength": 32, "description": "什么时候用：一个具体的处境，如“客户已经离开，需要弄清原因。”" },
+            "description": { "type": "string", "minLength": 20, "maxLength": 80, "description": "标题下的说明：它做什么、交付什么。" },
+            "audience": { "type": "string", "minLength": 2, "maxLength": 32, "description": "适合谁，如“客户成功、销售负责人”。" },
+            "inputs": {
+              "type": "array", "minItems": 1, "maxItems": 4,
+              "description": "“你提供”一栏：每条一句。",
+              "items": { "type": "string", "minLength": 4, "maxLength": 32 }
+            },
+            "outcomes": {
+              "type": "array", "minItems": 2, "maxItems": 4,
+              "description": "“你会拿到”卡片里的条目：交付物包含哪几部分。",
+              "items": { "type": "string", "minLength": 4, "maxLength": 32 }
+            },
+            "steps": {
+              "type": "array", "minItems": 2, "maxItems": 4,
+              "description": "“从资料到交付”的几步；视频加载不出来时，也印在占位卡片上。",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["title", "text"],
+                "properties": {
+                  "title": { "type": "string", "minLength": 2, "maxLength": 8 },
+                  "text": { "type": "string", "minLength": 6, "maxLength": 40 }
+                }
+              }
+            },
+            "requirements": { "type": "string", "minLength": 6, "maxLength": 64, "description": "“接入条件”：运行它需要什么资料或系统。" },
+            "boundary": { "type": "string", "minLength": 6, "maxLength": 64, "description": "“范围与边界”：适合什么，不适合时该选哪一个。" }
+          }
+        }
+      }
+    },
+    "media": {
+      "type": "object",
+      "description": "演示视频和封面。文件名固定。",
+      "additionalProperties": false,
+      "required": ["video", "poster"],
+      "properties": {
+        "video": { "const": "media/demo.mp4" },
+        "poster": { "enum": ["media/poster.jpg", "media/poster.png", "media/poster.webp"] }
+      }
+    },
+    "skill": {
+      "type": "object",
+      "description": "skill 本体的信息。只存档，不公开。",
+      "additionalProperties": false,
+      "required": ["entry", "source", "maintainer"],
+      "properties": {
+        "entry": { "const": "skill/SKILL.md" },
+        "source": { "enum": ["first_party", "third_party"], "description": "first_party：我们自己做的；third_party：收录的第三方 skill。" },
+        "upstream": { "type": "string", "pattern": "^https://", "description": "第三方 skill 的来源地址。" },
+        "license": { "type": "string", "minLength": 2, "maxLength": 60, "description": "第三方 skill 的许可证，如 MIT。" },
+        "maintainer": { "type": "string", "minLength": 1, "maxLength": 60, "description": "内部负责人，有问题找谁。" }
+      },
+      "if": { "properties": { "source": { "const": "third_party" } } },
+      "then": { "required": ["upstream", "license"] }
+    }
+  }
+}

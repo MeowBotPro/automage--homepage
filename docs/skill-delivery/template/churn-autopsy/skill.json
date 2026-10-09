@@ -1,0 +1,41 @@
+{
+  "$schema": "../../skill.schema.json",
+  "format": "automage.skill/1",
+  "id": "churn-autopsy",
+  "version": "1.0.0",
+  "changes": "首次上架",
+  "listing": {
+    "title": "客户流失复盘",
+    "summary": "拆开一个已流失客户，找出当时错过的信号。",
+    "domain": "CRM",
+    "groups": ["customer-retention"],
+    "inputs": ["客户历史记录", "服务工单", "使用记录"],
+    "output": "流失复盘报告",
+    "keywords": ["流失原因", "客户复盘"],
+    "story": {
+      "scenario": "客户已经离开，团队需要弄清楚为什么。",
+      "description": "把合同与跟进历史、使用记录、工单和退出反馈放在一起，重建客户流失的经过，形成有证据、有改进建议的复盘报告。",
+      "audience": "客户成功、销售负责人、业务管理者",
+      "inputs": ["客户合同与跟进历史", "产品使用记录与服务工单", "退出反馈；缺少的资料会单独列出"],
+      "outcomes": ["从首次接触到离开的关键时间线", "主要原因、相关因素及各自证据", "曾经错过的预警与可以介入的时间点", "下一步建议、负责人建议与资料缺口"],
+      "steps": [
+        { "title": "重建经过", "text": "先按时间整理资料，区分已知事实和缺失信息。" },
+        { "title": "追问原因", "text": "分析原因、预警和可能的干预机会，检查结论是否有证据。" },
+        { "title": "留下复盘", "text": "生成 Markdown 报告，供团队讨论改进与后续观察。" }
+      ],
+      "requirements": "可读取你提供的资料；如需直接查询 CRM 或使用数据，需要相应的数据连接与权限。",
+      "boundary": "它用于事后分析。仍在考虑取消订阅的客户，可以比较同组的“流失挽回”。"
+    }
+  },
+  "media": {
+    "video": "media/demo.mp4",
+    "poster": "media/poster.jpg"
+  },
+  "skill": {
+    "entry": "skill/SKILL.md",
+    "source": "third_party",
+    "upstream": "https://<来源地址>",
+    "license": "<许可证>",
+    "maintainer": "<内部负责人>"
+  }
+}
