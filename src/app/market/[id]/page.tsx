@@ -21,8 +21,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     return { title: "Skill · AutoMage" };
   }
   return {
-    title: `${skill.title} · AutoMage 能力库`,
-    description: `AutoMage 能力库 · 当前公开能力。${skill.summary}`,
+    title: `${skill.title} · AI 自动化能力库 · AutoMage`,
+    description: `AI 自动化能力库 · ${skill.summary}`,
   };
 }
 

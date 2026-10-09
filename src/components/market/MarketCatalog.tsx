@@ -20,9 +20,9 @@ export default function MarketCatalog({ params }: { params: CatalogQuery }) {
     <MarketChrome active="market" />
     <main className={styles.libraryMain}>
       <header className={styles.libraryHeader}>
-        <div className={styles.libraryBreadcrumb}><Link href="/">AutoMage</Link><span>/</span><span>能力库</span></div>
-        <div className={styles.libraryHeaderLine}><div><p className={styles.libraryEyebrow}>AUTOMAGE PRODUCT <span aria-hidden="true">→</span> CAPABILITIES</p><h1>AutoMage 当前可展示的能力</h1><p className={styles.libraryLead}>这是 AutoMage 的公开能力库。按工作查找，按产出比较，了解这套系统当前能够承载什么。</p></div><Link className={styles.libraryParent} href="/">回到产品概览 <span aria-hidden="true">↗</span></Link></div>
-        <div className={styles.libraryStats}><span>{SKILL_GROUPS.length} 类工作</span><span>{skillCatalog.getAll().length} 个 Skill</span><span>公开能力索引</span></div>
+        <div className={styles.libraryBreadcrumb}><Link href="/">AutoMage</Link><span>/</span><span>AI 自动化能力库</span></div>
+        <div className={styles.libraryHeaderLine}><div><p className={styles.libraryEyebrow}>AUTOMAGE <span aria-hidden="true">→</span> CAPABILITIES</p><h1>AI 自动化能力库</h1><p className={styles.libraryLead}>从你要完成的工作开始：看每项能力交付什么、需要你提供什么、到哪一步回来找你。部署时，按你们的系统和规矩配置。</p></div><Link className={styles.libraryParent} href="/">回到首页 <span aria-hidden="true">↗</span></Link></div>
+        <div className={styles.libraryStats}><span>{SKILL_GROUPS.length} 类工作</span><span>{skillCatalog.getAll().length} 个 Skill</span></div>
       </header>
       <div className={styles.workspace} id="catalog">
         <nav className={styles.areas} aria-label="工作领域"><Link className={styles.areaLink} href={`${catalogUrl({})}#catalog`} aria-current={!area && !params.domain && !query ? "true" : undefined}>全部工作<span>{SKILL_GROUPS.length}</span></Link>{WORK_AREAS.map((item) => <Link key={item.id} className={styles.areaLink} href={`${catalogUrl({ area: item.id, q: query })}#catalog`} aria-current={area === item.id ? "true" : undefined}>{item.title}<span>{SKILL_GROUPS.filter((group) => group.area === item.id).length}</span></Link>)}</nav>

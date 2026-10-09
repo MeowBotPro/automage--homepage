@@ -546,7 +546,7 @@ export function changesForDay(day: number, ctx: Ctx, signed: DecisionState): Cha
     case 6: {
       const list: Change[] = [{ id: "c6a", text: `v1 的一个前提不再成立：供应商 B 只能交 ${delivered(v1)}t`, why: "赵磊转述供应商 B 邮件；SRM 交期已变更。", tone: "change" }];
       if (autoResolves(ctx)) {
-        list.push({ id: "c6b", text: `AutoMage 自行调整：缺的 ${short}t 改由供应商 C 补`, why: `额外成本 ${extra.pct}%，在你给的 5% 授权内（委托第 5 条，模拟改写）。只给你发了报备。`, tone: "report" });
+        list.push({ id: "c6b", text: `AutoMage 自行调整：缺的 ${short}t 改由供应商 C 补`, why: `额外成本 ${extra.pct}%，在你给的 5% 授权内（委托第 5 条，推演中改写）。只给你发了报备。`, tone: "report" });
       } else if (signed.v2Signed && ctx.v2) {
         list.push({ id: "c6b", text: `你签批了 v2：${v2Option(v1, ctx.v2).name}`, why: "已批准的方案出现变化，须回来找你（委托第 5 条）。", tone: "return" });
       } else {

@@ -453,9 +453,9 @@ export default function SupplyChainWorld() {
         )}
 
         {state.sim && state.run === "first" && (
-          <div className={styles.simBar} role="region" aria-label="情景模拟：改一条委托规矩">
+          <div className={styles.simBar} role="region" aria-label="情景推演：改一条委托规矩">
             <div className={styles.simHead}>
-              <span className={styles.simTag}>情景模拟 · 产品方向</span>
+              <span className={styles.simTag}>情景推演</span>
               <strong>改委托第 5 条，重放第 6 天</strong>
               <button type="button" className={styles.barClose} onClick={() => dispatch({ type: "sim", open: false })}>收起</button>
             </div>
@@ -479,7 +479,7 @@ export default function SupplyChainWorld() {
               <button type="button" className={styles.simStart} disabled={state.draftRule === "confirm_all"} onClick={() => dispatch({ type: "startReplay" })}>
                 用改过的规矩重放第 6 天 <span aria-hidden="true">→</span>
               </button>
-              <p>同一个 v1、同一天、同一条供应商消息，只换这一条规矩。这里只是模拟，不保存任何设置；由企业决定每类动作 AI 能自主到哪，是 AutoMage 的产品方向。</p>
+              <p>同一个 v1、同一天、同一条供应商消息，只换这一条规矩。推演不保存设置。哪些动作 AI 能自己做、做到哪，由你们在委托里定。</p>
             </div>
             </>
             )}
@@ -488,7 +488,7 @@ export default function SupplyChainWorld() {
 
         {state.run === "replay" && (
           <div className={styles.replayBar} role="region" aria-label="重放中">
-            <span className={styles.simTag}>情景模拟 · 重放</span>
+            <span className={styles.simTag}>情景推演 · 重放</span>
             {state.frontier < CHANGE_DAY ? (
               <p>委托第 5 条改成了「5% 以内自行调整，事后报备」。第 0–5 天和 v1 都与第一次相同，往前走到第 6 天。</p>
             ) : (

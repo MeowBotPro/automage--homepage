@@ -32,6 +32,6 @@ export default function OutcomePreview({ kind = "document", compact = false, tit
     {kind === "lead" && <><div className={styles.previewQuote}>“客户想了解产品，哪些信息已经明确，哪些还需要问？”</div><span className={styles.leadTag}>需求与痛点</span><span className={styles.leadTag}>待补充信息</span><div className={styles.previewRows}><div className={styles.previewRow}><span>跟进记录</span><span>当前阶段 · 下一步</span></div><div className={styles.previewRow}><span>产品回答</span><span>依据已批准的知识</span></div></div></>}
     {kind === "document" && <ol className={styles.previewToc}>{items.map((text, index) => <li key={text}><span>{String(index + 1).padStart(2, "0")}</span>{text}</li>)}</ol>}
     {!compact && kind !== "document" && kind !== "sourcing" && items.length > 0 && <><p className={styles.previewLabel}>这份结果包含</p><ul className={styles.previewIncludes}>{items.map((text) => <li key={text}>{text}</li>)}</ul></>}
-    {!compact && <p className={styles.previewNote}>{kind === "sourcing" ? "演示数据，不是真实查询结果。每个候选都附原始商品链接，方便继续核对规格、服务信息和卖点；实际内容取决于提供的资料与使用条件。" : "这里展示产出的组织方式。实际内容取决于提供的资料与使用条件。"}</p>}
+    {!compact && <p className={styles.previewNote}>{kind === "sourcing" ? "示例数据，不是真实查询结果。每个候选都附原始商品链接，方便继续核对规格、服务信息和卖点；实际内容取决于提供的资料与使用条件。" : "这里展示产出的组织方式。实际内容取决于提供的资料与使用条件。"}</p>}
   </div>;
 }

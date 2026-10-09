@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       code: 200,
       data,
-      msg: '内测申请提交成功',
+      msg: '咨询已提交',
     });
   } catch (error) {
     if (error instanceof ZodError) {
@@ -53,7 +53,7 @@ export async function POST(request: NextRequest) {
       {
         code: 500,
         data: null,
-        msg: '内测申请提交失败，请稍后重试',
+        msg: '暂时未能提交，请稍后重试',
       },
       { status: 500 },
     );

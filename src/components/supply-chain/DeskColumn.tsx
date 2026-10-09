@@ -75,7 +75,7 @@ export default function DeskColumn({ state, ctx, dispatch, status, onGuide }: Pr
               <p>供应商 B 只能交 60%。缺的 {shortfall(state.v1)}t 已改由供应商 C 现货补，第 {N.supplyDay} 天到。</p>
               <p>额外 ¥{spotExtra(state.v1).wan.toFixed(1)} 万，占已批金额 {spotExtra(state.v1).pct}%（你给的上限 {N.limit}%）。已通知赵磊下单、刘敏收货。</p>
               <p className={styles.reportMuted}>没有采用：订单 E 暂停——会改客户交期，需要你来定。</p>
-              <p className={styles.reportMuted}>依据：委托第 5 条（模拟改写）。完整过程在工作记录里。</p>
+              <p className={styles.reportMuted}>依据：委托第 5 条（推演中改写）。完整过程在工作记录里。</p>
               {!state.reportSeen && (
                 <button type="button" onClick={() => dispatch({ type: "seeReport" })}>知道了</button>
               )}

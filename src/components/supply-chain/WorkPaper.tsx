@@ -136,7 +136,7 @@ export default function WorkPaper({ state, ctx, dispatch, status, changes }: Pro
                 <span className={styles.termText}>
                   {term.text}
                   {term.returnsToYou && <span className={styles.returnsChip}>↩ 回到你这里</span>}
-                  {simulated && <span className={styles.simChip}>模拟改写</span>}
+                  {simulated && <span className={styles.simChip}>推演改写</span>}
                 </span>
               </li>
             );
@@ -242,7 +242,7 @@ export default function WorkPaper({ state, ctx, dispatch, status, changes }: Pro
                 <span className={styles.recordState}>已报备给你</span>
               </div>
               <p className={styles.recordPlan}>{v2Option(state.v1, "spot").plan} · 额外 ¥{spotExtra(state.v1).wan.toFixed(1)} 万（已批金额 {spotExtra(state.v1).pct}%，授权上限 {N.limit}%）</p>
-              <p className={styles.recordWhy}>授权依据：委托第 5 条（模拟改写）——{RULE_TEXT.within_5}</p>
+              <p className={styles.recordWhy}>授权依据：委托第 5 条（推演中改写）——{RULE_TEXT.within_5}</p>
               <p className={styles.recordWhy}>没有采用：订单 E 暂停——会改客户 E 的交期，不在授权内。</p>
               <p className={styles.autoStamp}>AutoMage · 第 6 天 10:45</p>
             </article>
@@ -313,7 +313,7 @@ function DecisionV1({ state, dispatch }: { state: WorldState; dispatch: Dispatch
     <section id="decision-v1" className={styles.decision} aria-labelledby="v1-title" data-layer="boundary" data-lens-label="委托边界 · 采购决定须你签批">
       <div className={styles.decisionHead}>
         <h3 id="v1-title">等你决定：补 {N.gap}t 用哪个方案</h3>
-        <span className={styles.demoNote}>演示决定 · 不会触发任何真实采购</span>
+        <span className={styles.demoNote}>示例 · 不会触发真实采购</span>
       </div>
       <p className={styles.decisionNote}>你签批的方案会记为决定 v1。之后如果有变化，会另记 v2，v1 和它当时的依据都保留。</p>
       <fieldset className={styles.options}>

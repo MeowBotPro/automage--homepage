@@ -56,7 +56,7 @@ export default function SourceTag({ source }: { source: Source }) {
         <span className={styles.sourceRow}><span>何时</span><span>{source.at}</span></span>
         <span className={styles.sourceRow}><span>从哪来</span><span>{source.via}</span></span>
         {source.ref && <span className={styles.sourceRow}><span>编号</span><span>{source.ref}</span></span>}
-        <span className={styles.sourceNote}>演示数据，不来自真实企业系统。</span>
+        <span className={styles.sourceNote}>示例数据。</span>
       </span>
     </>
   );

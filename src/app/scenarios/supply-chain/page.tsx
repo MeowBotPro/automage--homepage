@@ -6,8 +6,8 @@ import shared from "@/components/market/MarketPage.module.css";
 import styles from "@/components/supply-chain/SupplyChain.module.css";
 
 export const metadata: Metadata = {
-  title: "供应链场景：一项缺料风险的 14 天 · AutoMage",
-  description: "跟着一项交给 AutoMage 的缺料风险走完 14 天：签批方案、前提失效后的重新打开、拆开看三层，以及改一条委托规矩后的重放。基于真实企业业务场景重构的演示。",
+  title: "AI+供应链：一项缺料风险的 14 天 · AutoMage",
+  description: "跟着一项交给 AutoMage 的缺料风险走完 14 天：签批方案、前提失效后的重新打开、拆开看三层，以及改一条委托规矩后的重放。场景基于真实企业业务重构，数据为示例。",
 };
 
 export default function SupplyChainScenarioPage() {
@@ -17,8 +17,8 @@ export default function SupplyChainScenarioPage() {
       <main>
         <header className={styles.intro}>
           <p className={styles.introMeta}>
-            <span className={styles.evidenceTag}>演示</span>
-            场景 · 供应链 · 基于真实企业业务场景重构，页面数据与过程为演示
+            <span className={styles.evidenceTag}>示例</span>
+            AI+供应链 · 场景基于真实企业业务重构，数据为示例
           </p>
           <h1 className={styles.introTitle}>一项缺料风险，交给 AutoMage 之后的 14 天</h1>
           <div className={styles.introBody}>
@@ -28,10 +28,10 @@ export default function SupplyChainScenarioPage() {
               <strong>你是供应链负责人</strong>，需要拍板时，它会回到你面前。
             </p>
             <p className={styles.introEvidence}>
-              <span><b>现在已经能用：</b>{"在飞书里收集团队日报，整理成带出处的汇总，给出两个可选方案，你拍板后把任务派给具体的人。"}</span>
+              <span><b>在这一页，你可以亲手操作：</b>{"签批方案；第 6 天条件变了，重新决定；拆开看三层；改一条委托规矩，重放后比较两次的结果。"}</span>
               <span>
-                <b>产品方向（本页是模拟，还不能用）：</b>{"直接连接库存、采购等业务系统；按你们定的规矩，判断自己处理还是回来找你。"}
-                <a className={styles.introLink} href="#about-demo">详细说明</a>
+                <b>放到你们公司：</b>{"接入哪些系统、委托怎么写、哪一步回来找谁，部署时按你们的情况配置。"}
+                <a className={styles.introLink} href="#about-demo">关于这个场景</a>
               </span>
             </p>
           </div>
@@ -51,23 +51,23 @@ export default function SupplyChainScenarioPage() {
         </section>
 
         <section className={styles.evidence} id="about-demo" aria-labelledby="evidence-title">
-          <h2 id="evidence-title">关于这个演示</h2>
+          <h2 id="evidence-title">关于这个场景</h2>
           <div className={styles.evidenceGrid}>
             <div>
-              <strong>演示</strong>
-              <p>页面里的数据、人物、消息和过程都是演示，不连接任何真实系统，也不会触发采购。</p>
+              <strong>示例数据</strong>
+              <p>页面里的公司、人物、消息和数字都是示例：场景基于一家制造企业的真实业务情况重构，企业身份和数据已替换。</p>
             </div>
             <div>
-              <strong>真实背景</strong>
-              <p>场景基于一家制造企业的真实业务情况重构；企业身份和真实数据没有公开。</p>
+              <strong>只在这一页里发生</strong>
+              <p>你在这里签批、推演、重放，都不连接任何系统，也不会触发真实采购。</p>
             </div>
             <div>
-              <strong>已实现</strong>
-              <p>AutoMage 当前产品已能在飞书中收集团队日报，生成带来源的汇总，给出 A/B 决策选项，记录决定后生成任务并分派到人。</p>
+              <strong>放到你们公司</strong>
+              <p>接入哪些系统、委托怎么写、哪一步回来找谁，按你们的情况配置，之后也可以调整。</p>
             </div>
             <div>
-              <strong>方向 · 模拟</strong>
-              <p>直接连接 WMS、ERP 等业务系统，按企业设定的委托规则判断「自己处理还是回来找人」，以及本页的「改规矩重放」，属于产品方向，这里是模拟。</p>
+              <strong>从一件事开始</strong>
+              <p>带一件你们最近卡住的事来，我们一起看它交给 AutoMage 之后怎么走。<Link className={styles.introLink} href="/contact">预约演示</Link></p>
             </div>
           </div>
         </section>
