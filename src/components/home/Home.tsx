@@ -15,7 +15,7 @@ const FIT = [
 ] as const;
 
 export default function Home() {
-  return <div className={shared.page}><MarketChrome active="home" /><main className={styles.main}>
+  return <div className={shared.page}><MarketChrome active="work" /><main className={styles.main}>
     <HomeStage />
 
     <div className={styles.after}>

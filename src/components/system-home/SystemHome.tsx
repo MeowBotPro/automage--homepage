@@ -13,7 +13,7 @@ const CAPABILITY_EXAMPLES = [
 ] as const;
 
 export default function SystemHome() {
-  return <div className={shared.page}><MarketChrome active="home" /><main className={styles.main}>
+  return <div className={shared.page}><MarketChrome active="entry" /><main className={styles.main}>
     <section className={styles.productHero}>
       <div className={styles.heroCopy}><p className={shared.kicker}>AutoMage / Organizational AI</p><h1>组织的 AI<br /><span>协作与执行层。</span></h1><p className={styles.lead}>AutoMage 连接团队已有的沟通与业务系统，把分散的信息组织成可判断、可推进、可回溯的工作。</p><div className={styles.actions}><Link className={shared.primary} href="/scenarios/supply-chain">看它如何工作 <ArrowUpRight size={16} /></Link><Link className={shared.textLink} href="/market">浏览能力 <ArrowRight size={15} /></Link></div><p className={styles.heroNote}>当前公开展示：系统机制、场景案例与 Skill 能力。</p></div>
       <SystemOverview />

@@ -1,0 +1,460 @@
+/* The default entry. Dark like every page; the hero and the first two acts carry the visual energy and
+   everything after is quiet. One visual grammar throughout: type carries the page; lines are hairlines;
+   light is emitted only along lines and edges, never as a lit object. AutoMage is blue writing on the
+   work, a person's decision is warm white, a line is amber, done is green. By default every act is a
+   still in the flow; at LIVE size (≥1200×620, as on AI for Work) the noise and loop acts stay in view and
+   are drawn from --p. Alignment is made by construction — shared grid rows, equal columns without gaps,
+   labels hung off their icons — never by nudging. */
+
+.main {
+  --head: 84px;
+  --ai: #60A5FA;
+  --ai-soft: #93C5FD;
+  --person: #F3EFE6;
+  --person-soft: #D9D3C7;
+  --line: #F59E0B;
+  --line-soft: #FCD34D;
+  --done: #86EFAC;
+  overflow-x: clip;
+}
+.wrap { max-width: 1240px; width: calc(100% - 64px); margin: 0 auto; }
+.kicker { margin: 0 0 14px; font: 500 12px/1.4 var(--font-console); letter-spacing: .14em; color: var(--color-brand-cyan); }
+
+.primary { display: inline-flex; align-items: center; gap: 10px; padding: 14px 24px; border-radius: 12px; font-size: 15px; font-weight: 560; color: white; text-decoration: none; background: linear-gradient(135deg, #2563EB, #3B82F6 60%, #38BDF8); box-shadow: 0 12px 30px rgba(37, 99, 235, .32), inset 0 1px 0 rgba(255, 255, 255, .2); transition: transform .2s, box-shadow .2s; }
+.primary:hover { transform: translateY(-1px); box-shadow: 0 16px 38px rgba(37, 99, 235, .42), inset 0 1px 0 rgba(255, 255, 255, .2); }
+.secondary { display: inline-flex; align-items: center; padding: 13px 22px; border-radius: 12px; border: 1px solid var(--color-border-strong); font-size: 15px; color: var(--color-text-primary); text-decoration: none; transition: border-color .2s; }
+.secondary:hover { border-color: rgba(148, 163, 184, .55); }
+.main a:focus-visible, .main summary:focus-visible { outline: 2px solid var(--color-brand-cyan); outline-offset: 3px; }
+
+/* ── Hero: the thesis, and beside it one work being carried ──
+   One grid for both sides. "当 AI 接管信息处理" shares a row with AutoMage's writing on the work;
+   "人回归判断本身" shares a row with the person's decision; the line runs between them across the page. */
+
+.hero { position: relative; display: flex; align-items: center; min-height: calc(100svh - var(--head)); padding: clamp(20px, 4vh, 48px) 0 clamp(28px, 6vh, 64px); }
+.hero::before {
+  content: ""; position: absolute; inset: calc(-1 * var(--head)) 0 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(36% 46% at 76% 44%, rgba(59, 130, 246, .11), transparent 72%),
+    repeating-linear-gradient(90deg, rgba(148, 163, 184, .035) 0 1px, transparent 1px 124px);
+  mask-image: linear-gradient(to bottom, black 60%, transparent);
+}
+.heroGrid {
+  position: relative; z-index: 1; width: calc(100% - 64px); max-width: 1240px; margin: 0 auto;
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: clamp(40px, 5.5vw, 88px); row-gap: clamp(10px, 1.8vh, 16px);
+  grid-template-areas: "title work" "ai1 ai2" "line line" "person1 person2" "rest after";
+}
+.heroTitle { grid-area: title; align-self: end; margin: 0; font-size: clamp(40px, min(4.5vw, 7.6vh), 66px); line-height: 1.1; letter-spacing: -.045em; font-weight: 650; color: #F8FAFC; }
+.heroTitle span { background: linear-gradient(92deg, #60A5FA, #38BDF8 48%, #818CF8); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.heroClause { align-self: baseline; margin: 0; font-size: clamp(19px, 1.65vw, 23px); line-height: 1.4; font-weight: 520; }
+.heroClause[data-zone="ai"] { grid-area: ai1; color: #BFD3EE; }
+.heroClause[data-zone="person"] { grid-area: person1; color: var(--person); }
+.heroRest { grid-area: rest; align-self: start; padding-top: clamp(8px, 2vh, 18px); }
+.heroText { max-width: 520px; margin: 0 0 clamp(20px, 3.4vh, 32px); font-size: 15px; line-height: 1.9; color: var(--color-text-tertiary); text-wrap: pretty; }
+.heroActions { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 28px; }
+.heroHint { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; color: var(--color-text-tertiary); text-decoration: none; }
+.heroHint:hover { color: white; }
+
+/* The work: its talk drifts in above it and lands as its sources */
+.heroCell { transition: opacity .55s ease; }
+.heroWork { grid-area: work; align-self: end; position: relative; padding-top: clamp(72px, 12vh, 104px); }
+.talk { position: absolute; left: 0; right: 0; top: 0; height: clamp(72px, 12vh, 104px); margin: 0; padding: 0; list-style: none; }
+.talk li { position: absolute; left: var(--fx); top: var(--fy); display: inline-flex; align-items: baseline; gap: 8px; padding: 6px 12px; border-radius: 9px; border: 1px solid rgba(148, 163, 184, .2); background: rgba(15, 23, 42, .92); box-shadow: 0 8px 20px rgba(0, 0, 0, .25); font-size: 13px; line-height: 1.4; white-space: nowrap; color: #A5B4C8; opacity: 0; transition: opacity .45s ease; }
+.talk li span { font-size: 11px; color: #64748B; }
+.talk li[data-on] { opacity: 1; }
+.talk li[data-landed] { opacity: 0; transform: translate(var(--dx, 0px), var(--dy, 0px)) scale(.45); transition: transform .8s cubic-bezier(.55, 0, .35, 1), opacity .3s ease .55s; }
+.heroWorkTitle { margin: 0 0 8px; font-size: clamp(26px, min(2.5vw, 4.2vh), 36px); line-height: 1.2; font-weight: 650; letter-spacing: -.025em; color: #F8FAFC; opacity: 0; translate: 0 8px; transition: opacity .5s ease, translate .5s ease; }
+.heroWorkState { margin: 0 0 10px; font-size: clamp(15px, 1.2vw, 17px); line-height: 1.5; color: var(--color-text-secondary); opacity: 0; transition: opacity .5s ease .15s; }
+.heroWorkTitle[data-on], .heroWorkState[data-on] { opacity: 1; translate: 0 0; }
+.heroWorkState > span, .heroWorkSources > span { display: inline-block; min-width: 3.4em; margin-right: 10px; font-size: 12.5px; color: #64748B; }
+.heroWorkSources { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; min-height: 26px; margin: 0; }
+.heroWorkSources > span { opacity: 0; transition: opacity .4s ease .6s; }
+.heroWorkSources[data-on] > span { opacity: 1; }
+.heroWorkSources i { padding: 2px 9px; border-radius: 6px; font-style: normal; font-size: 12.5px; line-height: 1.6; color: var(--ai-soft); background: rgba(59, 130, 246, .13); opacity: 0; scale: .7; transition: opacity .35s ease .7s, scale .35s ease .7s; }
+.heroWorkSources i[data-on] { opacity: 1; scale: 1; }
+
+/* AutoMage's information work, written on it in blue */
+.heroAi { grid-area: ai2; align-self: baseline; display: flex; flex-wrap: wrap; align-items: baseline; row-gap: 4px; margin: 0; font-size: clamp(14.5px, 1.15vw, 16px); line-height: 1.5; color: var(--ai-soft); }
+.heroWho { display: inline-flex; align-items: center; gap: 7px; margin-right: 12px; font: 600 12px/1 var(--font-console); letter-spacing: .02em; color: var(--ai); }
+.heroWho::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--ai); box-shadow: 0 0 10px var(--ai); }
+.heroAi i { font-style: normal; opacity: 0; translate: 0 4px; transition: opacity .45s ease, translate .45s ease; }
+.heroAi i[data-on] { opacity: 1; translate: 0 0; }
+.heroAi i + i::before { content: "·"; margin: 0 9px; color: rgba(96, 165, 250, .6); }
+
+/* The line, across the page between the two clauses; its label sits above it on the right. It is always
+   there, faint: the boundary between AutoMage's work and a person's exists before any work reaches it.
+   When this work reaches it, it lights amber (or green: the work stayed inside its lines). */
+.heroLine { grid-area: line; position: relative; display: grid; grid-template-columns: subgrid; align-items: end; min-height: 32px; margin: 0; }
+.heroLine::before, .heroLine::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; mask-image: linear-gradient(90deg, rgba(0, 0, 0, .3), black 50%); }
+.heroLine::before { border-top: 1px dashed rgba(148, 163, 184, .32); }
+.heroLine::after { border-top: 1px dashed var(--line); transform-origin: left center; scale: 0 1; transition: scale .8s cubic-bezier(.6, 0, .3, 1); }
+.heroLine[data-on]::after { scale: 1 1; }
+.heroLine:not([data-hit])::after { border-top-color: rgba(134, 239, 172, .6); }
+.heroLine span { grid-column: 2; padding-bottom: 7px; font-size: 13.5px; line-height: 1.4; color: var(--line-soft); opacity: 0; transition: opacity .4s ease .45s; }
+.heroLine:not([data-hit]) span { color: var(--done); }
+.heroLine[data-on] span { opacity: 1; }
+
+/* The person, only here — or nobody, when the work stayed inside its lines. Who the line names is known
+   before the work gets there (the organization set it); the decision appears when it is made. */
+.heroPerson { grid-area: person2; align-self: baseline; display: flex; align-items: baseline; gap: 12px; margin: 0; }
+.heroPerson span { align-self: center; padding: 3px 10px; border-radius: 999px; border: 1px solid rgba(243, 239, 230, .4); font-size: 12.5px; color: var(--person-soft); opacity: .4; transition: opacity .5s ease; }
+.heroPerson b { font-size: clamp(19px, 1.65vw, 23px); font-weight: 600; color: var(--person); opacity: 0; translate: 0 6px; transition: opacity .5s ease, translate .5s ease; }
+.heroPerson[data-on] span { opacity: 1; }
+.heroPerson[data-on] b { opacity: 1; translate: 0 0; }
+.heroPerson[data-none] span { color: #64748B; border-color: rgba(100, 116, 139, .4); }
+.heroPerson[data-none] b { font-weight: 500; color: #94A3B8; }
+.heroAfter { grid-area: after; align-self: start; margin: 0; padding-top: clamp(8px, 2vh, 18px); font-size: 14.5px; line-height: 1.6; color: var(--ai-soft); opacity: 0; transition: opacity .5s ease; }
+.heroAfter[data-on] { opacity: 1; }
+.heroGrid .heroCell[data-leaving] { opacity: 0; transition: opacity .55s ease; }
+
+/* ── The loop ring (the 02 act) ── */
+
+.ring { position: relative; justify-self: center; width: 100%; max-width: 440px; aspect-ratio: 1; container-type: inline-size; }
+.ringSvg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.ringTrack { fill: none; stroke: rgba(59, 130, 246, .22); stroke-width: .5; }
+.ringArc { fill: none; stroke-width: .7; stroke-linecap: round; }
+.lineMark { stroke: var(--line); stroke-width: .9; stroke-linecap: round; opacity: .9; }
+.lineLabel { position: absolute; left: var(--x); top: var(--y); translate: -50% -50%; white-space: nowrap; font-size: 11.5px; color: var(--line-soft); }
+.marker { transform-box: view-box; transform-origin: 50% 50%; }
+.marker circle { fill: #E0F2FE; filter: drop-shadow(0 0 2px #38BDF8); }
+
+/* The centre: the work this turn is about, and where it stands */
+.focus { position: absolute; left: 50%; top: 50%; width: 46%; translate: -50% -50%; text-align: center; }
+.focusTitle { margin: 0 0 6px; font-size: clamp(15px, 4.6cqw, 23px); line-height: 1.3; font-weight: 650; color: #F8FAFC; }
+.focusTitle small { margin-left: 6px; font-size: .6em; font-weight: 500; color: #64748B; }
+.focus ol { display: grid; margin: 0; padding: 0; list-style: none; }
+.focus li { grid-area: 1 / 1; font-size: clamp(12px, 3.1cqw, 15.5px); line-height: 1.45; color: var(--ai-soft); }
+.focus li[data-line] { color: var(--line-soft); }
+.focus li:not(:last-child) { visibility: hidden; }
+
+.nodes { position: absolute; inset: 0; margin: 0; padding: 0; list-style: none; }
+.node { position: absolute; left: var(--x); top: var(--y); translate: -50% -50%; }
+.nodeIcon { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 50%; color: var(--ai-soft); background: #0B1628; border: 1px solid rgba(96, 165, 250, .6); box-shadow: 0 0 0 6px var(--color-surface-page), 0 0 18px rgba(59, 130, 246, .24); }
+.node[data-actor="person"] .nodeIcon { color: var(--person); background: #151A23; border-color: rgba(243, 239, 230, .5); box-shadow: 0 0 0 6px var(--color-surface-page), 0 0 14px rgba(243, 239, 230, .08); }
+.node[data-weight="heavy"] .nodeIcon { width: 60px; height: 60px; border-width: 1.5px; border-color: rgba(243, 239, 230, .85); box-shadow: 0 0 0 6px var(--color-surface-page), 0 0 26px rgba(243, 239, 230, .16); }
+.nodeLabel { position: absolute; white-space: nowrap; font-size: 13px; line-height: 1.3; color: var(--color-text-secondary); }
+.nodeLabel small { display: block; font-size: 11px; color: #64748B; }
+.node[data-actor="person"] .nodeLabel { color: var(--person); }
+.node[data-side="top"] .nodeLabel { left: 50%; bottom: 100%; translate: -50% -8px; text-align: center; }
+.node[data-side="bottom"] .nodeLabel { left: 50%; top: 100%; translate: -50% 8px; text-align: center; }
+.node[data-side="right"] .nodeLabel { left: 100%; top: 50%; translate: 12px -50%; text-align: left; }
+.node[data-side="left"] .nodeLabel { right: 100%; top: 50%; translate: -12px -50%; text-align: right; }
+
+/* ── Acts ── */
+
+.act { position: relative; border-top: 1px solid var(--color-section-hairline); }
+.frame { max-width: 1240px; width: calc(100% - 64px); margin: 0 auto; }
+.noiseAct, .loopAct { padding: 104px 0 96px; }
+.noiseAct { scroll-margin-top: var(--head); }
+.actHead { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: end; gap: 20px 56px; margin-bottom: 36px; }
+.actHead h2 { margin: 0; font-size: clamp(30px, 3.1vw, 46px); line-height: 1.18; letter-spacing: -.035em; font-weight: 640; color: #F8FAFC; text-wrap: balance; }
+.actText { margin: 0; max-width: 560px; font-size: 15px; line-height: 1.85; color: var(--color-text-tertiary); text-wrap: pretty; }
+
+/* 01 · the noise and what it becomes — as a still: the noise, the AutoMage layer, then the three things */
+.canvas { position: relative; display: grid; gap: 22px; }
+.noise { display: flex; flex-wrap: wrap; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.noise li { display: inline-flex; align-items: baseline; gap: 8px; padding: 9px 14px; border-radius: 10px; border: 1px solid rgba(148, 163, 184, .18); background: rgba(15, 23, 42, .82); font-size: 13.5px; line-height: 1.4; white-space: nowrap; color: #A5B4C8; box-shadow: 0 10px 24px rgba(0, 0, 0, .25); }
+.noise li span { font-size: 11px; color: #64748B; }
+.layer { display: flex; align-items: center; gap: 12px; margin: 2px 0; }
+.layer::before { content: ""; width: 48px; height: 2px; border-radius: 1px; background: linear-gradient(90deg, rgba(59, 130, 246, 0), var(--ai)); box-shadow: 0 0 10px rgba(59, 130, 246, .5); }
+.layer span { font: 600 12px var(--font-console); color: var(--ai); }
+.layer span::after { content: " 把它们汇到对应的事上"; font: 400 13px var(--font-sans); color: var(--color-text-tertiary); }
+.workCards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; margin: 0; padding: 0; list-style: none; }
+.workCard { padding: 16px 18px 14px; border-radius: 14px; border: 1px solid rgba(96, 165, 250, .3); background: linear-gradient(180deg, rgba(16, 32, 58, .94), rgba(11, 22, 40, .94)); box-shadow: 0 18px 40px rgba(0, 0, 0, .3); }
+.workHead { display: flex; align-items: baseline; gap: 10px; margin: 0 0 10px; }
+.workHead b { font-size: 16px; font-weight: 600; color: #F8FAFC; }
+.workHead small { font-size: 12px; color: #64748B; }
+.workHead span { margin-left: auto; align-self: center; padding: 2px 9px; border-radius: 999px; font-size: 12px; white-space: nowrap; }
+.workHead [data-risk="高"] { color: #FCA5A5; background: rgba(239, 68, 68, .14); }
+.workHead [data-risk="中"] { color: #FCD34D; background: rgba(245, 158, 11, .14); }
+.workHead [data-risk="低"] { color: #86EFAC; background: rgba(34, 197, 94, .12); }
+.workRow { display: grid; grid-template-columns: 52px 1fr; gap: 8px; margin: 0 0 5px; font-size: 13.5px; line-height: 1.55; color: var(--color-text-secondary); }
+.workRow span { color: #64748B; }
+.workSources { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 10px 0 0; padding-top: 10px; border-top: 1px solid rgba(148, 163, 184, .1); }
+.workSources span { margin-right: 2px; font-size: 11px; color: #64748B; }
+.workSources i { padding: 2px 8px; border-radius: 6px; font-style: normal; font-size: 11.5px; color: #93C5FD; background: rgba(59, 130, 246, .1); }
+.noiseSum { margin: 4px 0 0; font-size: 15px; line-height: 1.6; color: var(--color-text-secondary); }
+.noiseSum small { display: block; font-size: 13px; color: #64748B; }
+
+/* 02 · the loop — as a still: the ring with every step lit, then every step's card */
+.loopBody { display: grid; gap: 40px; }
+.loopAct .ring { max-width: 440px; }
+.loopAct .marker { display: none; }
+.loopSide { min-width: 0; }
+.panels { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; margin: 0; padding: 0; list-style: none; }
+.panel { padding: 20px 22px; border-radius: 16px; border: 1px solid rgba(96, 165, 250, .28); background: linear-gradient(180deg, rgba(16, 32, 58, .94), rgba(11, 22, 40, .94)); box-shadow: 0 24px 60px rgba(0, 0, 0, .3); }
+.panel[data-actor="person"] { border-color: rgba(243, 239, 230, .24); }
+.panelHead { display: flex; align-items: center; gap: 10px; margin: 0 0 12px; }
+.panelIcon { display: grid; flex-shrink: 0; place-items: center; width: 34px; height: 34px; border-radius: 50%; border: 1px solid rgba(96, 165, 250, .5); color: #93C5FD; }
+.panel[data-actor="person"] .panelIcon { border-color: rgba(243, 239, 230, .5); color: var(--person); }
+.panelHead b { font-size: 18px; font-weight: 600; color: #F8FAFC; }
+.actor { padding: 3px 9px; border-radius: 999px; font-size: 12px; white-space: nowrap; color: #93C5FD; background: rgba(59, 130, 246, .12); }
+.panel[data-actor="person"] .actor { color: var(--person); background: rgba(243, 239, 230, .08); }
+.panelHead small { margin-left: auto; font: 12px var(--font-console); white-space: nowrap; color: #64748B; }
+.panelLine { margin: 0 0 14px; font-size: 15px; line-height: 1.6; color: var(--color-text-secondary); }
+.panelIo { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; padding: 13px 0; border-top: 1px solid rgba(148, 163, 184, .1); border-bottom: 1px solid rgba(148, 163, 184, .1); }
+.panelIo h3 { margin: 0 0 8px; font: 500 11px var(--font-console); letter-spacing: .12em; color: #64748B; }
+.panelIo ul { display: grid; gap: 5px; margin: 0; padding: 0; list-style: none; }
+.panelIo li { position: relative; padding-left: 13px; font-size: 13.5px; line-height: 1.5; color: var(--color-text-secondary); }
+.panelIo li::before { content: ""; position: absolute; left: 0; top: .62em; width: 5px; height: 5px; border-radius: 50%; background: #3B82F6; }
+.panel[data-actor="person"] .panelIo li::before { background: var(--person-soft); }
+.panelNote { margin: 13px 0 0; padding: 9px 13px; border-radius: 10px; font-size: 13.5px; line-height: 1.55; color: #BAE6FD; background: rgba(56, 189, 248, .07); border: 1px solid rgba(56, 189, 248, .18); }
+.counts { display: flex; gap: 10px; margin: 16px 0 0; padding: 0; list-style: none; }
+.counts li { flex: 1; display: flex; align-items: baseline; gap: 6px; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--color-border-default); font-size: 13px; color: var(--color-text-tertiary); }
+.counts li:not(:last-child)::after { content: "→"; margin-left: auto; color: #334155; }
+.counts b { font-size: 24px; font-weight: 600; color: #60A5FA; font-variant-numeric: tabular-nums; }
+.loopNote { margin: 14px 0 0; font-size: 13px; line-height: 1.6; color: #64748B; }
+
+/* 03 · one pass through a line. Four equal columns with no gap, so each icon's centre is at 12.5%,
+   37.5%, 62.5% or 87.5% exactly, and the track and the token run through those centres. */
+.gateAct { padding: 112px 0 104px; }
+.track { position: relative; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); margin: 8px 0 56px; padding: 0; list-style: none; }
+.track::before { content: ""; position: absolute; left: 12.5%; right: 12.5%; top: 28px; height: 2px; translate: 0 -50%; background: linear-gradient(90deg, rgba(59, 130, 246, .65), rgba(245, 158, 11, .65) 33.3%, rgba(243, 239, 230, .5) 66.6%, rgba(59, 130, 246, .65)); }
+.track > li:not(.token) { position: relative; display: flex; flex-direction: column; align-items: center; padding: 0 14px; text-align: center; }
+.stationIcon { position: relative; display: grid; place-items: center; width: 56px; height: 56px; margin-bottom: 18px; border-radius: 50%; color: #93C5FD; background: #0B1628; border: 1px solid rgba(96, 165, 250, .6); box-shadow: 0 0 0 8px var(--color-surface-page); }
+.stationIcon > svg { grid-area: 1 / 1; }
+.track [data-actor="person"] .stationIcon { color: var(--person); background: #151A23; border-color: rgba(243, 239, 230, .6); animation: asked 9s ease-in-out infinite; }
+.track [data-actor="line"] .stationIcon { border-radius: 14px; color: #FCD34D; background: #1D1A12; border-color: rgba(245, 158, 11, .7); }
+.track [data-actor="line"] .stationIcon::before, .track [data-actor="line"] .stationIcon::after { content: ""; position: absolute; left: 50%; width: 2px; height: 22px; translate: -50% 0; background: rgba(245, 158, 11, .7); }
+.track [data-actor="line"] .stationIcon::before { bottom: calc(100% + 1px); }
+.track [data-actor="line"] .stationIcon::after { top: calc(100% + 1px); }
+.track strong { margin-bottom: 8px; font-size: 17px; font-weight: 600; color: #F8FAFC; }
+.track p { margin: 0; max-width: 240px; font-size: 14px; line-height: 1.7; color: var(--color-text-tertiary); text-wrap: balance; }
+.unlocked { opacity: 0; animation: unlocked 9s step-end infinite; }
+.locked { animation: locked 9s step-end infinite; }
+.token { position: absolute; top: 28px; left: 12.5%; width: 12px; height: 12px; translate: -50% -50%; border-radius: 50%; background: #E0F2FE; box-shadow: 0 0 14px #38BDF8; animation: token 9s ease-in-out infinite; }
+@keyframes token {
+  0% { left: 12.5%; opacity: 0; }
+  6% { left: 12.5%; opacity: 1; }
+  26%, 46% { left: 37.5%; }
+  60%, 72% { left: 62.5%; }
+  92% { left: 87.5%; opacity: 1; }
+  100% { left: 87.5%; opacity: 0; }
+}
+@keyframes locked { 0% { opacity: 1; } 46% { opacity: 0; } 97% { opacity: 1; } }
+@keyframes unlocked { 0% { opacity: 0; } 46% { opacity: 1; } 97% { opacity: 0; } }
+@keyframes asked {
+  0%, 27%, 52%, 100% { box-shadow: 0 0 0 8px var(--color-surface-page), 0 0 0 rgba(243, 239, 230, 0); }
+  34%, 46% { box-shadow: 0 0 0 8px var(--color-surface-page), 0 0 24px rgba(243, 239, 230, .45); }
+}
+.facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin: 0; padding: 0; list-style: none; }
+.facts li { padding: 22px 24px; border-radius: 14px; border: 1px solid var(--color-border-default); background: rgba(15, 23, 42, .6); }
+.facts svg { display: block; margin-bottom: 14px; color: #60A5FA; }
+.facts strong { display: block; margin-bottom: 8px; font-size: 16px; color: #F8FAFC; }
+.facts p { margin: 0; font-size: 14px; line-height: 1.75; color: var(--color-text-tertiary); }
+
+/* ── Doors ── */
+
+.door { padding: 96px 0; border-top: 1px solid var(--color-section-hairline); }
+.doorInner { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); align-items: center; gap: 64px; max-width: 1240px; width: calc(100% - 64px); margin: 0 auto; }
+.doorTab { display: inline-flex; margin: 0 0 18px; padding: 5px 12px; border-radius: 999px; font: 500 12px/1.4 var(--font-console); letter-spacing: .04em; color: #7DD3FC; border: 1px solid rgba(56, 189, 248, .3); background: rgba(56, 189, 248, .06); }
+.doorCopy h2 { margin: 0 0 16px; font-size: clamp(26px, 2.5vw, 36px); line-height: 1.25; letter-spacing: -.03em; font-weight: 620; color: #F8FAFC; text-wrap: balance; }
+.doorText { max-width: 520px; margin: 0 0 28px; font-size: 15px; line-height: 1.85; color: var(--color-text-tertiary); text-wrap: pretty; }
+.doorLink { display: inline-flex; align-items: center; gap: 10px; padding: 12px 20px; border-radius: 12px; border: 1px solid rgba(96, 165, 250, .45); font-size: 15px; color: white; text-decoration: none; background: rgba(59, 130, 246, .1); transition: background .2s, border-color .2s; }
+.doorLink:hover { background: rgba(59, 130, 246, .2); border-color: rgba(96, 165, 250, .7); }
+.doorNote { margin: 14px 0 0; font-size: 13px; line-height: 1.7; color: #64748B; }
+.doorVisual { min-width: 0; padding: 28px; border-radius: 18px; border: 1px solid var(--color-border-default); background: rgba(11, 22, 40, .72); }
+
+.legend { display: flex; flex-wrap: wrap; gap: 8px 18px; margin: 0; font-size: 12px; color: #64748B; }
+.legend span::before { content: ""; display: inline-block; width: 14px; height: 6px; margin-right: 7px; border-radius: 3px; vertical-align: middle; background: #475569; }
+.legend [data-mark="unsaid"]::before { background: transparent; border: 1px dashed #64748B; }
+.legend [data-mark="ai"]::before { background: #3B82F6; }
+.legend [data-line="carried"]::before { height: 3px; background: #38BDF8; }
+.legend [data-line="alone"]::before { height: 3px; background: repeating-linear-gradient(90deg, #F59E0B 0 4px, transparent 4px 7px); }
+
+/* The week, one mark per line, stacked from the bottom of each day */
+.week { display: grid; gap: 14px; margin: 0; }
+.weekRow { display: grid; grid-template-columns: 112px minmax(0, 1fr); align-items: end; gap: 16px; }
+.weekRow ol { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; margin: 0; padding: 0; list-style: none; }
+.weekRow:not([data-pass="days"]) li { display: flex; flex-direction: column-reverse; justify-content: flex-start; gap: 4px; min-height: 70px; padding-bottom: 8px; border-bottom: 1px solid rgba(148, 163, 184, .14); }
+.weekRow i { display: block; height: 7px; border-radius: 4px; background: #475569; }
+.weekRow i[data-mark="unsaid"] { background: transparent; border: 1px dashed #64748B; }
+.weekRow i[data-mark="ai"] { background: linear-gradient(90deg, #3B82F6, #38BDF8); box-shadow: 0 0 10px rgba(59, 130, 246, .4); }
+.weekRow em { font-style: normal; font-size: 11px; line-height: 1.4; color: #4ADE80; }
+.weekRow[data-pass="days"] li { font-size: 12px; text-align: center; color: #64748B; }
+.weekLabel { margin: 0; font-size: 12.5px; line-height: 1.5; color: var(--color-text-tertiary); }
+.weekLabel b { display: block; font-size: 22px; font-weight: 600; color: var(--color-text-primary); }
+.weekRow[data-pass="after"] .weekLabel b { color: #60A5FA; }
+.week .legend { margin-top: 4px; }
+
+/* The stock over 14 days; text is in the chart's own units and scales with it */
+.stock { display: grid; gap: 12px; margin: 0; }
+.stock svg { display: block; width: 100%; height: auto; overflow: visible; }
+.stockSafety { stroke: rgba(34, 197, 94, .55); stroke-width: .8; stroke-dasharray: 3 3; }
+.stockSafetyLabel { fill: #4ADE80; font-size: 8.5px; }
+.stockAlone { fill: none; stroke: #F59E0B; stroke-width: 1.4; stroke-dasharray: 4 3; opacity: .85; }
+.stockCarried { fill: none; stroke: #38BDF8; stroke-width: 2; stroke-linejoin: round; filter: drop-shadow(0 0 3px rgba(56, 189, 248, .5)); }
+.stockBreach circle { fill: #EF4444; }
+.stockBreach text { fill: #FCA5A5; font-size: 8.5px; }
+.stockMark circle { fill: #0B1628; stroke: #38BDF8; stroke-width: 1.2; }
+.stockMark text { fill: var(--color-text-secondary); font-size: 8.5px; }
+.stockTick { fill: #64748B; font-size: 8px; }
+
+.library { display: grid; gap: 22px; }
+.libraryTotal { margin: 0; font-size: 15px; color: var(--color-text-tertiary); }
+.libraryTotal b { margin-right: 4px; font-size: 30px; font-weight: 600; color: var(--color-text-primary); }
+.libraryTotal span { margin: 0 12px; color: #334155; }
+.areas { display: grid; grid-template-columns: repeat(auto-fill, minmax(148px, 1fr)); gap: 10px; margin: 0; padding: 0; list-style: none; }
+.areas li { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; padding: 12px 14px; border-radius: 10px; border: 1px solid var(--color-border-default); background: rgba(15, 23, 42, .6); font-size: 14px; color: var(--color-text-secondary); }
+.areas b { font: 500 13px var(--font-console); color: #60A5FA; }
+.examples { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.examples li { padding: 6px 12px; border-radius: 999px; font-size: 13px; color: #93C5FD; background: rgba(59, 130, 246, .1); }
+
+/* ── Questions, and the last word ── */
+
+.faq { padding: 104px 0; border-top: 1px solid var(--color-section-hairline); }
+.faq .wrap { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); align-items: start; gap: 64px; }
+.faqHead h2 { margin: 0; font-size: clamp(28px, 2.6vw, 38px); line-height: 1.25; letter-spacing: -.03em; font-weight: 620; color: #F8FAFC; text-wrap: balance; }
+.faqList { display: grid; gap: 10px; }
+.faqList details { border: 1px solid var(--color-border-default); border-radius: 14px; background: rgba(15, 23, 42, .55); transition: border-color .2s, background .2s; }
+.faqList details[open] { border-color: rgba(96, 165, 250, .35); background: rgba(16, 32, 58, .6); }
+.faqList summary { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 18px 22px; list-style: none; cursor: pointer; font-size: 16px; font-weight: 560; color: var(--color-text-primary); }
+.faqList summary::-webkit-details-marker { display: none; }
+.faqList summary::after { content: "+"; font: 400 20px/1 var(--font-console); color: #64748B; transition: rotate .2s; }
+.faqList details[open] summary::after { rotate: 45deg; color: #93C5FD; }
+.faqList details p { margin: 0; padding: 0 22px 20px; font-size: 14.5px; line-height: 1.85; color: var(--color-text-tertiary); }
+
+.closing { padding: 112px 0 120px; text-align: center; border-top: 1px solid var(--color-section-hairline); background: radial-gradient(50% 70% at 50% 100%, rgba(59, 130, 246, .14), transparent 70%); }
+.closing h2 { margin: 0 0 16px; font-size: clamp(30px, 3.2vw, 46px); letter-spacing: -.035em; font-weight: 640; color: #F8FAFC; }
+.closing p { max-width: 560px; margin: 0 auto 32px; font-size: 15.5px; line-height: 1.85; color: var(--color-text-tertiary); text-wrap: balance; }
+.closingActions { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; }
+
+/* ── Live: the noise and loop acts stay in view, drawn from --p ── */
+
+@media (min-width: 1200px) and (min-height: 620px) {
+  .noiseAct, .loopAct { height: calc(var(--runway) * 100svh + 100svh - var(--head)); padding: 0; }
+  .noiseAct .frame, .loopAct .frame { position: sticky; top: var(--head); height: calc(100svh - var(--head)); display: grid; grid-template-rows: auto minmax(0, 1fr); padding: clamp(20px, 4.5vh, 48px) 0 clamp(16px, 3.5vh, 36px); }
+  .actHead { margin-bottom: clamp(16px, 3vh, 32px); }
+
+  /* 01: each note drifts to the AutoMage layer at the height of the work it belongs to and is taken in
+     there; its source tag lights on that work as it lands; the work fills in once its notes are in. */
+  .canvas { display: block; }
+  .noise { position: absolute; inset: 0; display: block; }
+  .noise li {
+    --t: clamp(0, calc((var(--p, 0) - var(--s)) / .35), 1);
+    --e: calc(var(--t) * var(--t) * (3 - 2 * var(--t)));
+    position: absolute; left: calc(var(--x) * (1 - var(--e)) + 51% * var(--e)); top: calc(var(--y) * (1 - var(--e)) + var(--wy) * var(--e));
+    translate: -50% -50%; rotate: calc(var(--rot) * (1 - var(--e))); scale: calc(1 - .72 * var(--e));
+    opacity: calc(1 - clamp(0, calc((var(--t) - .72) / .28), 1));
+  }
+  .layer { --g: clamp(0, calc((var(--p, 0) - .25) / .75), 1); position: absolute; left: 51%; top: 6%; bottom: 6%; display: block; width: 2px; margin: 0; translate: -50% 0; border-radius: 1px; background: linear-gradient(180deg, rgba(59, 130, 246, 0), rgba(59, 130, 246, .75) 14%, rgba(56, 189, 248, .95) 50%, rgba(59, 130, 246, .75) 86%, rgba(59, 130, 246, 0)); box-shadow: 0 0 calc(8px + 16px * var(--g)) rgb(59 130 246 / calc(.3 + .35 * var(--g))); }
+  .layer::before { content: none; }
+  .layer span { position: absolute; left: 50%; bottom: 100%; translate: -50% -10px; white-space: nowrap; }
+  .layer span::after { content: none; }
+  .workCards { position: absolute; left: 55%; right: 0; top: 50%; grid-template-columns: minmax(0, 1fr); gap: 12px; translate: 0 -50%; }
+  /* Before the noise is taken in, each thing is only the questions nobody can answer yet; it fills in
+     as it comes out of AutoMage. The card's own surface is the ::after layer, so it can fade in. */
+  .workCard { --t: clamp(0, calc((var(--p, 0) - var(--s)) / .22), 1); position: relative; border-color: transparent; background: none; box-shadow: none; }
+  .workCard > * { position: relative; z-index: 1; opacity: var(--t); translate: calc((1 - var(--t)) * -28px) 0; }
+  .workCard > .workSources { opacity: 1; translate: none; border-top-color: transparent; }
+  /* Once the noise is in, the place it came from says what became of it. */
+  .noiseSum { position: absolute; left: 0; top: 50%; max-width: 40%; margin: 0; translate: 0 -50%; font-size: clamp(20px, 1.8vw, 26px); line-height: 1.45; font-weight: 600; color: #F8FAFC; text-wrap: balance; opacity: clamp(0, calc((var(--p, 0) - 1.02) / .2), 1); }
+  .noiseSum small { margin-top: 10px; font-size: 14px; font-weight: 400; }
+  .workSources > * { opacity: clamp(0, calc((var(--p, 0) - var(--s)) / .06), 1); }
+  .workCard::before { content: "谁负责？到哪了？下一步？"; position: absolute; inset: 0; display: grid; place-items: center; border: 1px dashed rgba(148, 163, 184, .28); border-radius: inherit; font-size: 14px; letter-spacing: .04em; color: #475569; opacity: calc(1 - var(--t)); }
+  .workCard::after { content: ""; position: absolute; inset: 0; border-radius: inherit; border: 1px solid rgba(96, 165, 250, .3); background: linear-gradient(180deg, rgba(16, 32, 58, .94), rgba(11, 22, 40, .94)); box-shadow: 0 18px 40px rgba(0, 0, 0, .3); opacity: var(--t); }
+
+  /* 02: the marker goes round with the scroll; each node lights as it is reached and its card shows.
+     A card fades out before the next fades in, so two never overlap. */
+  .loopAct .frame { --f: clamp(0, calc((var(--p, 0) - var(--l0)) / var(--ll)), 1); --ring: min(calc(100svh - var(--head) - 230px), 540px); }
+  .loopBody { grid-template-columns: var(--ring) minmax(0, 1fr); align-items: center; gap: clamp(40px, 5vw, 88px); min-height: 0; }
+  .loopAct .ring { width: var(--ring); max-width: none; justify-self: start; margin-top: -24px; }
+  .loopAct .marker { display: inline; transform: rotate(calc(var(--f) * 360deg)); }
+  .loopAct .ringArc { stroke-dasharray: 1 1; stroke-dashoffset: calc(1 - var(--f)); }
+  .loopAct .node {
+    --on: clamp(0, calc((var(--p, 0) - var(--r)) / .08 + 1), 1);
+    --cur: calc(var(--on) - clamp(0, calc((var(--p, 0) - var(--rn)) / .08 + 1), 1));
+  }
+  .loopAct .nodeIcon { opacity: calc(.38 + .62 * var(--on)); scale: calc(1 + .16 * var(--cur)); box-shadow: 0 0 0 6px var(--color-surface-page), 0 0 calc(6px + 28px * var(--cur)) rgb(59 130 246 / calc(.18 + .5 * var(--cur))); }
+  .loopAct .node[data-actor="person"] .nodeIcon { box-shadow: 0 0 0 6px var(--color-surface-page), 0 0 calc(6px + 28px * var(--cur)) rgb(243 239 230 / calc(.08 + .4 * var(--cur))); }
+  .loopAct .focus li {
+    --in: clamp(0, calc((var(--p, 0) - var(--r)) / .05 + 1), 1);
+    --out: clamp(0, calc((var(--p, 0) - var(--rn)) / .05 + 2), 1);
+    visibility: visible; opacity: calc(var(--in) - var(--out));
+  }
+  .loopAct .lineMark, .loopAct .lineLabel { --lit: clamp(0, calc((var(--p, 0) - var(--rl)) / .08 + 1), 1); opacity: calc(.35 + .65 * var(--lit)); }
+  .loopAct .nodeLabel { opacity: calc(.45 + .55 * var(--on)); }
+  .panels { grid-template-columns: minmax(0, 1fr); }
+  .panel {
+    --in: clamp(0, calc((var(--p, 0) - var(--r)) / .05 + 1), 1);
+    --out: clamp(0, calc((var(--p, 0) - var(--rn)) / .05 + 2), 1);
+    grid-area: 1 / 1; opacity: calc(var(--in) - var(--out)); translate: 0 calc((1 - var(--in) + var(--out)) * 10px);
+  }
+  .counts li { --on: clamp(0, calc((var(--p, 0) - var(--r)) / .08 + 1), 1); opacity: calc(.3 + .7 * var(--on)); }
+}
+
+/* Short live screens: everything that is not needed to follow the act steps back */
+@media (min-width: 1200px) and (min-height: 620px) and (max-height: 780px) {
+  .actHead h2 { font-size: clamp(26px, 2.5vw, 34px); }
+  .actText { font-size: 14px; line-height: 1.7; }
+  .workCard { padding: 10px 14px; }
+  .workHead { margin-bottom: 6px; }
+  .workRow { margin-bottom: 2px; font-size: 13px; }
+  .workSources { margin-top: 6px; padding-top: 0; }
+  .panel { padding: 16px 18px; }
+  .panelLine { margin-bottom: 10px; font-size: 14px; }
+  .panelIo { padding: 10px 0; }
+  .panelNote { margin-top: 10px; padding: 7px 12px; }
+  .counts { margin-top: 10px; }
+  .counts li { padding: 7px 10px; }
+  .counts b { font-size: 20px; }
+  .loopNote { margin-top: 8px; font-size: 12.5px; }
+}
+
+/* ── Narrower screens ── */
+
+@media (max-width: 1100px) {
+  .hero { min-height: 0; padding: 28px 0 56px; }
+  .heroGrid { grid-template-columns: minmax(0, 1fr); grid-template-areas: "title" "ai1" "person1" "rest" "work" "ai2" "line" "person2" "after"; row-gap: 12px; }
+  .heroRest { padding-bottom: 20px; }
+  .heroWork { margin-top: 8px; padding-top: 104px; }
+  .heroLine span { grid-column: 1; }
+  .actHead, .doorInner, .faq .wrap { grid-template-columns: minmax(0, 1fr); gap: 20px 40px; }
+  .doorInner { gap: 36px; }
+}
+
+@media (max-width: 760px) {
+  .wrap, .frame, .heroGrid, .doorInner { width: calc(100% - 32px); }
+  .heroTitle { font-size: clamp(36px, 10.5vw, 48px); }
+  .heroText { font-size: 14.5px; }
+  .talk li { left: calc(var(--fx) * .55); max-width: 76%; white-space: normal; }
+  /* Too narrow for one line of actions: one per line, under AutoMage, with no separators to strand. */
+  .heroAi { flex-direction: column; align-items: flex-start; row-gap: 2px; }
+  .heroAi i { padding-left: 19px; }
+  .heroAi i + i::before { content: none; }
+  .heroWho { margin-bottom: 4px; }
+  .nodeIcon { width: 36px; height: 36px; }
+  .node[data-weight="heavy"] .nodeIcon { width: 46px; height: 46px; }
+  /* No room beside the ring: every label hangs below its icon, on a chip that masks the ring line. */
+  .node[data-side] .nodeLabel { left: 50%; right: auto; top: 100%; bottom: auto; translate: -50% 6px; padding: 1px 6px; border-radius: 6px; text-align: center; font-size: 12px; background: var(--color-surface-page); }
+  .noiseAct, .loopAct, .gateAct, .faq { padding: 72px 0 64px; }
+  .door { padding: 64px 0; }
+  .actHead h2 { font-size: clamp(26px, 7.6vw, 34px); }
+  .noise li { white-space: normal; }
+  .layer span::after { content: " 汇到对应的事上"; }
+  .panelHead { flex-wrap: wrap; row-gap: 6px; }
+  .panelIo { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .counts { flex-wrap: wrap; }
+  .counts li { flex: 1 1 40%; }
+  .track { grid-template-columns: minmax(0, 1fr); gap: 26px; }
+  .track::before { left: 28px; right: auto; top: 28px; bottom: 28px; width: 2px; height: auto; translate: -50% 0; background: linear-gradient(180deg, rgba(59, 130, 246, .65), rgba(245, 158, 11, .65) 33.3%, rgba(226, 232, 240, .5) 66.6%, rgba(59, 130, 246, .65)); }
+  .track > li:not(.token) { display: grid; grid-template-columns: 56px minmax(0, 1fr); column-gap: 18px; align-items: start; padding: 0; text-align: left; }
+  .stationIcon { grid-row: span 2; margin: 0; }
+  .track [data-actor="line"] .stationIcon::before, .track [data-actor="line"] .stationIcon::after { display: none; }
+  .track strong { margin: 4px 0 6px; }
+  .track p { max-width: none; }
+  .token { display: none; }
+  .facts { grid-template-columns: minmax(0, 1fr); }
+  .doorVisual { padding: 20px 16px; }
+  .weekRow { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .weekRow[data-pass="days"] > span { display: none; }
+  .weekRow ol { gap: 6px; }
+  .stockSafetyLabel, .stockBreach text, .stockMark text { font-size: 11px; }
+  .stockTick { font-size: 10px; }
+  .closing { padding: 80px 0 88px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .token, .locked, .unlocked, .track [data-actor="person"] .stationIcon { animation: none; }
+  .token { display: none; }
+  .unlocked { opacity: 0; }
+}
