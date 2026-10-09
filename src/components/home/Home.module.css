@@ -1,7 +1,8 @@
-/* Homepage. One strong place: the stage, where scattered messages become one light work object and the
-   same change then forks under two delegation boundaries. Everything after the stage is quiet:
-   whitespace, hairlines, no cards. The work object uses the same light-surface values, type roles and
-   source tags as the supply-chain world. Observations from this round, not a global design system.
+/* Homepage. One strong place: the stage, where a company's week runs twice, first without AutoMage and
+   then with it. On the left of the field is what people say to each other; on the right, the works.
+   Everything after the stage is quiet: whitespace, hairlines, no cards. Light means one thing only:
+   a work is held, or a held work has come to a person. Observations from this round, not a global
+   design system.
 
    Scrubbing: the stage sets --p (screens scrolled into the stage). A part that moves with the scroll
    reads its own progress as clamp(0, (p - start) / length, 1), so every scroll shows at once and
@@ -14,6 +15,14 @@
   --ai-ground: #74afff;
   --risk-ground: #ff8f84;
   --human-ground: #e6ecf4;
+  --paper: #f2f5f9;
+  --paper-line: #d5dce6;
+  --ink: #0f1a2b;
+  --ink-2: #3f4b5e;
+  --ink-3: #5b6779;
+  --human: #1e3a5f;
+  --ai: #2457c5;
+  --unknown: #9a4d06;
   overflow-x: clip;
 }
 
@@ -33,7 +42,7 @@
   --head: 84px;
   --p: 0;
   position: relative;
-  height: calc(100vh - var(--head) + var(--runway, 3) * 100vh);
+  height: calc(100vh - var(--head) + var(--runway, 4) * 100vh);
 }
 
 .frame {
@@ -44,20 +53,23 @@
   margin: 0 auto;
   padding: 8px 24px 24px;
   display: grid;
-  grid-template-columns: minmax(0, 11fr) minmax(0, 13fr);
-  column-gap: 64px;
+  grid-template-columns: minmax(0, 392px) minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
+  column-gap: 56px;
 }
 
-/* The parts' texts share one place. Each comes in and goes out with the scroll (--si/--li in,
-   --so/--lo out); the outgoing one is gone before the next arrives, so the column never holds two. */
+/* The three parts' texts share one place; each comes in and goes out with the scroll. */
 .story {
+  position: relative;
+  z-index: 3;
   min-width: 0;
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   grid-template-rows: minmax(0, 1fr);
   align-items: center;
 }
 
-.scene {
+.part {
   --in: clamp(0, calc((var(--p) - var(--si)) / var(--li)), 1);
   --out: clamp(0, calc((var(--p) - var(--so)) / var(--lo)), 1);
   grid-area: 1 / 1;
@@ -65,35 +77,34 @@
   translate: 0 calc((1 - var(--in)) * 28px - var(--out) * 28px);
 }
 
-.scene:not([data-active]) {
+.part:not([data-active]) {
   pointer-events: none;
 }
 
 .title {
   margin: 0;
-  font-size: clamp(36px, 3.3vw, 50px);
-  line-height: 1.16;
-  letter-spacing: -0.035em;
+  font-size: clamp(28px, 2.35vw, 32px);
+  line-height: 1.3;
+  letter-spacing: -0.03em;
   font-weight: 700;
   color: #f4f8fd;
+  text-wrap: balance;
 }
 
-.title span {
-  display: block;
-  color: #8cc4ff;
-}
-
-.lead {
-  margin: 24px 0 0;
-  max-width: 30em;
-  font-size: 17px;
-  line-height: 1.8;
-  color: #c6d2e0;
+/* What AutoMage is, in one plain sentence. */
+.category {
+  margin: 22px 0 0;
+  padding-left: 14px;
+  border-left: 3px solid #5b9cff;
+  font-size: 16.5px;
+  line-height: 1.7;
+  font-weight: 600;
+  color: #f1f5f9;
   text-wrap: pretty;
 }
 
 .hint {
-  margin-top: 40px;
+  margin-top: 34px;
   display: inline-flex;
   align-items: center;
   gap: 10px;
@@ -106,69 +117,30 @@
   color: #ffffff;
 }
 
-/* Each part quotes the half of the title it shows. */
 .kicker {
   margin: 0 0 12px;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 10px;
   font-size: 14px;
   font-weight: 600;
   color: #8cc4ff;
 }
 
-.dirTag {
-  display: inline-flex;
-  align-items: center;
-  height: 22px;
-  padding: 0 8px;
-  border: 1px solid rgba(116, 175, 255, 0.45);
-  border-radius: 5px;
-  color: var(--ai-ground);
-  font-size: 12px;
-  font-weight: 500;
-}
-
-.claim h2 {
+.part h2 {
   margin: 0;
-  font-size: clamp(26px, 2.2vw, 32px);
+  font-size: clamp(26px, 2.3vw, 32px);
   line-height: 1.3;
   letter-spacing: -0.02em;
   font-weight: 700;
   color: #f1f5f9;
-  text-wrap: balance;
   word-break: keep-all;
 }
 
-.claimText {
-  margin: 16px 0 0;
+.partText {
+  margin: 14px 0 0;
   max-width: 30em;
-  font-size: 15.5px;
+  font-size: 15px;
   line-height: 1.85;
   color: var(--body);
   text-wrap: pretty;
-}
-
-/* ── Right column: the caption, then one place where the work is shown ── */
-
-.visual {
-  position: relative;
-  align-self: center;
-  height: min(100%, 860px);
-  min-height: 0;
-  display: grid;
-  grid-template-rows: auto minmax(0, 1fr);
-  row-gap: 14px;
-}
-
-.visualCaption {
-  margin: 0;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 12.5px;
-  color: var(--label);
 }
 
 .demoChip {
@@ -183,619 +155,775 @@
   font-weight: 600;
 }
 
-/* Before the work forms, the messages sit scattered around the alert that started it all. As the page
-   scrolls, the alert lands on the work's title and every other message shrinks into the source tag of
-   the line it became, top to bottom (--i), each straightening as it flies. Later the change arrives the
-   same way and lands on the premise it breaks. */
+/* ── The field: what is said between people, and what is on the works ── */
 
 .field {
-  position: absolute;
-  inset: 40px 0 16px;
-  pointer-events: none;
-  z-index: 2;
+  position: relative;
+  min-width: 0;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr);
+  padding-top: 8px;
 }
 
-.frag {
-  --s: calc(0.03 + var(--i) * 0.055);
-  --l: 0.34;
-  --a: -1;
-  --t: clamp(0, calc((var(--p) - var(--s)) / var(--l)), 1);
-  --e: calc(var(--t) * var(--t) * (3 - 2 * var(--t)));
-  --here: clamp(0, calc((var(--p) - var(--a)) / 0.06), 1);
-  --gone: clamp(0, calc((var(--t) - 0.72) / 0.28), 1);
-  position: absolute;
-  width: min(264px, 40%);
-  padding: 10px 13px 11px;
-  border: 1px solid rgba(148, 163, 184, 0.22);
-  border-radius: 10px;
-  background: rgba(12, 24, 42, 0.94);
-  color: #d3deeb;
-  font-size: 13px;
-  line-height: 1.55;
-  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.28);
-  transform-origin: 0 0;
-  transform: translate(calc(var(--dx, 0px) * var(--e)), calc(var(--dy, 0px) * var(--e))) rotate(calc(var(--r, 0) * (1 - var(--e)) * 1deg)) scale(calc(1 - (1 - var(--sx, 0.4)) * var(--e)));
-  opacity: calc((var(--rest, 1) + (1 - var(--rest, 1)) * var(--e)) * var(--here) * (1 - var(--gone)));
+.columns {
+  opacity: clamp(0, calc((var(--p) - 0.3) / 0.2), 1);
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1.22fr) minmax(0, 1fr);
+  column-gap: 32px;
 }
 
-/* On load the messages arrive in the order they were sent (days 0–2), once. Only `backwards` fill,
-   so the scroll-driven opacity takes over as soon as each one has arrived. */
-.frag {
-  animation: fragIn 0.55s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
-  animation-delay: calc(var(--n) * 150ms + 250ms);
+.talk,
+.works {
+  min-width: 0;
+  min-height: 0;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  row-gap: 8px;
 }
 
-@keyframes fragIn {
-  from {
-    opacity: 0;
-    translate: 0 14px;
-  }
-}
-
-.frag small {
-  display: block;
-  margin-bottom: 3px;
-  color: var(--label);
-  font-size: 11.5px;
-}
-
-.frag[data-far] {
-  --rest: 0.5;
-}
-
-/* The alert is the trigger: larger, brighter, first. The change later looks the same. */
-.frag[data-alert] {
-  width: min(318px, 48%);
-  padding: 13px 16px 14px;
-  border-color: rgba(255, 143, 132, 0.6);
-  background: rgba(40, 18, 24, 0.94);
-  color: #fff3f1;
-  font-size: 15px;
+.colHead {
+  margin: 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--hair);
+  font-size: 12px;
   font-weight: 600;
-  box-shadow: 0 0 0 6px rgba(255, 143, 132, 0.07), 0 18px 44px rgba(0, 0, 0, 0.35);
-  z-index: 1;
+  letter-spacing: 0.08em;
+  color: var(--label);
 }
 
-.frag[data-alert] small {
-  color: #ffb4ab;
+/* The talk scrolls like a chat while the week comes in (the stage sets --scroll, in px). */
+.talkWindow {
+  position: relative;
+  min-height: 0;
+  overflow: hidden;
+  mask-image: linear-gradient(to bottom, transparent 0, #000 min(calc(var(--scroll, 0) * 1px), 26px), #000 calc(100% - 30px), transparent 100%);
+}
+
+.talkList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  translate: 0 calc(var(--scroll, 0) * -1px);
+}
+
+/* A line comes in with the week (--rv). With AutoMage the week is lived again: days it has not reached
+   yet are only a trace (--rp); when a day comes, a line of it may fold away towards the works (--fd: it
+   fades, then its gap closes), say something else (--tf), or be said only then (--ad: its gap opens,
+   then it shows).
+   Heights go between zero and the measured --h; the stage mirrors these ramps for the talk's scroll. */
+.line {
+  --show: clamp(0, calc((var(--p) - var(--rv, -9)) / 0.05), 1);
+  --gone: clamp(0, calc((var(--p) - var(--fd, 99)) / 0.1), 1);
+  --in: clamp(0, calc((var(--p) - var(--ad, -9)) / 0.1), 1);
+  --t: clamp(0, calc((var(--p) - var(--tf, 99)) / 0.12), 1);
+  --replay: clamp(0, calc((var(--p) - 1.84) / 0.14), 1);
+  --reached: clamp(0, calc((var(--p) - var(--rp, -9)) / 0.06), 1);
+  overflow: hidden;
+  opacity: calc(var(--show) * (1 - min(1, var(--gone) * 2)) * clamp(0, calc(var(--in) * 1.6 - 0.6), 1) * (1 - 0.8 * var(--replay) * (1 - var(--reached))));
+  translate: calc(var(--gone) * 36px) calc((1 - var(--show)) * 10px);
+}
+
+.field[data-measured] .line {
+  height: calc(var(--h) * (1 - clamp(0, calc((var(--gone) - 0.3) / 0.7), 1)) * min(1, calc(var(--in) / 0.7)));
+}
+
+.line > div,
+.stillLine {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  column-gap: 10px;
+  align-items: start;
+  padding: 7px 0 8px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+}
+
+.lineMain {
+  min-width: 0;
+}
+
+/* A role, drawn as work chats draw anyone without a photo. AutoMage has its own; a thought nobody said
+   has only an outline. */
+.avatar {
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  margin-top: 2px;
+  border-radius: 7px;
+  background: hsl(var(--hue, 220) 30% 29%);
+  color: hsl(var(--hue, 220) 70% 88%);
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.avatar[data-ai] {
+  background: linear-gradient(135deg, #2457c5, #5b9cff);
+  color: #ffffff;
+}
+
+.avatar[data-thinking] {
+  background: transparent;
+  border: 1px dashed hsl(var(--hue, 220) 30% 55%);
+  color: hsl(var(--hue, 220) 40% 76%);
+}
+
+/* A new day in the talk, as chats mark one. If every line of the day folds away with AutoMage, the day
+   says nobody needed to ask anybody (--ed). */
+.dayRow {
+  --show: clamp(0, calc((var(--p) - var(--rv, -9)) / 0.05), 1);
+  --replay: clamp(0, calc((var(--p) - 1.84) / 0.14), 1);
+  --reached: clamp(0, calc((var(--p) - var(--rp, -9)) / 0.06), 1);
+  overflow: hidden;
+  opacity: calc(var(--show) * (1 - 0.8 * var(--replay) * (1 - var(--reached))));
+}
+
+.dayRow > div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 0 3px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #b9c7d8;
+}
+
+.dayRow > div::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--hair);
+}
+
+.dayRow i {
+  order: 2;
+  font-style: normal;
   font-weight: 500;
+  color: #9ecbff;
+  opacity: clamp(0, calc((var(--p) - var(--ed, 99)) / 0.1), 1);
 }
 
-.frag[data-alert] small::before {
+.dayRow > div::after {
+  order: 3;
+}
+
+.line[data-kind="ai"] > div,
+.line[data-kind="owner"] > div,
+.stillLine[data-kind="ai"],
+.stillLine[data-kind="owner"] {
+  padding-bottom: 12px;
+  border-bottom: 0;
+}
+
+.meta {
+  margin: 0 0 1px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 10px;
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: #7f93ab;
+}
+
+.meta time {
+  font-variant-numeric: tabular-nums;
+}
+
+.meta span:first-of-type {
+  color: #a9bad0;
+}
+
+.said {
+  margin: 0;
+  font-size: 14.5px;
+  line-height: 1.55;
+  color: #e3eaf3;
+}
+
+.said b {
+  font-weight: 650;
+  color: #ffffff;
+}
+
+.said[data-unsaid] {
+  color: #93a5bb;
+}
+
+.becomes {
+  display: grid;
+}
+
+.becomes > div {
+  grid-area: 1 / 1;
+}
+
+.line .becomes > div:first-child {
+  opacity: calc(1 - min(1, var(--t) * 2));
+}
+
+.line .becomes > div:last-child {
+  opacity: clamp(0, calc(var(--t) * 2 - 1), 1);
+}
+
+/* ── What AutoMage brings to a person: a work that reached a line, with its evidence ── */
+
+.message {
+  margin-top: 5px;
+  padding: 10px 14px 12px;
+  border-radius: 12px;
+  background: var(--paper);
+  color: var(--ink-2);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.42);
+  font-size: 12.5px;
+  line-height: 1.6;
+}
+
+.messageHead {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.messageHead b {
+  font-size: 14.5px;
+  color: var(--ink);
+}
+
+.status {
+  padding: 1px 9px;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  background: rgba(30, 58, 95, 0.06);
+  color: var(--human);
+  font-size: 11.5px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.rule {
+  margin: 7px 0 0;
+  padding: 6px 10px 7px;
+  border: 1.5px dashed #8a97a8;
+  border-radius: 8px;
+  background: #ffffff;
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.rule > span,
+.lbl {
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--ink-3);
+}
+
+.rule i {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 11.5px;
+  color: var(--ink-3);
+}
+
+.row {
+  margin: 7px 0 0;
+}
+
+.options {
+  display: inline;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.options li {
+  display: inline-block;
+  margin-right: 10px;
+  white-space: nowrap;
+  color: var(--ink);
+}
+
+.reply {
+  margin: 8px 0 0;
+  padding-top: 7px;
+  border-top: 1px solid var(--paper-line);
+  font-size: 11.5px;
+  color: var(--ink-3);
+}
+
+/* ── The works ── */
+
+.workList {
+  min-height: 0;
+  display: grid;
+  align-content: start;
+  gap: 10px;
+}
+
+/* Without AutoMage a work is only an outline: its state is somewhere else (.where). Held, it turns to
+   paper (light means held) and its state comes onto it. */
+.work {
+  --flip: clamp(0, calc((var(--p) - var(--fl)) / 0.12), 1);
+  padding: 9px 12px 10px;
+  border: 1px dashed rgba(148, 163, 184, calc(0.42 * (1 - var(--flip))));
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--paper) calc(var(--flip) * 100%), transparent);
+  box-shadow: 0 14px 36px rgba(0, 0, 0, calc(0.3 * var(--flip)));
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--ink-2);
+}
+
+.work h4,
+.stillWork h4 {
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 650;
+  color: var(--ink);
+}
+
+.work h4 {
+  color: color-mix(in srgb, var(--ink) calc(var(--flip) * 100%), #dbe4ee);
+}
+
+.work h4 small,
+.stillWork h4 small {
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+  color: var(--ink-3);
+}
+
+.work h4 small {
+  color: color-mix(in srgb, var(--ink-3) calc(var(--flip) * 100%), #8597ad);
+}
+
+.where {
+  overflow: hidden;
+  opacity: calc(1 - var(--flip));
+}
+
+.field[data-measured] .where {
+  height: calc(var(--h) * (1 - var(--flip)));
+}
+
+.where p {
+  margin: 0;
+  padding-top: 3px;
+  color: #a7b6c8;
+}
+
+.where p::before {
+  content: "○ ";
+}
+
+/* What comes onto a work arrives from the side of the talk, and is lit for a moment. */
+.grow {
+  --in: clamp(0, calc((var(--p) - var(--ad)) / 0.08), 1);
+  --lit: clamp(0, calc((var(--p) - var(--ad) - 0.08) / 0.18), 1);
+  overflow: hidden;
+  opacity: var(--in);
+  translate: calc((1 - var(--in)) * -16px) 0;
+}
+
+.field[data-measured] .grow {
+  height: calc(var(--h) * var(--in));
+}
+
+.grow > div {
+  display: flow-root;
+  padding-top: 3px;
+}
+
+.grow .record {
+  margin: 0 -4px;
+  padding: 0 4px;
+  border-radius: 4px;
+  background: rgba(36, 87, 197, calc(0.12 * (1 - var(--lit))));
+}
+
+.record {
+  margin: 0;
+}
+
+.record b {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+/* AutoMage's own steps carry a small blue mark; a person's or a system's do not. */
+.record[data-actor="ai"] > span::before {
   content: "";
   display: inline-block;
   width: 6px;
   height: 6px;
-  margin-right: 6px;
+  margin: 0 6px 1px 0;
   border-radius: 50%;
-  background: var(--risk-ground);
+  background: var(--ai);
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  height: 17px;
+  margin-left: 6px;
+  padding: 0 5px;
+  border: 1px dashed #9aa7b8;
+  border-radius: 4px;
+  color: var(--ink-3);
+  font-size: 10.5px;
+  white-space: nowrap;
   vertical-align: 1px;
 }
 
-/* The change shows up once the record has folded to the plan, then flies onto the premise it breaks. */
-.frag[data-change] {
-  --a: 1.42;
-  --s: 1.5;
-  --l: 0.28;
-  width: min(300px, 46%);
-  animation: none;
-}
-
-.fieldNote {
-  --t: clamp(0, calc(var(--p) / 0.1), 1);
-  position: absolute;
-  left: 0;
-  bottom: -6px;
+.every {
   margin: 0;
-  font-size: 15px;
-  color: #d3deeb;
-  opacity: calc(1 - var(--t));
-}
-
-.fieldNote b {
-  display: none;
-}
-
-/* The two views of the work share one place: the record as the messages make it, and the record
-   folded to the plan with the fork under it. */
-.slot {
-  grid-row: 2;
-  position: relative;
-  display: grid;
-  align-items: start;
-  min-height: 0;
-}
-
-.slot::before {
-  content: "";
-  position: absolute;
-  inset: 6% 8% 10%;
-  z-index: -1;
-  border-radius: 40px;
-  background: radial-gradient(closest-side, rgba(96, 165, 250, 0.2), transparent);
-  filter: blur(36px);
-}
-
-.workView,
-.changeView {
-  grid-area: 1 / 1;
-  min-width: 0;
-}
-
-/* The record appears empty, each place fills in as its message lands, and the status arrives last:
-   from then on the work is AutoMage's to follow. Later it folds up from the bottom into the plan. */
-.workView {
-  --t: clamp(0, calc((var(--p) - 0.12) / 0.2), 1);
-  --fold: clamp(0, calc((var(--p) - 1.18) / 0.2), 1);
-  opacity: calc(var(--t) * (1 - var(--fold)));
-  clip-path: inset(-100px -100px calc(var(--fold) * 62% - (1 - var(--fold)) * 100px) -100px);
-}
-
-.workView [data-land] {
-  --t: clamp(0, calc((var(--p) - 0.28 - var(--i) * 0.055) / 0.09), 1);
-  opacity: var(--t);
-}
-
-.workView [data-taken] {
-  --t: clamp(0, calc((var(--p) - 0.7) / 0.08), 1);
-  opacity: var(--t);
-}
-
-/* --c: the change has landed. The premise is struck through as it lands; the status turns. */
-.changeView {
-  --t: clamp(0, calc((var(--p) - 1.3) / 0.12), 1);
-  --k: clamp(0, calc((var(--p) - 1.74) / 0.08), 1);
-  --c: clamp(0, calc((var(--p) - 1.78) / 0.08), 1);
-  opacity: var(--t);
-}
-
-.changeView [data-before] {
-  opacity: calc(1 - var(--c));
-}
-
-.changeView [data-after],
-.changeView [data-land="change"] {
-  opacity: var(--c);
-}
-
-/* ── Work object (light surface) ── */
-
-.obj,
-.fork {
-  --paper: #f2f5f9;
-  --paper-line: #d5dce6;
-  --ink: #0f1a2b;
-  --ink-2: #3f4b5e;
-  --ink-3: #5b6779;
-  --human: #1e3a5f;
-  --ai: #2457c5;
-  --unknown: #9a4d06;
-  --risk: #b42318;
-}
-
-.obj {
-  padding: 22px 26px 24px;
-  border-radius: 16px;
-  background: var(--paper);
-  color: var(--ink);
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.36);
-}
-
-.objHead {
-  padding-bottom: 14px;
-  border-bottom: 1px solid var(--paper-line);
-}
-
-.objMeta {
-  margin: 0;
-  display: flex;
-  align-items: center;
-  gap: 10px;
   font-size: 12px;
   color: var(--ink-3);
 }
 
-.mono {
-  font-family: var(--font-mono);
-  letter-spacing: 0.02em;
+.cycles {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-left: 8px;
 }
 
-.objDemo {
-  padding: 0 6px;
-  border: 1px solid #c9a24a;
+.cycles i {
+  padding: 0 5px;
   border-radius: 4px;
-  color: #8a5a00;
-  font-size: 11px;
-  line-height: 18px;
-}
-
-.objStatus {
-  padding: 3px 10px;
-  border: 1px solid currentColor;
-  border-radius: 999px;
-  font-size: 12px;
-  font-weight: 600;
-  line-height: 1.4;
-  white-space: nowrap;
-}
-
-.objMeta > .objStatus,
-.objMeta > .swap {
-  margin-left: auto;
-}
-
-.objStatus[data-tone="human"] {
-  color: var(--human);
-  background: rgba(30, 58, 95, 0.06);
-}
-
-.objStatus[data-tone="risk"] {
-  color: var(--risk);
-  background: rgba(180, 35, 24, 0.06);
-}
-
-.objStatus[data-tone="ai"] {
+  background: rgba(36, 87, 197, 0.08);
   color: var(--ai);
+  font-size: 11px;
+  font-style: normal;
+}
+
+.work .cycles i {
+  opacity: clamp(0, calc((var(--p) - var(--ad)) / 0.06), 1);
+}
+
+.unknown {
+  margin: 0;
+  color: var(--unknown);
+}
+
+.unknown b {
+  margin-right: 6px;
+  font-weight: 600;
+}
+
+.open {
+  margin: 1px 0 0;
+  padding: 2px 8px 3px;
+  border-radius: 6px;
   background: rgba(36, 87, 197, 0.07);
+  color: var(--ai);
+  font-weight: 600;
 }
 
-/* Two states in one place: the one before the change and the one after. */
-.swap {
-  display: inline-grid;
-  justify-items: end;
+.open::before {
+  content: "↻ ";
 }
 
-.swap > * {
-  grid-area: 1 / 1;
-}
-
-.objHead h3 {
-  margin: 8px 0 0;
-  font-size: 21px;
-  line-height: 1.35;
-  font-weight: 700;
-  letter-spacing: -0.01em;
+.route {
+  margin: 3px 0 0;
+  padding: 4px 8px 5px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 6px;
+  border: 1.5px dashed #8a97a8;
+  border-radius: 7px;
+  background: #ffffff;
   color: var(--ink);
 }
 
-.objGoal {
-  margin: 4px 0 0;
-  font-size: 13px;
-  line-height: 1.6;
-  color: var(--ink-2);
+.route span {
+  font-size: 11px;
+  color: var(--ink-3);
 }
 
-.objRows {
-  margin: 10px 0 0;
+.route b {
+  color: var(--human);
+}
+
+/* ── The opening: what people say in any organization ── */
+
+.phrases {
+  margin: 0;
   padding: 0;
   list-style: none;
-}
-
-.objRow {
   display: grid;
-  grid-template-columns: 62px minmax(0, 1fr);
-  align-items: baseline;
-  gap: 10px;
-  padding: 7px 0;
-  border-top: 1px solid var(--paper-line);
-}
-
-.objRows > .objRow:first-child {
-  border-top: 0;
-}
-
-.objKind {
-  font-size: 12px;
-  color: var(--ink-3);
-}
-
-.objKind.swap {
-  justify-items: start;
-}
-
-.objRow[data-kind="inference"] .objKind {
-  color: var(--ai);
-}
-
-.objRow[data-kind="unknown"] .objKind {
-  color: var(--unknown);
-  font-weight: 600;
-}
-
-.objRow[data-kind="premise"] .objKind {
-  color: var(--human);
-}
-
-.objRow[data-kind="premise"] .objKind [data-after] {
-  color: var(--risk);
-  font-weight: 600;
-}
-
-.objText {
-  font-size: 13.5px;
-  line-height: 1.55;
-  color: var(--ink-2);
-}
-
-.objText b {
-  margin-right: 8px;
-  color: var(--ink);
-  font-weight: 600;
-}
-
-/* Source tags sit right after what they back, and look openable. */
-.obj button[popovertarget] {
-  margin-left: 8px;
-  height: 21px;
-  vertical-align: 1px;
-  font-size: 12px;
-  color: var(--ink-2);
-  border-color: #9aa7b8;
-}
-
-.obj button[popovertarget]::after {
-  content: "›";
-  margin-left: 5px;
-  font-size: 13px;
-  line-height: 1;
-  color: var(--ink-3);
-}
-
-.obj button[popovertarget]:hover {
-  background: #ffffff;
-}
-
-.objNext {
-  margin: 10px 0 0;
-  padding-top: 10px;
-  border-top: 1px solid var(--paper-line);
-  font-size: 13px;
-  line-height: 1.6;
-  color: var(--ink-2);
-}
-
-.objNext span {
-  margin-right: 8px;
-  font-weight: 600;
-  color: var(--ink-3);
-}
-
-.objNext b {
-  color: var(--human);
-}
-
-.objPlan {
-  margin: 12px 0 4px;
-  font-size: 13.5px;
-  line-height: 1.6;
-  color: var(--ink-2);
-}
-
-.objPlan span {
-  margin-right: 8px;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--ink-3);
-}
-
-.objPlan b {
-  margin-right: 8px;
-  color: var(--ink);
-}
-
-/* The strike is drawn as the change lands (--k); a still frame shows it drawn. */
-.strike {
-  position: relative;
-}
-
-.strike::after {
-  content: "";
-  position: absolute;
-  left: -2px;
-  right: -2px;
-  top: 52%;
-  height: 1.5px;
-  background: var(--risk);
-  transform-origin: left center;
-  transform: scaleX(var(--k, 1));
-}
-
-.objText em {
-  display: block;
-  font-style: normal;
-  font-weight: 600;
-  color: var(--risk);
-}
-
-.objFolded {
-  margin: 4px 0 0;
-  font-size: 12.5px;
-  line-height: 1.6;
-  color: var(--ink-3);
-}
-
-.obj[data-still] {
-  padding: 18px 18px 20px;
-  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.32);
-}
-
-.obj[data-still] .strike {
-  text-decoration: line-through;
-  text-decoration-color: var(--risk);
-  text-decoration-thickness: 1.5px;
-}
-
-.obj[data-still] .strike::after {
-  display: none;
-}
-
-/* ── The fork: the same change under two delegation boundaries ── */
-
-.forkLines {
-  display: block;
-  max-width: 100%;
-  overflow: visible;
-}
-
-.forkLines path {
-  --d: clamp(0, calc((var(--p) - var(--s)) / var(--l)), 1);
-  stroke: rgba(203, 213, 225, 0.6);
-  stroke-width: 2.5;
-  stroke-linecap: round;
-  stroke-dasharray: 1 1;
-  stroke-dashoffset: calc(1 - var(--d));
-  opacity: min(1, calc(var(--d) * 40));
-}
-
-.forkLines [data-seg="trunk"] {
-  --s: 1.86;
-  --l: 0.07;
-}
-
-.forkLines [data-seg="back"] {
-  --s: 1.92;
-  --l: 0.14;
-  stroke: var(--human-ground);
-}
-
-.forkLines [data-seg="within"] {
-  --s: 1.98;
-  --l: 0.14;
-  stroke: var(--ai-ground);
-  filter: drop-shadow(0 0 5px rgba(91, 156, 255, 0.5));
-}
-
-.branches {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px;
 }
 
-.branch {
-  padding: 14px 16px 16px;
-  border-top: 3px solid var(--human);
-  border-radius: 12px;
-  background: var(--paper);
-  color: var(--ink);
-  box-shadow: 0 22px 54px rgba(0, 0, 0, 0.32);
-}
-
-.branch[data-tone="ai"] {
-  border-top-color: var(--ai);
-}
-
-/* On the stage each branch arrives after its line has reached it. */
-.changeView .branch {
-  --t: clamp(0, calc((var(--p) - var(--b)) / 0.14), 1);
-  opacity: var(--t);
-  translate: 0 calc((1 - var(--t)) * 12px);
-}
-
-.changeView .branch[data-branch="back"] {
-  --b: 2.04;
-}
-
-.changeView .branch[data-branch="within"] {
-  --b: 2.14;
-}
-
-/* The delegation's line: the only thing that differs between the two. */
-.branchRule {
-  margin: 0;
-  padding: 8px 10px 9px;
-  border: 1px dashed #9aa7b8;
-  border-radius: 8px;
-  background: #ffffff;
-  font-size: 13px;
+.phrases li {
+  font-size: clamp(24px, 2.1vw, 30px);
+  line-height: 1.3;
   font-weight: 600;
-  line-height: 1.5;
-  color: var(--ink);
+  letter-spacing: -0.01em;
+  color: #c9d5e3;
 }
 
-.branchRule span {
-  display: block;
-  margin-bottom: 2px;
-  font-size: 11.5px;
-  font-weight: 500;
-  color: var(--ink-3);
+.phrases li:nth-child(3n + 2) {
+  padding-left: 72px;
+  color: #8ea1b7;
 }
 
-.branchResult {
-  margin: 12px 0 0;
+.phrases li:nth-child(3n) {
+  padding-left: 30px;
+}
+
+/* The opening: an organization's talk rising in three lanes on its own, at different speeds. Each lane
+   holds its lines three times over and moves up by one third, so it never runs out. It goes as the
+   week comes in. */
+.feed {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  column-gap: 30px;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: calc(1 - clamp(0, calc((var(--p) - 0.12) / 0.26), 1));
+  mask-image: linear-gradient(to bottom, transparent 0, #000 16%, #000 80%, transparent 100%);
+}
+
+.feed ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  animation: feed-rise 54s linear infinite;
+}
+
+.feed ul:nth-child(2) {
+  animation-duration: 66s;
+  animation-delay: -21s;
+  opacity: 0.84;
+}
+
+.feed ul:nth-child(3) {
+  animation-duration: 60s;
+  animation-delay: -40s;
+  opacity: 0.6;
+}
+
+.feed li {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  column-gap: 10px;
+  align-items: start;
+  padding-bottom: 30px;
+}
+
+.feed .meta {
+  font-size: 11px;
+}
+
+.feed .said {
+  font-size: 14.5px;
+  color: #b7c5d6;
+}
+
+.feed li[data-key] .said {
+  font-size: 20px;
+  line-height: 1.4;
+  font-weight: 650;
+  color: #f2f6fb;
+}
+
+@keyframes feed-rise {
+  to {
+    translate: 0 calc(-100% / 3);
+  }
+}
+
+/* ── The week's clock: which pass, which day (it rolls over like a counter), what time, and how far
+   through the week each pass is. The first pass stays drawn, dimmer, under the second. ── */
+
+.clock {
+  --second: clamp(0, calc((var(--p) - 1.82) / 0.2), 1);
+  position: absolute;
+  top: 8px;
+  left: 0;
+  z-index: 3;
+  width: min(100%, 320px);
+  opacity: clamp(0, calc((var(--p) - 0.38) / 0.14), 1);
+}
+
+.clockMode {
+  margin: 0;
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
-  gap: 6px 10px;
+  gap: 10px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #f4f8fd;
 }
 
-.branchResult b {
-  font-size: 16px;
-  color: var(--human);
+.clockNow {
+  margin: 10px 0 0;
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
 }
 
-.branch[data-tone="ai"] .branchResult b {
-  color: var(--ai);
+.odometer {
+  display: inline-block;
+  height: 1.15em;
+  overflow: hidden;
+  font-size: 34px;
+  line-height: 1.15;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #f4f8fd;
 }
 
-.branchDetail {
+.odometer > span {
+  display: grid;
+  translate: 0 calc(var(--roll, 0) * -1.15em);
+}
+
+.odometer i {
+  height: 1.15em;
+  font-style: normal;
+}
+
+.clockNow time {
+  font-size: 18px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--body);
+}
+
+.strip {
+  margin-top: 10px;
+}
+
+.track {
+  position: relative;
+  display: block;
+  height: 3px;
+  border-radius: 3px;
+  background: rgba(148, 163, 184, 0.18);
+}
+
+.track i {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  border-radius: 3px;
+}
+
+.track i[data-pass="before"] {
+  width: calc(var(--week-before, 0) / 5 * 100%);
+  background: #8fa4be;
+  opacity: calc(1 - 0.6 * var(--second));
+}
+
+.track i[data-pass="after"] {
+  width: calc(var(--week-after, 0) / 5 * 100%);
+  background: var(--ai-ground);
+}
+
+.strip ol {
   margin: 6px 0 0;
-  font-size: 13px;
-  line-height: 1.65;
-  color: var(--ink-2);
-}
-
-/* ── Still frames (narrow and short screens) ── */
-
-.still {
-  display: none;
-}
-
-.still .fork {
-  margin-top: 14px;
-}
-
-.noiseStill ul {
-  margin: 14px 0 0;
   padding: 0;
   list-style: none;
   display: grid;
-  gap: 8px;
-}
-
-.noiseStill li {
-  padding: 9px 12px 10px;
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  border-radius: 10px;
-  background: rgba(12, 24, 42, 0.9);
-  color: #d3deeb;
-  font-size: 13px;
-  line-height: 1.55;
-}
-
-.noiseStill li:nth-child(even) {
-  margin-left: 18px;
-}
-
-.noiseStill li[data-alert] {
-  border-color: rgba(255, 143, 132, 0.45);
-}
-
-.noiseStill small {
-  display: block;
-  margin-bottom: 2px;
-  color: var(--label);
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   font-size: 11.5px;
+  color: var(--label);
 }
 
-.stillNote {
-  margin: 0;
+.strip li[data-on] {
+  font-weight: 600;
+  color: #f4f8fd;
+}
+
+/* ── Stills: phones and short screens see them; on the live stage only screen readers do ── */
+
+.still {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.stillCaption {
+  margin: 0 0 10px;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  gap: 8px 10px;
+  font-size: 13px;
+  color: var(--label);
+}
+
+.stillNote {
+  margin: 0 0 16px;
+  padding-left: 12px;
+  border-left: 2px solid var(--ai-ground);
+  font-size: 14px;
+  line-height: 1.75;
+  color: #dbe4ee;
+}
+
+.stillTalk {
+  margin: 0 0 22px;
+  padding: 0;
+  list-style: none;
+}
+
+.stillWhere {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 6px;
+}
+
+.stillWhere li {
+  display: grid;
+  grid-template-columns: 7.5em minmax(0, 1fr);
   gap: 10px;
-  font-size: 15px;
-  color: #d3deeb;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: #a7b6c8;
+}
+
+.stillWhere b {
+  font-weight: 600;
+  color: #e3eaf3;
+}
+
+.stillWorks {
+  display: grid;
+  gap: 10px;
+}
+
+.stillWork {
+  padding: 10px 12px 11px;
+  border-radius: 10px;
+  background: var(--paper);
+  color: var(--ink-2);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.stillWork > * + * {
+  margin-top: 3px;
 }
 
 /* ── After the stage: quiet. Headings on the left, as on the stage; what they say on the right. ── */
@@ -808,8 +936,7 @@
   row-gap: 80px;
 }
 
-.fit,
-.now {
+.fit {
   display: grid;
   grid-template-columns: minmax(0, 11fr) minmax(0, 13fr);
   column-gap: 64px;
@@ -824,8 +951,7 @@
   color: var(--label);
 }
 
-.fit h2,
-.now h2 {
+.fit h2 {
   margin: 0;
   font-size: clamp(26px, 2.3vw, 34px);
   line-height: 1.3;
@@ -861,52 +987,12 @@
   color: #f1f5f9;
 }
 
-.now dl {
-  margin: 0;
-}
 
-.now dl > div {
-  display: grid;
-  grid-template-columns: 96px minmax(0, 1fr);
-  gap: 18px;
-  padding: 16px 0;
-  border-top: 1px solid var(--hair);
-}
 
-.now dl > div:last-child {
-  border-bottom: 1px solid var(--hair);
-}
 
-.now dt {
-  justify-self: start;
-  align-self: start;
-  margin-top: 2px;
-  padding: 0 8px;
-  border: 1px solid rgba(110, 231, 183, 0.5);
-  border-radius: 5px;
-  color: #6ee7b7;
-  font-size: 12px;
-  font-weight: 600;
-  line-height: 22px;
-}
 
-.now dt[data-kind="direction"] {
-  border-color: rgba(116, 175, 255, 0.45);
-  color: var(--ai-ground);
-}
 
-.now dt[data-kind="demo"] {
-  border-color: rgba(246, 196, 83, 0.5);
-  color: #f6c453;
-}
 
-.now dd {
-  margin: 0;
-  max-width: 40em;
-  font-size: 14.5px;
-  line-height: 1.8;
-  color: #b3c1d3;
-}
 
 .exits {
   display: grid;
@@ -964,9 +1050,10 @@
   color: #b3c1d3;
 }
 
+
 /* ── Fallback: no live stage ── */
 
-@media (max-width: 1023px), (max-height: 619px) {
+@media (max-width: 1199px), (max-height: 619px) {
   .stage {
     height: auto;
   }
@@ -983,28 +1070,49 @@
     display: block;
   }
 
-  .scene {
+  .part {
     opacity: 1;
     translate: none;
   }
 
-  .visual,
+  .field,
   .hint {
     display: none;
   }
 
   .still {
-    display: block;
-    margin-top: 24px;
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
+    margin-top: 22px;
+  }
+
+  .still .phrases {
+    gap: 6px;
+  }
+
+  .still .phrases li {
+    font-size: 18px;
+  }
+
+  .still .phrases li:nth-child(3n + 2) {
+    padding-left: 36px;
+  }
+
+  .still .phrases li:nth-child(3n) {
+    padding-left: 14px;
   }
 
   .opening {
     padding: 40px 0 8px;
   }
 
-  .claim {
-    margin-top: 40px;
-    padding: 32px 0 0;
+  .part + .part {
+    margin-top: 44px;
+    padding-top: 32px;
     border-top: 1px solid var(--hair);
   }
 
@@ -1014,108 +1122,103 @@
     row-gap: 64px;
   }
 
-  .fit,
-  .now {
+  .fit {
     display: block;
   }
 
-  .fitList,
-  .now dl {
+  .fitList {
     margin-top: 28px;
   }
 }
 
-/* Shorter laptop screens: the live stage keeps the record, drops what it can spare. */
-@media (max-height: 820px) and (min-width: 1024px) {
-  .visual .objGoal,
-  .visual .objFolded {
-    display: none;
+/* Shorter laptop screens: the talk, the works and the messages tighten. */
+@media (max-height: 820px) and (min-width: 1200px) {
+  .category {
+    margin-top: 16px;
+    font-size: 15px;
   }
 
-  .visual .obj {
-    padding: 18px 22px 20px;
+  .partText {
+    font-size: 14px;
+    line-height: 1.75;
   }
 
-  .visual .objRow {
-    padding: 5px 0;
+  .line > div {
+    padding: 5px 0 6px;
   }
 
-  .visual .branch {
-    padding: 12px 14px 14px;
-  }
-
-  .visual .branchDetail {
-    font-size: 12.5px;
-    line-height: 1.6;
-  }
-}
-
-/* Laptop screens around 650–700px tall: the record tightens further; the work object carries its own
-   演示 chip, and the field note carries it at the start. */
-@media (max-height: 700px) and (min-width: 1024px) {
-  .visual {
-    row-gap: 10px;
-  }
-
-  .visualCaption {
-    display: none;
-  }
-
-  .field {
-    inset: 0 0 12px;
-  }
-
-  .frag {
-    width: min(236px, 37%);
-    padding: 7px 10px 8px;
-    font-size: 12px;
-  }
-
-  .frag small {
-    font-size: 11px;
-  }
-
-  .frag[data-alert] {
+  .said {
     font-size: 13.5px;
   }
 
-  .fieldNote b {
-    display: inline;
-    margin-right: 10px;
+  .meta {
+    font-size: 11px;
   }
 
-  .visual .obj {
-    padding: 14px 20px 16px;
+  .work {
+    padding: 6px 11px 7px;
+    font-size: 12px;
+    line-height: 1.45;
   }
 
-  .visual .objHead {
+  .work h4 {
+    font-size: 13.5px;
+  }
+
+  .workList {
+    gap: 7px;
+  }
+
+  .grow > div {
+    padding-top: 2px;
+  }
+
+  .field {
+    row-gap: 10px;
+  }
+
+  .colHead {
+    padding-bottom: 6px;
+  }
+
+  .message {
+    padding: 8px 12px 10px;
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  .row {
+    margin-top: 5px;
+  }
+}
+
+/* Shortest: a finite work leaves out its cadence and a standing work its single finding. */
+@media (max-height: 700px) and (min-width: 1200px) {
+  .extra,
+  .rule i,
+  .spare {
+    display: none;
+  }
+
+  .frame {
     padding-bottom: 10px;
   }
 
-  .visual .objHead h3 {
-    font-size: 18px;
-    margin-top: 4px;
+  .work {
+    font-size: 11.5px;
+    line-height: 1.4;
   }
 
-  .visual .objRow {
-    padding: 4px 0;
+  .part h2 {
+    font-size: 24px;
   }
 
-  .visual .objNext {
-    margin-top: 6px;
-    padding-top: 6px;
-  }
-
-  .visual .objPlan {
+  .partText {
     margin-top: 8px;
   }
 
-  .visual .branchRule {
-    padding: 6px 9px 7px;
-  }
-
-  .visual .branchResult {
-    margin-top: 8px;
+  .phrases {
+    gap: 10px;
   }
 }
 
@@ -1132,39 +1235,26 @@
 }
 
 @media (max-width: 640px) {
-  .branches,
   .fitList {
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .now dl > div {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 8px;
-  }
 }
 
 @media (max-width: 560px) {
   .title {
-    font-size: 34px;
+    font-size: 25px;
   }
 
-  .lead {
-    font-size: 16px;
-  }
-
-  .objRow {
-    grid-template-columns: 56px minmax(0, 1fr);
-  }
-
-  .objMeta {
-    flex-wrap: wrap;
+  .category {
+    font-size: 15px;
   }
 }
 
 /* Without motion the stage still answers the scroll, but each part is shown settled (the stage sets
-   --p to the part's resting value) and nothing animates on its own. */
+   --p to the part's resting value). */
 @media (prefers-reduced-motion: reduce) {
-  .frag {
+  .feed ul {
     animation: none;
   }
 
