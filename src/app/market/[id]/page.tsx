@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import SkillDetail from "@/components/market/SkillDetail";
-import { skillCatalog } from "@/lib/skill-catalog";
+import { getSkillCatalog } from "@/lib/server/skill-source";
 import { SKILL_INTENT_COOKIE, parseIntentCookie, safeReturnTo } from "@/lib/skill-intent";
 
 type PageProps = {
@@ -10,13 +10,9 @@ type PageProps = {
   searchParams: Promise<{ returnTo?: string }>;
 };
 
-export function generateStaticParams() {
-  return skillCatalog.getAll().map((skill) => ({ id: skill.id }));
-}
-
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { id } = await params;
-  const skill = skillCatalog.getById(id);
+  const skill = (await getSkillCatalog()).getById(id);
   if (!skill) {
     return { title: "Skill · AutoMage" };
   }
@@ -28,10 +24,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function Page({ params, searchParams }: PageProps) {
   const { id } = await params;
-  const skill = skillCatalog.getById(id);
+  const catalog = await getSkillCatalog();
+  const skill = catalog.getById(id);
   if (!skill) notFound();
   const jar = await cookies();
-  const selected = parseIntentCookie(jar.get(SKILL_INTENT_COOKIE)?.value).includes(skill.id);
+  const selected = parseIntentCookie(jar.get(SKILL_INTENT_COOKIE)?.value, catalog).includes(skill.id);
   const query = await searchParams;
-  return <SkillDetail skill={skill} selected={selected} returnTo={safeReturnTo(query.returnTo)} />;
+  return <SkillDetail skill={skill} catalog={catalog} selected={selected} returnTo={safeReturnTo(query.returnTo)} />;
 }

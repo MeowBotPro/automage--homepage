@@ -2,6 +2,7 @@ import { randomBytes } from 'node:crypto';
 import { Prisma } from '@/generated/prisma/client';
 import type { InviteCodeModel } from '@/generated/prisma/models/InviteCode';
 import { prisma } from '@/lib/server/prisma';
+import { getSkillCatalog } from '@/lib/server/skill-source';
 import {
   normalizeBetaApplicationInput,
   serializeBetaApplicationRecord,
@@ -29,7 +30,7 @@ export async function createBetaApplication({
   userAgent,
   referrer,
 }: CreateBetaApplicationParams) {
-  const normalized = normalizeBetaApplicationInput(payload);
+  const normalized = normalizeBetaApplicationInput(payload, await getSkillCatalog());
   const publicId = generatePublicId();
   const now = new Date();
   const meta: Prisma.InputJsonObject = {

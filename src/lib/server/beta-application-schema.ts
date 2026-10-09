@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { skillCatalog } from '../skill-catalog';
+import type { SkillCatalog } from '../skill-catalog';
 
 const emptyStringToUndefined = (value: unknown) => {
   if (typeof value !== 'string') {
@@ -29,14 +29,15 @@ const trimmedRequiredString = (max: number, message: string) =>
 const trimmedOptionalString = (max: number) =>
   z.preprocess(emptyStringToUndefined, z.string().trim().max(max).optional());
 
-const rawBetaApplicationSchema = z.object({
+/** Selected skills are checked against the catalog the visitor was shown. */
+const rawBetaApplicationSchema = (catalog: SkillCatalog) => z.object({
   occupation: trimmedRequiredString(128, '请选择职业 / 身份'),
   work_background: trimmedOptionalString(1000),
   use_case: trimmedRequiredString(256, '请选择应用场景'),
   contact: trimmedRequiredString(128, '请输入联系方式'),
   invite_code: trimmedOptionalString(64),
   source: trimmedOptionalString(64),
-  skill_ids: z.array(z.string().refine((id) => Boolean(skillCatalog.getById(id)), '所选 Skill 不在目录中')).max(20, '一次最多咨询 20 项能力').default([]),
+  skill_ids: z.array(z.string().refine((id) => Boolean(catalog.getById(id)), '所选 Skill 不在目录中')).max(20, '一次最多咨询 20 项能力').default([]),
 });
 
 export type InviteCodeStatus = 'none' | 'valid' | 'not_found' | 'inactive' | 'expired' | 'exhausted';
@@ -70,8 +71,8 @@ export type NormalizedBetaApplicationInput = {
   raw_payload: Record<string, unknown>;
 };
 
-export function normalizeBetaApplicationInput(payload: unknown): NormalizedBetaApplicationInput {
-  const parsed = rawBetaApplicationSchema.parse(payload);
+export function normalizeBetaApplicationInput(payload: unknown, catalog: SkillCatalog): NormalizedBetaApplicationInput {
+  const parsed = rawBetaApplicationSchema(catalog).parse(payload);
 
   return {
     occupation: parsed.occupation,
@@ -83,7 +84,7 @@ export function normalizeBetaApplicationInput(payload: unknown): NormalizedBetaA
     raw_payload: {
       ...(isRecord(payload) ? payload : {}),
       skill_ids: [...new Set(parsed.skill_ids)],
-      selected_skills: [...new Set(parsed.skill_ids)].map((id) => ({ id, title: skillCatalog.getById(id)!.title })),
+      selected_skills: [...new Set(parsed.skill_ids)].map((id) => ({ id, title: catalog.getById(id)!.title })),
     },
   };
 }

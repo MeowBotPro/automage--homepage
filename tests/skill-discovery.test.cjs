@@ -12,19 +12,21 @@ require.extensions['.ts'] = (module, filename) => {
   module._compile(outputText, filename);
 };
 
-const { skillCatalog } = require('../src/lib/skill-catalog.ts');
+const { bundledCatalog: catalog } = require('../src/lib/skill-catalog.ts');
 const { SKILL_GROUPS, groupSkills, findGroups, groupsForSkill } = require('../src/lib/skill-groups.ts');
 const { catalogUrl, normalizeCatalogQuery, pageWindow, detailUrl } = require('../src/lib/market-navigation.ts');
 const { parseIntentCookie, safeReturnTo } = require('../src/lib/skill-intent.ts');
 const { normalizeBetaApplicationInput } = require('../src/lib/server/beta-application-schema.ts');
 
 test('grouped discovery retains every original Skill and every entry point exists', () => {
-  const all = skillCatalog.getAll();
+  const all = catalog.getAll();
   assert.equal(all.length, 191);
   assert.equal(new Set(all.map((skill) => skill.id)).size, 191);
-  const grouped = new Set(SKILL_GROUPS.flatMap((group) => groupSkills(group).map((skill) => skill.id)));
+  const grouped = new Set(SKILL_GROUPS.flatMap((group) => groupSkills(group, catalog).map((skill) => skill.id)));
   assert.deepEqual([...grouped].sort(), all.map((skill) => skill.id).sort());
   assert.equal(new Set(SKILL_GROUPS.map((group) => group.id)).size, SKILL_GROUPS.length);
+  // The bundled snapshot keeps each group's editorial order exactly.
+  for (const group of SKILL_GROUPS) assert.deepEqual(groupSkills(group, catalog).map((skill) => skill.id), group.skillIds);
 });
 
 test('similar methods can be compared while business discovery crosses archive categories', () => {
@@ -32,17 +34,17 @@ test('similar methods can be compared while business discovery crosses archive c
   assert.ok(sourcing.skillIds.includes('1688-sourcing-agent'));
   assert.ok(sourcing.skillIds.includes('1688-procurement-agent'));
   assert.ok(sourcing.skillIds.includes('1688-product-find'));
-  assert.ok(groupsForSkill('docx').some((group) => group.id === 'office-documents'));
-  assert.ok(groupsForSkill('capacity-planner').some((group) => group.area === 'service'));
+  assert.ok(groupsForSkill(catalog.getById('docx')).some((group) => group.id === 'office-documents'));
+  assert.ok(groupsForSkill(catalog.getById('capacity-planner')).some((group) => group.area === 'service'));
 });
 
 test('advertised business phrases and original Skill names find the relevant work', () => {
-  assert.ok(findGroups('采购比价').some((group) => group.id === 'sourcing'));
-  assert.ok(findGroups('视频脚本').some((group) => group.id === 'video-writing'));
-  assert.ok(findGroups('客户流失').some((group) => group.id === 'customer-retention'));
-  assert.ok(findGroups('churn-autopsy').some((group) => group.id === 'customer-retention'));
-  assert.equal(findGroups('采购比价', 'legal').length, 0);
-  assert.equal(findGroups('不存在的宇宙采矿业务').length, 0);
+  assert.ok(findGroups(catalog, '采购比价').some((group) => group.id === 'sourcing'));
+  assert.ok(findGroups(catalog, '视频脚本').some((group) => group.id === 'video-writing'));
+  assert.ok(findGroups(catalog, '客户流失').some((group) => group.id === 'customer-retention'));
+  assert.ok(findGroups(catalog, 'churn-autopsy').some((group) => group.id === 'customer-retention'));
+  assert.equal(findGroups(catalog, '采购比价', 'legal').length, 0);
+  assert.equal(findGroups(catalog, '不存在的宇宙采矿业务').length, 0);
 });
 
 test('pagination preserves browse mode, filter, and search, including legacy URLs', () => {
@@ -69,16 +71,16 @@ test('detail preserves the exact browse context and rejects external return loca
 });
 
 test('saved intent deduplicates valid Skills and ignores corrupt or obsolete browser data', () => {
-  assert.deepEqual(parseIntentCookie('["churn-autopsy","gone","churn-autopsy"]'), ['churn-autopsy']);
-  assert.deepEqual(parseIntentCookie('broken'), []);
-  assert.deepEqual(parseIntentCookie('{}'), []);
+  assert.deepEqual(parseIntentCookie('["churn-autopsy","gone","churn-autopsy"]', catalog), ['churn-autopsy']);
+  assert.deepEqual(parseIntentCookie('broken', catalog), []);
+  assert.deepEqual(parseIntentCookie('{}', catalog), []);
 });
 
 test('consultation data retains validated Skill identities and titles in persisted metadata', () => {
   const input = { occupation: '测试采购负责人', use_case: 'Skill 选配咨询', contact: 'qa@example.invalid', skill_ids: ['churn-autopsy', '1688-product-find', 'churn-autopsy'] };
-  const data = normalizeBetaApplicationInput(input);
+  const data = normalizeBetaApplicationInput(input, catalog);
   assert.deepEqual(data.raw_payload.skill_ids, ['churn-autopsy', '1688-product-find']);
   assert.deepEqual(data.raw_payload.selected_skills.map((skill) => skill.title), ['客户流失复盘', '1688 找货比价']);
-  assert.throws(() => normalizeBetaApplicationInput({ ...input, skill_ids: ['unknown'] }));
-  assert.deepEqual(normalizeBetaApplicationInput({ ...input, skill_ids: undefined }).raw_payload.skill_ids, []);
+  assert.throws(() => normalizeBetaApplicationInput({ ...input, skill_ids: ['unknown'] }, catalog));
+  assert.deepEqual(normalizeBetaApplicationInput({ ...input, skill_ids: undefined }, catalog).raw_payload.skill_ids, []);
 });

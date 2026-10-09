@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { skillCatalog } from "@/lib/skill-catalog";
+import { getSkillCatalog } from "@/lib/server/skill-source";
 import { SKILL_INTENT_COOKIE, parseIntentCookie, safeReturnTo } from "@/lib/skill-intent";
 
 // Reading or prefetching a URL never changes the inquiry list.
@@ -12,8 +12,9 @@ export async function POST(request: NextRequest) {
   const id = String(form.get("id") ?? "");
   const action = form.get("action");
   const returnTo = safeReturnTo(form.get("returnTo"));
-  const current = parseIntentCookie(request.cookies.get(SKILL_INTENT_COOKIE)?.value);
-  if ((action !== "add" && action !== "remove") || !skillCatalog.getById(id)) {
+  const catalog = await getSkillCatalog();
+  const current = parseIntentCookie(request.cookies.get(SKILL_INTENT_COOKIE)?.value, catalog);
+  if ((action !== "add" && action !== "remove") || !catalog.getById(id)) {
     return NextResponse.json({ error: "请选择目录中有效的 Skill。" }, { status: 400 });
   }
   const next = action === "add" ? [...new Set([...current, id])] : current.filter((item) => item !== id);

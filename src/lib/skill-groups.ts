@@ -1,4 +1,4 @@
-import { skillCatalog, type SkillRecord } from "./skill-catalog";
+import type { SkillCatalog, SkillRecord } from "./skill-catalog";
 
 export const WORK_AREAS = [
   { id: "customers", title: "销售与客户" },
@@ -57,16 +57,22 @@ export const SKILL_GROUPS: SkillGroup[] = [
   { id: "brand-discovery", area: "customers", title: "了解品牌在 AI 回答中的表现", description: "对照多个 AI 引擎的回答，整理品牌被提及的情况。", guide: "适合已有品牌、希望对照生成式搜索结果的团队；需要收集并提供各引擎的回答。", keywords: "品牌 GEO 曝光 AI 搜索 营销", skillIds: ["geo-effect-validator"] },
 ];
 
-export function groupSkills(group: SkillGroup): SkillRecord[] {
-  return group.skillIds.map((id) => {
-    const skill = skillCatalog.getById(id);
-    if (!skill) throw new Error(`Unknown Skill ${id} in group ${group.id}`);
-    return skill;
-  });
+/** A group's skills in this catalog: every skill listed under the group, in the group's editorial order —
+    the members named above first, then any the skill index adds to it, in index order. */
+export function groupSkills(group: SkillGroup, catalog: SkillCatalog): SkillRecord[] {
+  const rank = (skill: SkillRecord) => {
+    const at = group.skillIds.indexOf(skill.id);
+    return at < 0 ? group.skillIds.length : at;
+  };
+  return catalog.getAll()
+    .filter((skill) => skill.groups.includes(group.id))
+    .map((skill, order) => ({ skill, order }))
+    .sort((a, b) => rank(a.skill) - rank(b.skill) || a.order - b.order)
+    .map(({ skill }) => skill);
 }
 
-export function groupsForSkill(id: string): SkillGroup[] {
-  return SKILL_GROUPS.filter((group) => group.skillIds.includes(id));
+export function groupsForSkill(skill: SkillRecord): SkillGroup[] {
+  return skill.groups.map((id) => SKILL_GROUPS.find((group) => group.id === id)).filter((group) => group !== undefined);
 }
 
 export function searchTerms(query: string) {
@@ -76,13 +82,15 @@ export function searchTerms(query: string) {
   return normalized.split(/\s+/).filter(Boolean);
 }
 
-export function findGroups(query: string, area?: string, domain?: string) {
+/** The groups that match, among those with at least one skill in this catalog. */
+export function findGroups(catalog: SkillCatalog, query: string, area?: string, domain?: string) {
   const terms = searchTerms(query);
   return SKILL_GROUPS.filter((group) => {
     if (area && group.area !== area) return false;
-    const skills = groupSkills(group);
+    const skills = groupSkills(group, catalog);
+    if (!skills.length) return false;
     if (domain && !skills.some((skill) => skill.domain === domain)) return false;
-    const text = [group.title, group.description, group.keywords, ...skills.map((s) => `${s.id} ${s.title} ${s.summary} ${s.domain} ${s.output}`)].join(" ").toLowerCase();
+    const text = [group.title, group.description, group.keywords, ...skills.map((s) => `${s.id} ${s.title} ${s.summary} ${s.domain} ${s.output} ${s.keywords.join(" ")}`)].join(" ").toLowerCase();
     return terms.every((term) => text.includes(term));
   });
 }

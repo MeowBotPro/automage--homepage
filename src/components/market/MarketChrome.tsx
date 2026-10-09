@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { cookies } from "next/headers";
+import { getSkillCatalog } from "@/lib/server/skill-source";
 import { parseIntentCookie, SKILL_INTENT_COOKIE } from "@/lib/skill-intent";
 import styles from "./MarketPage.module.css";
 
@@ -13,7 +14,7 @@ const TABS = [
 
 export default async function MarketChrome({ active }: { active: "entry" | "work" | "market" | "detail" | "scenario" | "contact" }) {
   const jar = await cookies();
-  const count = parseIntentCookie(jar.get(SKILL_INTENT_COOKIE)?.value).length;
+  const count = parseIntentCookie(jar.get(SKILL_INTENT_COOKIE)?.value, await getSkillCatalog()).length;
   return <div className={styles.topbarWrap}><header className={styles.topbar}>
     <Link className={styles.brandLink} href="/" aria-label="AutoMage 首页" aria-current={active === "entry" ? "page" : undefined}><Image className={styles.wordmark} src="/automage-logo-wordmark-white-2.svg" width={437} height={107} alt="AutoMage" priority /></Link>
     <nav className={styles.topnav} aria-label="主导航">

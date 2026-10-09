@@ -1,14 +1,15 @@
-import { skillCatalog } from "./skill-catalog";
+import type { SkillCatalog } from "./skill-catalog";
 
 export const SKILL_INTENT_COOKIE = "automage_skill_intent";
 
-export function parseIntentCookie(value: string | undefined): string[] {
+/** The saved inquiry list: ids still in the catalog, each once. */
+export function parseIntentCookie(value: string | undefined, catalog: SkillCatalog): string[] {
   if (!value) return [];
   try {
     const parsed = JSON.parse(value) as unknown;
     if (!Array.isArray(parsed)) return [];
     return [...new Set(parsed.filter(
-      (id): id is string => typeof id === "string" && Boolean(skillCatalog.getById(id)),
+      (id): id is string => typeof id === "string" && Boolean(catalog.getById(id)),
     ))];
   } catch {
     return [];

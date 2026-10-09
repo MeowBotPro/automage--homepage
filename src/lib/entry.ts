@@ -7,8 +7,8 @@
 
 import { DAYS, LINES, type Line } from "./home-stage";
 import { LAST_DAY, N, projectionAt, type Ctx } from "./supply-chain-world";
-import { skillCatalog } from "./skill-catalog";
-import { SKILL_GROUPS, WORK_AREAS } from "./skill-groups";
+import type { SkillCatalog } from "./skill-catalog";
+import { findGroups, SKILL_GROUPS, WORK_AREAS } from "./skill-groups";
 
 export const HERO = {
   title: ["重塑组织管理的", "信息逻辑"],
@@ -253,12 +253,16 @@ export const STOCK = {
   ],
 };
 
-export const LIBRARY = {
-  areas: WORK_AREAS.map((area) => ({ title: area.title, count: SKILL_GROUPS.filter((group) => group.area === area.id).length })),
-  groups: SKILL_GROUPS.length,
-  skills: skillCatalog.getAll().length,
-  examples: SKILL_GROUPS.slice(0, 4).map((group) => group.title),
-};
+/** The library door's figures, from the catalog the library tab itself shows. */
+export function libraryOf(catalog: SkillCatalog) {
+  const listed = findGroups(catalog, "");
+  return {
+    areas: WORK_AREAS.map((area) => ({ title: area.title, count: listed.filter((group) => group.area === area.id).length })),
+    groups: listed.length,
+    skills: catalog.getAll().length,
+    examples: SKILL_GROUPS.filter((group) => listed.includes(group)).slice(0, 4).map((group) => group.title),
+  };
+}
 
 export const FAQ = [
   {

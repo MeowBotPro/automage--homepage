@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import type { SkillVideoSource } from "@/lib/skill-video";
+import type { SkillVideoSource } from "@/lib/skill-catalog";
 import styles from "./MarketPage.module.css";
 
 /** The skill's demo video, in a 16:9 frame. Until its file is uploaded — or if it fails to load — the

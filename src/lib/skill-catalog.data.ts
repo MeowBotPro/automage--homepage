@@ -1,4 +1,4 @@
-import type { SkillRecord } from "./skill-catalog";
+import type { BundledSkillRecord } from "./skill-catalog";
 
 // Public copy uses per-Skill inventory facts; sourceRef preserves provenance.
 export const SKILL_RECORDS = [
@@ -3301,4 +3301,4 @@ export const SKILL_RECORDS = [
     "posterUrl": null,
     "sourceRef": "skill-inventory.md :: geo-effect-validator"
   }
-] satisfies SkillRecord[];
+] satisfies BundledSkillRecord[];

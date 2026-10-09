@@ -1,10 +1,11 @@
 import Link from "next/link";
-import { groupSkills, searchTerms, type SkillGroup } from "@/lib/skill-groups";
+import type { SkillRecord } from "@/lib/skill-catalog";
+import { searchTerms, type SkillGroup } from "@/lib/skill-groups";
 import { detailUrl } from "@/lib/market-navigation";
 import styles from "./MarketPage.module.css";
 
-export default function SkillGroupCard({ group, returnTo, query = "", expanded = false, currentId }: { group: SkillGroup; returnTo: string; query?: string; expanded?: boolean; currentId?: string }) {
-  const skills = groupSkills(group);
+/** One work group and its skills, as given (see groupSkills): the first is the way in. */
+export default function SkillGroupCard({ group, skills, returnTo, query = "", expanded = false, currentId }: { group: SkillGroup; skills: SkillRecord[]; returnTo: string; query?: string; expanded?: boolean; currentId?: string }) {
   const terms = searchTerms(query);
   const matched = terms.length ? skills.find((skill) => terms.every((term) => `${skill.id} ${skill.title} ${skill.summary}`.toLowerCase().includes(term))) : undefined;
   const primary = matched ?? skills[0];

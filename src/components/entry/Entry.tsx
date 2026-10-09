@@ -2,9 +2,10 @@ import Link from "next/link";
 import type { CSSProperties, ReactNode } from "react";
 import { ArrowDown, ArrowRight, FileSearch, History, Lock, LockOpen, Route, Scale, ShieldCheck, Stamp } from "lucide-react";
 import MarketChrome, { MarketFooter } from "@/components/market/MarketChrome";
+import { getSkillCatalog } from "@/lib/server/skill-source";
 import shared from "@/components/market/MarketPage.module.css";
 import {
-  ACTS, CLOSING, COUNTS, DOORS, FACTS, FAQ, GATE, HERO, LIBRARY, LINE_STEP, LOOP_END, LOOP_START, LOOP_STEP, NODES, NOISE, NOTE_FLIGHT, STOCK, WEEK, WEEK_TOTAL, WORKS,
+  ACTS, CLOSING, COUNTS, DOORS, FACTS, FAQ, GATE, HERO, libraryOf, LINE_STEP, LOOP_END, LOOP_START, LOOP_STEP, NODES, NOISE, NOTE_FLIGHT, STOCK, WEEK, WEEK_TOTAL, WORKS,
   noteStart, reachOf, workFill,
 } from "@/lib/entry";
 import HeroWork from "./HeroWork";
@@ -23,7 +24,8 @@ import styles from "./Entry.module.css";
 
 const vars = (values: Record<string, string | number>) => values as CSSProperties;
 
-export default function Entry() {
+export default async function Entry() {
+  const library = libraryOf(await getSkillCatalog());
   return <div className={shared.page}>
     <MarketChrome active="entry" />
     <SmoothWheel />
@@ -34,7 +36,7 @@ export default function Entry() {
       <Door id="work" door={DOORS.work}><WeekMarks /></Door>
       <GateAct />
       <Door id="supply" door={DOORS.supply}><StockChart /></Door>
-      <Door id="library" door={DOORS.library}><Library /></Door>
+      <Door id="library" door={DOORS.library}><Library library={library} /></Door>
       <Faq />
       <Closing />
     </main>
@@ -223,11 +225,11 @@ function StockChart() {
   </figure>;
 }
 
-function Library() {
+function Library({ library }: { library: ReturnType<typeof libraryOf> }) {
   return <div className={styles.library}>
-    <p className={styles.libraryTotal}><b>{LIBRARY.groups}</b> 类工作<span>·</span><b>{LIBRARY.skills}</b> 个 Skill</p>
-    <ul className={styles.areas}>{LIBRARY.areas.map((area) => <li key={area.title}>{area.title}<b>{area.count}</b></li>)}</ul>
-    <ul className={styles.examples}>{LIBRARY.examples.map((title) => <li key={title}>{title}</li>)}</ul>
+    <p className={styles.libraryTotal}><b>{library.groups}</b> 类工作<span>·</span><b>{library.skills}</b> 个 Skill</p>
+    <ul className={styles.areas}>{library.areas.map((area) => <li key={area.title}>{area.title}<b>{area.count}</b></li>)}</ul>
+    <ul className={styles.examples}>{library.examples.map((title) => <li key={title}>{title}</li>)}</ul>
   </div>;
 }
 

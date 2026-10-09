@@ -1,9 +1,7 @@
 import Link from "next/link";
-import type { SkillRecord } from "@/lib/skill-catalog";
-import { groupsForSkill } from "@/lib/skill-groups";
-import { SKILL_STORIES } from "@/lib/skill-stories";
+import type { SkillCatalog, SkillRecord } from "@/lib/skill-catalog";
+import { groupSkills, groupsForSkill } from "@/lib/skill-groups";
 import { catalogUrl } from "@/lib/market-navigation";
-import { skillVideo } from "@/lib/skill-video";
 import MarketChrome, { MarketFooter } from "./MarketChrome";
 import OutcomePreview from "./OutcomePreview";
 import SkillGroupCard from "./SkillGroupCard";
@@ -12,10 +10,10 @@ import SkillVideo from "./SkillVideo";
 import styles from "./MarketPage.module.css";
 
 // Reading path: what it is → what you get (the one light object) → watching it run → who provides what and where it stops → reference.
-export default function SkillDetail({ skill, selected, returnTo }: { skill: SkillRecord; selected: boolean; returnTo: string }) {
-  const groups = groupsForSkill(skill.id);
-  const group = groups[0];
-  const story = SKILL_STORIES[skill.id];
+export default function SkillDetail({ skill, catalog, selected, returnTo }: { skill: SkillRecord; catalog: SkillCatalog; selected: boolean; returnTo: string }) {
+  const group = groupsForSkill(skill)[0];
+  const peers = group ? groupSkills(group, catalog) : [];
+  const story = skill.story;
   const currentUrl = `/market/${encodeURIComponent(skill.id)}?${new URLSearchParams({ returnTo })}`;
   return <div className={styles.page}><MarketChrome active="detail" /><main className={styles.main}>
     <nav className={styles.breadcrumb} aria-label="当前位置"><Link href={returnTo}>← 返回浏览结果</Link><span>/</span><Link href="/market">AI 自动化能力库</Link><span>/</span>{group && <Link href={`${catalogUrl({ group: group.id })}#catalog`}>{group.title}</Link>}</nav>
@@ -36,7 +34,7 @@ export default function SkillDetail({ skill, selected, returnTo }: { skill: Skil
         <p>看它把这项工作跑一遍：从你提供的资料，到交付的{skill.output}。</p>
         <Link className={styles.videoLink} href={`/contact?${new URLSearchParams({ skill: skill.id })}`}>预约演示，用你们的资料跑一遍 <span aria-hidden="true">↗</span></Link>
       </div>
-      <SkillVideo title={skill.title} output={skill.output} steps={story?.steps.map((step) => step.title) ?? []} video={skillVideo(skill)} />
+      <SkillVideo title={skill.title} output={skill.output} steps={story?.steps.map((step) => step.title) ?? []} video={skill.video} />
     </section>
     <section className={styles.capDuty} aria-label="分工与边界">
       <div><h2>你提供</h2><ul>{(story?.inputs ?? skill.inputs).map((input, i) => <li key={`${input}-${i}`}>{input}</li>)}</ul></div>
@@ -44,7 +42,7 @@ export default function SkillDetail({ skill, selected, returnTo }: { skill: Skil
       {story && <div><h2>范围与边界</h2><p>{story.boundary}</p></div>}
       <div><h2>接入条件</h2><p>{story?.requirements ?? "需要能运行该 Skill 的环境及对应资料访问权限。具体系统接入条件可随咨询一起确认。"}</p></div>
     </section>
-    {group && <section className={styles.detailSection}><h2>和同类能力怎么选</h2><SkillGroupCard group={group} returnTo={returnTo} currentId={skill.id} expanded={group.skillIds.length <= 4} /></section>}
+    {group && <section className={styles.detailSection}><h2>和同类能力怎么选</h2><SkillGroupCard group={group} skills={peers} returnTo={returnTo} currentId={skill.id} expanded={peers.length <= 4} /></section>}
     <p className={styles.capSource}>{skill.nestedCount > 0 && <span>包含 {skill.nestedCount} 个子技能。</span>}<span>Skill 标识 <code>{skill.id}</code></span></p>
   </main><MarketFooter /></div>;
 }
