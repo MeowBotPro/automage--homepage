@@ -49,3 +49,11 @@ next-env.d.ts
 
 # prisma
 /src/generated/prisma
+
+# The repository is public. Kept out of it on purpose:
+# reference material that names the real enterprise behind the supply-chain scenario,
+/content/
+# the skill packages and walkthrough videos as delivered (the source for scripts/skills/prepare-backfill-media.sh),
+/skill/
+# and local review output.
+/dogfood-output/
