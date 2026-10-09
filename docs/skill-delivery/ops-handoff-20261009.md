@@ -2,6 +2,8 @@
 
 给运维 agent · 2026-10-09 · 规则见同目录 [README.md](README.md)：官网怎么读看附录 B，自动通道看附录 C。
 
+**本次 OSS、资源域名、CDN 和 HTTPS 已完成。** 实际资源地址、浏览器验证结果和证书自动续期配置见 [OSS 上传与部署结果](oss-upload-result-20261009.md)。生产官网接入从第 4 步开始；不要重复执行第 1–3 步覆盖已发布索引。skill 自动上架 worker 尚未启用。
+
 ## 要做成什么
 
 1. **官网改读 OSS 上的索引。** 能力库（`/market`、`/market/<id>`）的 skill 清单和演示视频地址，改从 OSS 上的一份索引读。以后上新 skill、换视频只更新 OSS，官网不用发版。
@@ -28,7 +30,7 @@
 ## 第 1 步：准备 OSS
 
 - **公开 bucket**：公共读。
-  - 挂自定义域名（需要 ICP 备案），走 CDN，开 HTTPS。
+  - 挂自定义域名，走 CDN，开 HTTPS。中国内地加速需要 ICP 备案；本次已配置海外加速区域。
   - CDN 打开 Range 回源，视频拖动要用。
   - 浏览器要走自定义域名：OSS 默认域名在部分地域会加 `x-oss-force-download` 和 `Content-Disposition: attachment`，变成下载。
   - 不需要 CORS：索引由官网服务器读，视频由 `<video>` 直接播放。
@@ -77,7 +79,7 @@ curl -sI -H "Range: bytes=0-99" https://<公开域名>/skills/churn-autopsy/1.0.
 
 ## 第 5 步：验证
 
-- `/market/churn-autopsy` 的“演示视频”能播放，也能拖动；没有视频的 skill（例如 `/market/docx`）显示占位卡片。
+- `/market/churn-autopsy` 的“演示视频”能播放，也能拖动；没有视频的 skill（例如 `/market/aigtm-crm`）显示占位卡片。
 - `/market`、`/contact`、首页都正常；首页能力库入口写着“32 类工作 · 191 个 Skill”。
 - 服务日志里没有 `[skill-index]` 开头的错误。日志里有 `cannot read`，说明读不到索引，页面正在用内置清单，这时查网络和地址。
 
