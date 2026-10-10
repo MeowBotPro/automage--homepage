@@ -21,6 +21,7 @@ const fs = require("node:fs");
 const os = require("node:os");
 const path = require("node:path");
 const { spawnSync } = require("node:child_process");
+const { randomUUID, createHash } = require("node:crypto");
 const { check, stageFiles, readIndex, Rejection } = require("./skillpack.cjs");
 
 /* ── where packages and the site's files live: folders, or OSS through ossutil ─────────────── */
@@ -57,7 +58,7 @@ function ossStore(root) {
   const base = root.replace(/\/+$/, "");
   const url = (key) => `${base}/${key}`;
   const run = (args, missingIsFine = false) => {
-    const result = spawnSync(bin, args, { encoding: "utf8", maxBuffer: 64 * 1024 * 1024 });
+    const result = spawnSync(bin, args, { encoding: "utf8", maxBuffer: 64 * 1024 * 1024, timeout: 120000 });
     if (result.error) throw new Error(`运行 ${bin} 失败：${result.error.message}`);
     if (result.status === 0) return result.stdout;
     const text = `${result.stdout}\n${result.stderr}`.trim();
@@ -105,11 +106,11 @@ class Halt extends Error {}
 
 const stampOf = (date) => date.toISOString().replace(/[-:]/g, "").replace("T", "-").slice(0, 15);
 
-function handle(key, { priv, pub, denylist, dryRun, log }) {
+function handle(key, { priv, pub, denylist, dryRun, log, onReport, recoverKeys, packageNames }) {
   const name = key.slice("inbox/".length);
   const work = fs.mkdtempSync(path.join(os.tmpdir(), "skill-inbox-"));
   const started = new Date();
-  const stamp = stampOf(started);
+  const stamp = `${stampOf(started)}-${randomUUID()}`;
   const report = { package: name, receivedAt: started.toISOString(), status: null, id: null, version: null, errors: [], warnings: [] };
   const settle = (status, folder) => {
     report.status = status;
@@ -122,19 +123,33 @@ function handle(key, { priv, pub, denylist, dryRun, log }) {
   try {
     const zip = path.join(work, name);
     if (!priv.get(key, zip)) return;
-    const outcome = check(zip, { denylist });
+    const outcome = check(zip, { denylist, packageName: packageNames[key] });
     Object.assign(report, { id: outcome.manifest?.id ?? null, version: outcome.manifest?.version ?? null, errors: outcome.errors, warnings: outcome.warnings });
     if (!outcome.ok) throw new Rejection(outcome.errors[0]);
     const live = path.join(work, "live-index.json");
     if (!pub.get("index.json", live)) throw new Halt("公开位置还没有 index.json：第一份索引用 skillpack.cjs export 生成并上传");
-    const staged = stageFiles(outcome, readIndex(live), path.join(work, "out"));
+    const current = readIndex(live);
+    const archiveKey = `archive/${outcome.manifest.id}/${outcome.manifest.version}.zip`;
+    const archive = path.join(work, "archive.zip");
+    const archived = priv.get(archiveKey, archive);
+    const hash = (file) => createHash("sha256").update(fs.readFileSync(file)).digest("hex");
+    if (archived && recoverKeys.includes(key) && hash(zip) !== hash(archive)) throw new Rejection("线上版本已存在且存档不同：请升版本号");
+    if (archived && !recoverKeys.includes(key)) throw new Rejection(`${outcome.manifest.id} ${outcome.manifest.version} 已经发布过或存档：有改动请升版本号再交`);
+    if (recoverKeys.includes(key) && current.skills.some((entry) => entry.id === outcome.manifest.id && entry.version === outcome.manifest.version)) {
+      if (!archived) throw new Error("线上版本存在但存档缺失，需人工核对");
+      report.page = `/market/${outcome.manifest.id}`;
+      settle("published", null);
+      if (!dryRun) priv.remove(key);
+      return;
+    }
+    const staged = stageFiles(outcome, current, path.join(work, "out"));
     const { id, version } = staged.manifest;
     if (dryRun) {
       log(`… ${name}：合格，会发布 ${id} ${version}（${staged.replaced ? "替换旧版本" : "新增"}，索引共 ${staged.count} 个）`);
       report.status = "published";
       return;
     }
-    priv.put(zip, `archive/${id}/${version}.zip`);
+    if (!archived) priv.put(zip, `archive/${id}/${version}.zip`);
     const index = staged.uploads.at(-1);
     for (const upload of staged.uploads.slice(0, -1)) pub.put(upload.file, upload.key, upload);
     priv.put(live, `index-history/${stamp}.json`);
@@ -161,19 +176,21 @@ function handle(key, { priv, pub, denylist, dryRun, log }) {
   } finally {
     if (!dryRun && report.status !== null) {
       report.finishedAt = new Date().toISOString();
+      report.reportKey = `reports/${stamp}-${name.replace(/\.zip$/i, "")}.json`;
       const file = path.join(work, "report.json");
       fs.writeFileSync(file, `${JSON.stringify(report, null, 2)}\n`);
       try {
-        priv.put(file, `reports/${stamp}-${name.replace(/\.zip$/i, "")}.json`, { type: "application/json; charset=utf-8" });
+        priv.put(file, report.reportKey, { type: "application/json; charset=utf-8" });
       } catch (error) {
         log(`! ${name}：报告没写进去，${error.message}`);
       }
+      onReport(report);
     }
     fs.rmSync(work, { recursive: true, force: true });
   }
 }
 
-function run({ privateAt, publicAt, denylist = [], dryRun = false, log = console.log }) {
+function run({ privateAt, publicAt, denylist = [], dryRun = false, log = console.log, onReport = () => {}, recoverKeys = [], packageNames = {}, packageOrder = [] }) {
   if (!lock()) {
     log("上一次处理还没结束，这次跳过");
     return 0;
@@ -181,8 +198,10 @@ function run({ privateAt, publicAt, denylist = [], dryRun = false, log = console
   try {
     const priv = storeAt(privateAt);
     const pub = storeAt(publicAt);
-    const waiting = priv.list("inbox/").filter((key) => /^inbox\/[^/]+\.zip$/i.test(key)).sort();
-    for (const key of waiting) handle(key, { priv, pub, denylist, dryRun, log });
+    const waiting = priv.list("inbox/").filter((key) => /^inbox\/[^/]+\.zip$/i.test(key) && !key.includes("..") && !key.includes("\\") && !key.includes("\0")).sort();
+    const order = new Map(packageOrder.map((key, index) => [key, index]));
+    waiting.sort((a, b) => (order.get(a) ?? Number.MAX_SAFE_INTEGER) - (order.get(b) ?? Number.MAX_SAFE_INTEGER));
+    for (const key of waiting) handle(key, { priv, pub, denylist, dryRun, log, onReport, recoverKeys, packageNames });
     return 0;
   } catch (error) {
     log(`! 停止：${error.message}`);

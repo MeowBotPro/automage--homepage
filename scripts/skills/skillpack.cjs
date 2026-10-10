@@ -36,10 +36,13 @@ function zipEntries(file) {
     const dirSize = tail.readUInt32LE(end + 12);
     const dirAt = tail.readUInt32LE(end + 16);
     if (count === 0xffff || dirAt === 0xffffffff) throw new Error("压缩包超过 4GB 或文件太多（zip64），请先压缩视频");
+    if (count > 10000 || dirSize > 16 * 1024 * 1024 || dirAt + dirSize > size - tail.length + end) throw new Error("zip 目录越界或文件数量过多");
     const dir = Buffer.alloc(dirSize);
     fs.readSync(fd, dir, 0, dirSize, dirAt);
     const entries = [];
+    let expanded = 0;
     for (let at = 0, n = 0; n < count; n++) {
+      if (at + 46 > dir.length) throw new Error("zip 目录截断");
       if (dir.readUInt32LE(at) !== 0x02014b50) throw new Error("zip 目录损坏");
       const flags = dir.readUInt16LE(at + 8);
       const method = dir.readUInt16LE(at + 10);
@@ -49,20 +52,27 @@ function zipEntries(file) {
       const nameLength = dir.readUInt16LE(at + 28);
       const offset = dir.readUInt32LE(at + 42);
       const raw = dir.subarray(at + 46, at + 46 + nameLength);
+      if (at + 46 + nameLength + dir.readUInt16LE(at + 30) + dir.readUInt16LE(at + 32) > dir.length) throw new Error("zip 文件名越界");
+      expanded += size;
+      if (expanded > LIMIT.total) throw new Error("整个包解开超过 300 MB 上限");
+      if (offset + 30 > dirAt || packed > dirAt - offset - 30) throw new Error("zip 内容越界");
+      const unixMode = dir.readUInt32LE(at + 38) >>> 16;
       const utf8 = Boolean(flags & 0x800) || isUtf8(raw);
       const name = raw.toString(utf8 ? "utf8" : "latin1");
       at += 46 + nameLength + dir.readUInt16LE(at + 30) + dir.readUInt16LE(at + 32);
       entries.push({
-        name, size, unclearName: !utf8, encrypted: Boolean(flags & 1),
+        name, size, link: (unixMode & 0xf000) === 0xa000, unclearName: !utf8, encrypted: Boolean(flags & 1),
         read() {
           const fd2 = fs.openSync(file, "r");
           try {
             const head = Buffer.alloc(30);
             fs.readSync(fd2, head, 0, 30, offset);
             if (head.readUInt32LE(0) !== 0x04034b50) throw new Error(`${name}：压缩包损坏`);
+            const start = offset + 30 + head.readUInt16LE(26) + head.readUInt16LE(28);
+            if (start + packed > dirAt) throw new Error(`${name}：zip 数据越界`);
             const data = Buffer.alloc(packed);
-            fs.readSync(fd2, data, 0, packed, offset + 30 + head.readUInt16LE(26) + head.readUInt16LE(28));
-            const out = method === 0 ? data : method === 8 ? zlib.inflateRawSync(data) : null;
+            if (fs.readSync(fd2, data, 0, packed, start) !== packed) throw new Error(`${name}：zip 数据截断`);
+            const out = method === 0 ? data : method === 8 ? zlib.inflateRawSync(data, { maxOutputLength: Math.max(1, size) }) : null;
             if (!out) throw new Error(`${name}：不支持的压缩方式（${method}）`);
             if (out.length !== size || (zlib.crc32 && zlib.crc32(out) !== crc)) throw new Error(`${name}：内容校验不通过，压缩包可能损坏`);
             return out;
@@ -113,11 +123,13 @@ function openPackage(source) {
   const ignored = [];
   const files = new Map();
   for (const entry of all) {
+    if (entry.link) { errors.push(`不要放链接文件：${entry.name}`); continue; }
     if (entry.name.endsWith("/")) continue;
     if (JUNK.test(entry.name)) { ignored.push(entry.name); continue; }
-    if (entry.name.startsWith("/") || entry.name.includes("\\") || entry.name.split("/").includes("..")) { errors.push(`不安全的路径：${entry.name}`); continue; }
+    if (entry.name.startsWith("/") || /^[a-z]:/i.test(entry.name) || entry.name.includes("\0") || entry.name.includes("\\") || entry.name.split("/").some((part) => part === ".." || part === "." || part === "")) { errors.push(`不安全的路径：${entry.name}`); continue; }
     if (entry.link) { errors.push(`不要放链接文件：${entry.name}`); continue; }
     if (entry.encrypted) { errors.push(`不要加密压缩：${entry.name}`); continue; }
+    if (files.has(entry.name)) { errors.push(`重复路径：${entry.name}`); continue; }
     files.set(entry.name, entry);
   }
   const tops = new Set([...files.keys()].map((name) => name.split("/")[0]));
@@ -296,8 +308,13 @@ const clock = (seconds) => `${Math.floor(seconds / 60)}:${String(Math.round(seco
 
 /* ── check ─────────────────────────────────────────────────────────────────────────────────── */
 
-function check(source, { denylist = [] } = {}) {
-  const pkg = openPackage(source);
+function check(source, { denylist = [], packageName } = {}) {
+  let pkg;
+  try { pkg = openPackage(source); }
+  catch (error) {
+    return { ok: false, errors: [`压缩包读取失败：${error.message}`], warnings: [], ignored: [], manifest: null, video: null, poster: null, pkg: { name: path.basename(source), files: new Map() } };
+  }
+  if (packageName) pkg.name = packageName;
   const errors = [...pkg.errors];
   const warnings = [];
   const { files } = pkg;
@@ -311,7 +328,7 @@ function check(source, { denylist = [] } = {}) {
     if (files.get(name).unclearName && /[^\x20-\x7e]/.test(name)) warnings.push(`文件名编码不明：${name}，建议用英文文件名`);
   }
   const total = [...files.values()].reduce((sum, entry) => sum + entry.size, 0);
-  if (total > LIMIT.total) errors.push(`整个包解开有 ${mb(total)}，上限 ${mb(LIMIT.total)}`);
+  if (total > LIMIT.total) { errors.push(`整个包解开有 ${mb(total)}，上限 ${mb(LIMIT.total)}`); return result(); }
 
   if (!files.has("skill.json")) {
     errors.push("找不到 skill.json：它要在包的最外层（或唯一的那个文件夹里）");

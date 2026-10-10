@@ -1,0 +1,8 @@
+{
+  "name": "automage-skill-update",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": { "start": "node server.cjs", "test": "node --test test/*.test.cjs" },
+  "engines": { "node": ">=22" },
+  "dependencies": { "ali-oss": "6.23.0" }
+}

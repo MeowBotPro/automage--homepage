@@ -1,0 +1,27 @@
+[Unit]
+Description=AutoMage Skill upload and OSS publishing
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/root/skill-update/app
+Environment=NODE_ENV=production
+Environment=SKILL_UPDATE_HOME=/root/skill-update
+ExecStart=/root/skill-update/bin/node /root/skill-update/app/server.cjs
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=30
+KillMode=control-group
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/root/skill-update
+MemoryMax=1536M
+TasksMax=64
+
+[Install]
+WantedBy=multi-user.target

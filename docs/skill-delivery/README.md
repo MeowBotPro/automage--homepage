@@ -1,20 +1,22 @@
 # Skill 交付规范与同步流程
 
-> 给做 skill 的人看，人和 agent 都按这份做。做完一个 skill，按这里的格式打成一个压缩包交上来；检查、上传、在官网出现都走同一条流程，不再手动同步。
+> 给做 skill 的人看，人和 agent 都按这份做。做完一个 skill，按这里的格式打成一个压缩包交上来；通过上传网页或本机 CLI 提交，检查、私有存档、OSS 发布和官网刷新走同一条流程。
 >
-> 2026-10-09 起执行 · 清单格式 `automage.skill/1` · 索引格式 `automage.skill-index/1`
+> 2026-10-10：上传服务与自动发布闭环已部署 · 清单格式 `automage.skill/1` · 索引格式 `automage.skill-index/1`
 
 ## 一页看懂
 
 ```
 做好 skill ──► 照模板填 skill.json，录演示视频，截封面
            ──► 自查：node skillpack.cjs check 包.zip（不合格会逐条说明哪里要改）
-           ──► 上传到 OSS 的 inbox/（任何时候都可以）
-           ──► 自动处理：一分钟内复检；合格就发布，不合格退回并写明原因
-           ──► 官网能力库出现这个 skill（不用发版，上传后约 3 分钟）
+           ──► 网页输入上传密码，拖入 ZIP（也可直接上传到 OSS inbox/）
+           ──► 自动处理：上传完成立即触发，每分钟补扫；合格发布，不合格写明原因
+           ──► 页面确认已发布，官网能力库通常再需约 1–2 分钟刷新（不用发版）
 ```
 
-只有一个通道，没有人工审批：检查就是关口。
+正式入口：<https://skill-update.automage.cn>。只有一个发布通道，没有人工审批：上传密码确认提交权限，文件检查决定能否发布。密码不替代内容检查，提交人仍需核对录屏内容。
+
+本机部署、密码管理、CLI、故障恢复和验证结果见 [完整闭环部署记录](deployment-20261010.md)。
 
 **公开的只有三样**：skill.json 里 `listing` 的文字、演示视频、封面。skill 本体（SKILL.md、脚本、参考资料）只进内部存档，官网不提供下载。
 
@@ -163,6 +165,18 @@ node skillpack.cjs check churn-autopsy-1.0.0.zip   # 也可以检查打包前的
 
 ## 5. 怎么交
 
+**网页入口：<https://skill-update.automage.cn>。** 输入团队上传密码并验证，拖入一个或多个 ZIP，系统自动检查发布。页面同时提供模板、完整规范和本地检查工具。
+
+- 上传进度完成只表示文件已接收；页面显示“已发布”才表示 OSS 索引更新成功。
+- 上传完成后立即触发检查，另有每分钟补扫；耗时取决于文件大小、队列和网络，不承诺固定处理时长。
+- 发布成功后，官网通常再需约 1–2 分钟刷新。重新验证同一个上传密码可继续查看记录。
+- 校验拒绝需按原因修改后重新上传；处理失败可在页面重试。
+- 密码由管理员在页面“密码管理”或本机 CLI 中新增、停用及重置。详见 [上传服务运维说明](../../apps/skill-update/README.md)。
+
+本机 SFTP 批量上传完整文件后，也可用 `skill-update submit --dir ./incoming` 扫描当前目录中的 ZIP，或 `skill-update submit ./a.zip ./b.zip` 提交多个文件；与网页共用同一发布通道。
+
+**已有 OSS 上传权限的人也可直接提交：**
+
 把合格的包上传到内部 OSS 的 `inbox/`，账号和地址找运维开通。任何时候传都可以，用命令或在控制台拖进去：
 
 ```sh
@@ -278,7 +292,9 @@ ossutil cp churn-autopsy-1.0.0.zip oss://<内部 bucket>/inbox/
 
 ## 附录 C：自动通道（给运维）
 
-一个通道：任何时候往内部 bucket 的 `inbox/` 放一个 zip，下一轮就会自动处理。没有审批，`skillpack.cjs check` 就是关口。实现是 `scripts/skills/inbox-worker.cjs`，每分钟跑一次。
+正式服务部署在本机 `/root/skill-update`，通过 systemd 的 `skill-update.service` 常驻运行，Nginx 提供 HTTPS。网页和 CLI 共用持久化任务队列；完整接收后写入私有 OSS inbox 并立即唤醒 worker，每分钟补扫一次。直接向内部 bucket 的 `inbox/` 放 ZIP 也会被补扫处理。
+
+没有审批，`skillpack.cjs check` 就是文件关口，`scripts/skills/inbox-worker.cjs` 负责发布。网页会展示逐包报告，不把上传进度完成或进程退出成功当作发布成功。
 
 **存储布局**（bucket 名、域名由运维定，不写死）：
 
@@ -292,7 +308,17 @@ ossutil cp churn-autopsy-1.0.0.zip oss://<内部 bucket>/inbox/
   index-history/  每次发布前的旧索引（回滚用）
 ```
 
-**怎么跑**：放在任何一台有 Node 18+、ossutil 2.x（已配好凭证）和官网仓库的机器上，用 crontab 每分钟一次：
+**当前部署怎么跑**：
+
+```sh
+systemctl status skill-update
+journalctl -u skill-update --since today
+skill-update status
+```
+
+现有服务使用 Node 22 和官方 `ali-oss` SDK，通过适配器复用 worker，不依赖另装 ossutil。工具与 schema 一起部署，不需要运行时读取官网仓库。不要再启动第二份 cron worker。
+
+**其他机器独立使用 worker 时的替代方式**：Node 18+、ossutil 2.x（已配好凭证）和官网仓库，可用 crontab 每分钟一次；不能与上述常驻服务同时启用：
 
 ```sh
 * * * * * cd /path/to/automage--homepage && node scripts/skills/inbox-worker.cjs \
@@ -301,7 +327,7 @@ ossutil cp churn-autopsy-1.0.0.zip oss://<内部 bucket>/inbox/
 
 - 第一次先加 `--dry-run`：只读取和检查，不写任何东西，确认 ossutil 的参数在你们的版本上都能用。
 - 想加敏感词表，用 `--denylist <文件>`，一行一个词。公开文案里出现这些词就不合格。
-- 只在一台机器上跑。同一台机器上，上一轮没跑完时这一轮会自动跳过。
+- 只在一台机器上跑。同一台机器上，上一轮没跑完时这一轮会自动跳过。常驻服务通过自身串行队列和 worker 锁协调执行。
 
 **一个包的处理顺序**（任何一步失败，官网都不会指向不存在的文件）：
 
@@ -325,3 +351,5 @@ ossutil cp churn-autopsy-1.0.0.zip oss://<内部 bucket>/inbox/
 
 **手动操作**：用 `skillpack.cjs`，见第 6 节。手动改线上 `index.json` 之前，先确认 `inbox/` 是空的，免得和 worker 同时改。
 
+
+**结果与恢复**：网页和 CLI 使用唯一任务编号保存逐包状态，OSS 报告和索引历史也采用唯一名称。重启后恢复待处理任务；若索引已经提交但确认中断，核对线上版本及私有原包 SHA-256 后才能判定成功。普通重复版本提交仍拒绝，下架后也不能覆盖已存档版本。基础设施失败可在网页或 `skill-update retry <任务编号>` 重试，校验拒绝需修改后重新提交。

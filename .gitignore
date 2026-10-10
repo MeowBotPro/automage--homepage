@@ -57,3 +57,7 @@ next-env.d.ts
 /skill/
 # and local review output.
 /dogfood-output/
+
+# Standalone skill uploader dependencies and generated delivery downloads
+/apps/skill-update/node_modules/
+/apps/skill-update/public/delivery/

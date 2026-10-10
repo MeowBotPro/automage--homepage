@@ -144,3 +144,36 @@ else { console.error('unknown command ' + command); process.exit(2); }
   assert.deepEqual(meta('public-bucket/skills/index.json'), { '--content-type': 'application/json; charset=utf-8', '--cache-control': 'public, max-age=60' });
   assert.equal(JSON.parse(fs.readFileSync(bucket('public-bucket/skills/index.json'), 'utf8')).skills.at(-1).id, 'retention-probe');
 });
+
+test('interrupted completion recovers only when the published archive matches, with unique reports', () => {
+  const box = setup([['retention-probe-1.0.0.zip', filled()]]);
+  const received = [];
+  assert.equal(run({ privateAt: box.priv, publicAt: box.pub, onReport: (r) => received.push(r), log: () => {} }), 0);
+  fs.copyFileSync(path.join(box.priv, 'archive/retention-probe/1.0.0.zip'), path.join(box.priv, 'inbox/retention-probe-1.0.0.zip'));
+  assert.equal(run({ privateAt: box.priv, publicAt: box.pub, recoverKeys: ['inbox/retention-probe-1.0.0.zip'], onReport: (r) => received.push(r), log: () => {} }), 0);
+  assert.equal(received[1].status, 'published'); assert.notEqual(received[0].reportKey, received[1].reportKey);
+  assert.equal(box.files('reports').length, 2);
+  zip(path.join(box.priv, 'inbox/retention-probe-1.0.0.zip'), filled('retention-probe', (m) => ({ ...m, changes: 'changed archive' })));
+  assert.equal(run({ privateAt: box.priv, publicAt: box.pub, recoverKeys: ['inbox/retention-probe-1.0.0.zip'], onReport: (r) => received.push(r), log: () => {} }), 0);
+  assert.equal(received[2].status, 'rejected'); assert.match(received[2].errors.join(' '), /存档不同/);
+});
+
+test('unlisting a version does not permit its private archive to be overwritten', () => {
+  const box = setup([['retention-probe-1.0.0.zip', filled()]]);
+  run({ privateAt: box.priv, publicAt: box.pub, log: () => {} });
+  const index = live(box.pub); index.skills = index.skills.filter((entry) => entry.id !== 'retention-probe'); fs.writeFileSync(path.join(box.pub, 'index.json'), JSON.stringify(index));
+  zip(path.join(box.priv, 'inbox/retention-probe-1.0.0.zip'), filled('retention-probe', (m) => ({ ...m, changes: 'different package' })));
+  const received = []; run({ privateAt: box.priv, publicAt: box.pub, onReport: (r) => received.push(r), log: () => {} });
+  assert.equal(received[0].status, 'rejected'); assert.equal(live(box.pub).skills.some((entry) => entry.id === 'retention-probe'), false);
+});
+
+test('submitted task order takes precedence over random inbox filenames', () => {
+  const box = setup([
+    ['z-first.zip', filled('retention-probe')],
+    ['a-second.zip', filled('retention-probe', (m) => ({ ...m, version: '1.1.0' }))],
+  ]);
+  const received = [];
+  run({ privateAt: box.priv, publicAt: box.pub, packageOrder: ['inbox/z-first.zip', 'inbox/a-second.zip'], onReport: (r) => received.push(r), log: () => {} });
+  assert.deepEqual(received.map((r) => r.status), ['published', 'published']);
+  assert.equal(live(box.pub).skills.find((entry) => entry.id === 'retention-probe').version, '1.1.0');
+});

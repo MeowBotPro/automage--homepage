@@ -4,3 +4,4 @@
 - [Homepage journey invariants](homepage-journey-invariants.md) — preserve the supply-chain narrative order, Compare 3/5 motion balance, responsive InfoLoop behavior, and standalone Beta conversion path.
 - [Skill corpus inventory](skill-corpus-inventory.md) — 191 third-party role skills in `skill/*.zip`; not Core and not the homepage WMS story; full table in `.workflow/.scratchpad/skill-inventory.md`.
 - [Public entry direction](public-entry-direction.md) — website first; supply-chain is a scenario page not the product; base + composable Skills; not a deploy/cluster story.
+- [Skill upload service](skill-update-service.md) — standalone Nginx/systemd upload service, shared web/CLI queue, and deployment instructions; proxy egress IP is not server ingress.
