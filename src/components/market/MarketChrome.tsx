@@ -5,8 +5,9 @@ import { getSkillCatalog } from "@/lib/server/skill-source";
 import { parseIntentCookie, SKILL_INTENT_COOKIE } from "@/lib/skill-intent";
 import styles from "./MarketPage.module.css";
 
-/** The three tabs, each a page of its own; the default entry is reached from the logo and is none of them. */
+/** Shared page tabs; both the home tab and the logo return to the default entry. */
 const TABS = [
+  { href: "/", label: "首页", match: ["entry"] },
   { href: "/work", label: "AI for Work 新公司运行模式", match: ["work"] },
   { href: "/scenarios/supply-chain", label: "AI+供应链", match: ["scenario"] },
   { href: "/market", label: "AI 自动化能力库", match: ["market", "detail"] },
@@ -25,5 +26,5 @@ export default async function MarketChrome({ active }: { active: "entry" | "work
 }
 
 export function MarketFooter() {
-  return <footer className={styles.footer}><span>AutoMage · 让信息连接工作</span><nav aria-label="页脚"><Link href="/">首页</Link>{TABS.map((tab) => <Link key={tab.href} href={tab.href}>{tab.label}</Link>)}<Link href="/contact">联系我们</Link></nav></footer>;
+  return <footer className={styles.footer}><span>AutoMage · 让信息连接工作</span><nav aria-label="页脚">{TABS.map((tab) => <Link key={tab.href} href={tab.href}>{tab.label}</Link>)}<Link href="/contact">联系我们</Link></nav></footer>;
 }
