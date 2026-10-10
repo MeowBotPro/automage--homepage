@@ -1,6 +1,6 @@
-# Skill 交付规范与同步流程
+# Skill 交付与自动发布指南
 
-> 给做 skill 的人看，人和 agent 都按这份做。做完一个 skill，按这里的格式打成一个压缩包交上来；通过上传网页或本机 CLI 提交，检查、私有存档、OSS 发布和官网刷新走同一条流程。
+> 本文是 Skill 交付与发布的唯一维护指南，供制作者、运维和 agent 使用。制作者与交付 agent 阅读第 1–6 节；分类见附录 A，官网接入见附录 B，部署、密码与故障处理见附录 C，接口与验证见附录 D。
 >
 > 2026-10-10：上传服务与自动发布闭环已部署 · 清单格式 `automage.skill/1` · 索引格式 `automage.skill-index/1`
 
@@ -16,7 +16,9 @@
 
 正式入口：<https://skill-update.automage.cn>。只有一个发布通道，没有人工审批：上传密码确认提交权限，文件检查决定能否发布。密码不替代内容检查，提交人仍需核对录屏内容。
 
-本机部署、密码管理、CLI、故障恢复和验证结果见 [完整闭环部署记录](deployment-20261010.md)。
+按顺序完成：准备完整交付包 → 自查合格 → 提交 → 保存任务编号 → 确认发布结果。人和 agent 都以逐包结果为准；不能把文件已上传或 CLI 退出成功当作发布完成。
+
+本文与 [`skill.schema.json`](skill.schema.json)、[`template/churn-autopsy/`](template/churn-autopsy/) 一起维护。schema 定义字段约束，模板展示包结构；具体校验行为由 `scripts/skills/skillpack.cjs` 和现有测试实现。
 
 **公开的只有三样**：skill.json 里 `listing` 的文字、演示视频、封面。skill 本体（SKILL.md、脚本、参考资料）只进内部存档，官网不提供下载。
 
@@ -40,7 +42,7 @@ churn-autopsy-1.0.0.zip            ← 文件名：<id>-<version>.zip
 - 直接压缩整个文件夹就行。Mac 自带的“压缩”会带上 `__MACOSX`、`.DS_Store`，检查时会自动忽略。
 - 最外层只放 `skill.json`、`skill/`、`media/`，另外可以带 `README.md`、`CHANGELOG.md`。
 - 不要放 `.env`、密钥（`.pem` / `.key`）、`.git`、`node_modules`、虚拟环境；文件名用英文。
-- 大小：整个包解开不超过 300 MB，`skill/` 不超过 100 MB，视频不超过 100 MB（建议 50 MB 以内）。
+- 大小：单个 ZIP 上传不超过 300 MiB，解压总量不超过 300 MiB，`skill/` 不超过 100 MiB，视频不超过 100 MiB（建议 50 MiB 以内）。1 MiB = 1024 × 1024 字节。
 
 **模板**：[`template/churn-autopsy/`](template/churn-autopsy/)。它就是线上 `/market/churn-autopsy` 这一页的清单，可以打开那一页，对照着看每个字段出现在哪。照着做时：
 
@@ -53,7 +55,7 @@ churn-autopsy-1.0.0.zip            ← 文件名：<id>-<version>.zip
 
 ## 2. skill.json 怎么填
 
-完整格式在 [`skill.schema.json`](skill.schema.json)。在编辑器里写上 `"$schema": "./skill.schema.json"` 会有提示和即时检查。
+完整格式在 [`skill.schema.json`](skill.schema.json)。编辑器可将 `skill.json` 关联到该 schema，或在本地写上指向它的 `$schema` 地址。schema 是自查工具的配套文件，不要额外塞进交付包。
 
 | 字段 | 要求 | 出现在官网哪里 |
 |---|---|---|
@@ -100,10 +102,10 @@ churn-autopsy-1.0.0.zip            ← 文件名：<id>-<version>.zip
 | 格式 | MP4：H.264 视频，加 AAC 声音或无声，要能边下边播（faststart） |
 | 画面 | 16:9，1920×1080 或 1280×720 |
 | 长度 | 1–3 分钟最好，不超过 5 分钟 |
-| 大小 | 不超过 100 MB，建议 50 MB 以内 |
-| 封面 | 16:9，1280 宽以上，建议 400 KB 以内；选交付物出来的那一帧，不选启动画面 |
+| 大小 | 不超过 100 MiB，建议 50 MiB 以内 |
+| 封面 | JPG / PNG / WebP，最多 1 MiB，建议 400 KiB 以内、16:9、1280 像素宽以上；选交付物出来的那一帧 |
 
-**录制要求**。发布前没有人工审核，这些由提交人自己把关。前四条是检查存量视频时发现过的问题：
+**录制要求**：发布前没有人工审核，以下内容由提交人自行把关。
 
 1. **用专门的演示账号和干净的目录录。** 画面里不能出现个人用户名、本机路径、真实客户和公司名、内部文件名。
 2. **只录工作窗口，不录整个桌面。** 访达、程序坞、通知和其他文件都会入镜。
@@ -129,7 +131,9 @@ ffmpeg -ss 00:02:30 -i demo.mp4 -frames:v 1 -q:v 3 poster.jpg
 
 ## 4. 交付前自查
 
-工具是 `scripts/skills/skillpack.cjs`，规则是 `docs/skill-delivery/skill.schema.json`。把两个文件放进同一个文件夹，有 Node 18 以上就能单独用，不需要官网仓库。
+工具是 `scripts/skills/skillpack.cjs`，规则是本目录的 `skill.schema.json`。把工具与 schema 放在同一个目录，使用 Node 18+ 即可单独检查；上传服务使用 Node 22。
+
+可从上传页下载 [检查工具](https://skill-update.automage.cn/delivery/skillpack.cjs)、[schema](https://skill-update.automage.cn/delivery/skill.schema.json) 和 [模板 ZIP](https://skill-update.automage.cn/delivery/template.zip)。
 
 ```sh
 node skillpack.cjs check churn-autopsy-1.0.0.zip   # 也可以检查打包前的文件夹
@@ -163,43 +167,59 @@ node skillpack.cjs check churn-autopsy-1.0.0.zip   # 也可以检查打包前的
 
 单独看视频：`node skillpack.cjs inspect 视频.mp4`。
 
-## 5. 怎么交
+## 5. 提交与确认结果
 
-**网页入口：<https://skill-update.automage.cn>。** 输入团队上传密码并验证，拖入一个或多个 ZIP，系统自动检查发布。页面同时提供模板、完整规范和本地检查工具。
+### 网页提交
 
-- 上传进度完成只表示文件已接收；页面显示“已发布”才表示 OSS 索引更新成功。
-- 上传完成后立即触发检查，另有每分钟补扫；耗时取决于文件大小、队列和网络，不承诺固定处理时长。
-- 发布成功后，官网通常再需约 1–2 分钟刷新。重新验证同一个上传密码可继续查看记录。
-- 校验拒绝需按原因修改后重新上传；处理失败可在页面重试。
-- 密码由管理员在页面“密码管理”或本机 CLI 中新增、停用及重置。详见 [上传服务运维说明](../../apps/skill-update/README.md)。
+打开 <https://skill-update.automage.cn>，输入团队上传密码并验证，再拖入或选择一个或多个 ZIP。每个包独立处理，一个失败不影响其他包。
 
-本机 SFTP 批量上传完整文件后，也可用 `skill-update submit --dir ./incoming` 扫描当前目录中的 ZIP，或 `skill-update submit ./a.zip ./b.zip` 提交多个文件；与网页共用同一发布通道。
+上传后保存任务编号，在页面查看逐包记录。关闭页面不影响后台处理；重新验证同一个上传密码可继续查看该密码项的记录。密码重置、停用或删除后原会话失效，原记录可由管理员查询。上传密码由管理员分发与管理，操作见附录 C。
 
-**已有 OSS 上传权限的人也可直接提交：**
+### 本机 CLI 批量提交
 
-把合格的包上传到内部 OSS 的 `inbox/`，账号和地址找运维开通。任何时候传都可以，用命令或在控制台拖进去：
+先通过 SFTP 把完整 ZIP 传到本机目录，再执行：
 
 ```sh
-ossutil cp churn-autopsy-1.0.0.zip oss://<内部 bucket>/inbox/
+skill-update submit --dir /root/skill-update/incoming
+skill-update submit ./a.zip ./b.zip
+skill-update status <任务编号>
+skill-update status
 ```
 
-之后全自动，每分钟处理一次：
+目录模式处理当前层级的普通 ZIP，不递归、不跟随链接，也不监听正在传输的文件。CLI 通过本机受限 socket 授权，与网页共用同一发布队列。`submit` 成功表示文件已接收，需要继续用 `status` 确认逐包结果；部分文件提交失败时 CLI 返回非零退出码，已经接收的包仍会处理。
 
-- **合格**：
-  - 视频和封面放到公开地址，官网的 skill 索引更新；
-  - 原包进内部存档；
-  - 约 2 分钟后，这个 skill 出现在官网能力库，地址 `/market/<id>`。
-- **不合格**：包移到 `rejected/`。版本号已发布过、比线上的旧，也算不合格。
-- **处理出错**：包移到 `failed/`。比如网络断了，修好后把包移回 `inbox/` 重试即可。
-- **每个包都有一份结果**：写在 `reports/<时间>-<包名>.json` 里，标明状态（published / rejected / failed）和原因，自己去看。
+### 多久能确认成功
+
+上传完成后立即触发后台处理，另有每分钟补扫。耗时取决于文件大小、排队与网络，不承诺固定处理时长。
+
+| 状态 | 含义与下一步 |
+|---|---|
+| 正在接收 / 排队 / 同步 / 处理中 | 尚未确认发布，保留任务编号继续查询 |
+| 已发布（`published`） | OSS 索引已更新，可以确认发布成功；官网通常再需约 1–2 分钟刷新，页面提供 `/market/<id>` 链接 |
+| 校验拒绝（`rejected`） | 按错误原因修改后重新提交；重复或较旧版本也会拒绝 |
+| 处理失败（`failed`） | 查看原因，恢复网络或配置后在页面重试，或执行 `skill-update retry <任务编号>`；上传中断或本机原包已清理时需重新提交 |
+
+校验提醒（warnings）不阻止发布。仅有上传进度完成、HTTP 202 或进程退出码 0，均不能证明包已发布。
+
+### 已有 OSS 权限的直接提交
+
+可以将包上传到 `oss://automage-skills-private/inbox/`，常驻服务会每分钟补扫。例如，已配置好 ossutil 的机器可执行：
+
+```sh
+ossutil cp churn-autopsy-1.0.0.zip oss://automage-skills-private/inbox/
+```
+
+直接提交没有网页任务记录，需查看私有 `reports/` 下对应包的 JSON 报告。合格原包进 `archive/`，不合格包进 `rejected/`，处理失败进 `failed/`；直接提交的失败包修复外部问题后可移回 `inbox/` 重试。网页和 CLI 任务使用自己的重试入口。
 
 ## 6. 更新、下架、回滚
 
 - **更新**：任何改动都要升版本号，重新交整个包。改文案升最后一位（1.0.1），换视频或大改升中间一位（1.1.0）。已发布的版本不能覆盖，同一个版本号会被拒。
-- **下架**：找运维。运维用 `skillpack.cjs unlist <id>` 生成新索引并上传，约 2 分钟后从官网消失。视频文件留在原处，不影响别的。
+- **下架**：由运维用 `skillpack.cjs unlist <id> --index <当前索引文件> --out <输出目录>` 生成新索引并上传，官网通常再需约 1–2 分钟刷新。视频文件保留；下架后也不能覆盖原版本存档。
 - **回滚**：
   - 想退回旧内容：用一个新版本号把旧内容再交一次；
-  - 发布本身出了问题：运维把上一份索引恢复回去（每次发布都会留一份索引历史）。
+  - 发布本身出了问题：运维从私有 `index-history/` 恢复上一份索引。
+
+手动修改或恢复线上索引前，停止 `skill-update.service`，核对待处理任务与 OSS inbox，备份当前索引后再操作。确认索引与媒体一致后恢复服务，避免与自动发布并发写索引。
 
 ---
 
@@ -242,114 +262,154 @@ ossutil cp churn-autopsy-1.0.0.zip oss://<内部 bucket>/inbox/
 |  | `social-creative` | 制作图文、封面与文章配图 |
 |  | `brand-interface` | 设计标志、图标与界面 |
 
-## 附录 B：官网怎么读 skill（给维护官网和运维的人）
+## 附录 B：官网接入与资源地址
 
-官网从 OSS 上的一份索引 `index.json` 读“展示哪些 skill、视频在哪”。代码在 `src/lib/server/skill-source.ts` 和 `src/lib/skill-index.ts`。
+官网从 OSS 索引读取展示清单；发布到已有分类无需发版。新增分类需修改 `src/lib/skill-groups.ts` 并发布官网。读取与解析代码分别为 `src/lib/server/skill-source.ts`、`src/lib/skill-index.ts`。
 
-**环境变量**：运行时读取，改了重启即可，不用重新构建。
+生产官网运行时配置：
 
-| 变量 | 含义 |
+```dotenv
+SKILL_INDEX_URL=https://skills.automage.cn/skills/index.json
+SKILL_ASSET_BASE=https://skills.automage.cn/skills/
+```
+
+改变量后重启官网即可，无需重新构建。`SKILL_ASSET_BASE` 可省略，此时取索引所在目录；若服务器通过 OSS 内网读取索引，必须将该变量设为浏览器可访问的公开地址。
+
+- 索引缓存 60 秒，OSS/CDN 的 `index.json` 缓存不超过 60 秒；版本化视频与封面采用一年缓存并标记 immutable。
+- 读取失败沿用最后一份有效索引；启动后从未成功读取时使用内置清单。坏条目单条剔除，全空索引视为读取失败。
+- 怀疑未更新时，检查索引响应和官网 `[skill-index]` 日志。去掉 `SKILL_INDEX_URL` 并重启可暂时回到内置清单。
+- 视频使用 `skills.automage.cn` 自定义 CDN 域名；OSS 默认域名曾返回强制下载头，不能只凭 Range 206 判断浏览器可播放。CDN 需保持 Range 回源、inline 响应和 HTTPS。
+
+索引格式为 `automage.skill-index/1`，顶层包含 `generatedAt` 与 `skills`。每个条目包含 id、version、展示字段、groups、story、media 和 updatedAt；由交付工具生成，不手工拼写。`media` 路径相对于资源地址，如 `churn-autopsy/1.0.0/demo.mp4`；为 null 时展示占位卡片。新交付条目的 `story.preview` 固定为 `document`，同类排序遵循官网编排后接新增成员。
+
+## 附录 C：上传服务部署与运维
+
+### C.1 当前部署
+
+| 项目 | 配置 |
 |---|---|
-| `SKILL_INDEX_URL` | 索引地址，如 `https://<公开域名>/skills/index.json`。不设时官网用内置清单（现在的 191 个），和以前一样 |
-| `SKILL_ASSET_BASE` | 可选。视频和封面的公开地址前缀，如 `https://<公开域名>/skills/`。不设时取索引所在的目录。官网服务器走 OSS 内网地址读索引时必须设，因为浏览器要从公开域名拉视频 |
+| 上传入口 | `https://skill-update.automage.cn` |
+| DNS | `skill-update` CNAME → `automage.cn`，沿用官网本机地址 |
+| 反向代理 | 本机 Nginx → `127.0.0.1:3120`，HTTP 跳转 HTTPS |
+| 运行目录 / 常驻服务 | `/root/skill-update` / `skill-update.service` |
+| 本机 CLI 授权 | `/root/skill-update/control.sock`，权限 0600 |
+| OSS 地域 | `cn-hangzhou` |
+| 私有 bucket | `oss://automage-skills-private` |
+| 公开位置 | `oss://automage/skills/` |
+| 服务端配置 / 密码哈希 | `/root/skill-update/config.json` / `passwords.json`，权限 0600 |
 
-**刷新**：
+上传应用源码位于 `apps/skill-update/`，部署配置位于 `deploy/skill-update/`。使用 Node 22 和官方 `ali-oss` SDK；`oss-cli.cjs` 适配 worker 使用的 `ls/cp/rm` 子集，不需要另装 ossutil。工具与 schema 随应用复制到运行目录，不依赖运行时读取官网仓库。
 
-- 读到的索引保留 60 秒，过期后下一次访问在后台刷新，所以新 skill 一般 1–2 分钟内出现。
-- OSS/CDN 上 `index.json` 的缓存时间不要超过 60 秒。
+只在本机运行一份发布服务，不额外启动 cron worker。密钥和密码明文不进入仓库、前端或日志；公网上传与查询需认证，上传者只能查看该密码项的任务，管理员可查看全部。
 
-**读不到时**：
+### C.2 安装、更新与迁移
 
-- 索引读不到（网络、404、内容坏了），官网继续用上一份读到的；启动后一份都没读到过，就用内置清单。页面不会坏。
-- 内容坏了、或者刚启动就读不到，日志会有 `[skill-index]` 开头的错误。
-- 运行中途索引被删（404）时，官网安静地沿用上一份，日志里不一定有记录。怀疑没更新时，直接 `curl -sI` 索引地址看。
-- 恢复后约 2 分钟内切回新索引。2026-10-09 在开发机实测过：新增条目 10 秒后出现；索引 404 或内容损坏期间页面全部正常；恢复后 105 秒切回。
-- 单个条目不合格只会去掉这一条，其他照常显示，日志里列出原因。
-- 一个 skill 都读不出来的索引会被当成读取失败，避免误删全站。
+以下命令在仓库根目录执行，目标部署机器需有 root 权限、Node 22、npm、Python 3、Nginx、systemd 和 Certbot。
 
-**索引格式**：
+1. 首次部署在 `/root/skill-update/config.json` 配置 `region`、`accessKeyId`、`accessKeySecret` 和初始化用的 `adminPassword`，文件权限为 0600。管理员密码由运维提供，不在本文公开。存储目标和地域可在配置中覆盖；修改域名或端口还需同步 Nginx 与 HTTPS 部署配置。
+2. 执行 `bash deploy/skill-update/install.sh`。脚本安装锁定依赖、运行时、工具、schema、模板与指南下载副本，配置 Nginx 和 systemd。已有密码列表保留，更新会重启服务，待处理任务由持久化记录恢复。
+3. 首次部署确保 DNS 指向目标本机，执行 `bash deploy/skill-update/enable-https.sh` 签发证书并启用续期。HTTP 启动阶段用于 ACME 和页面检查，生产认证要求 HTTPS。
+4. 检查健康接口、网页登录和下载资源，再用隔离 OSS 前缀验证发布。生产已存在索引时不要重新 export 或覆盖首批内容。
 
-```json
-{
-  "format": "automage.skill-index/1",
-  "generatedAt": "2026-10-09T10:00:00Z",
-  "skills": [
-    {
-      "id": "churn-autopsy", "version": "1.0.0", "domain": "CRM",
-      "title": "客户流失复盘", "summary": "…", "inputs": ["…"], "output": "流失复盘报告",
-      "groups": ["customer-retention"], "keywords": [], "subSkills": 0,
-      "story": { "scenario": "…", "…": "…", "preview": "document" },
-      "media": { "video": "churn-autopsy/1.0.0/demo.mp4", "poster": "churn-autopsy/1.0.0/poster.jpg" },
-      "updatedAt": "2026-10-09"
-    }
-  ]
-}
+首次初始化生成 5 项随机上传密码，保存到本机 `/root/skill-update/initial-passwords.txt`（0600），分发后删除；管理员密码转为哈希并从配置中移除明文。迁移前备份受限配置、密码哈希、`data/jobs/` 和证书配置，停止旧机器的 worker，再切换新机器。
+
+只更新指南时，将本文件同步到应用的 `public/delivery/README.md` 即可，无需重启服务。schema、模板或代码变更时按安装流程同步配套资源。
+
+### C.3 密码管理
+
+网页右上角“密码管理”输入管理员密码，支持新增、停用、删除、单项重置和整表重置。本机 CLI 提供同等操作：
+
+```sh
+skill-update passwords list
+skill-update passwords add '内容团队'
+skill-update passwords reset <密码项ID>
+skill-update passwords disable <密码项ID>
+skill-update passwords delete <密码项ID>
+skill-update passwords reset-all
 ```
 
-- `media` 里的路径相对于 `SKILL_ASSET_BASE`；`media` 为 `null` 时，详情页显示封面卡片，不放视频。
-- 条目的顺序就是同类里的顺序，排在官网编排过的成员之后。
-- 新交的 skill，`preview` 一律是 `document`。另外四种（report、sourcing、script、lead）是给特定几个 skill 画的示意，不能套用。
+列表不返回密码明文或哈希；新密码仅在生成结果中显示，需及时保存与分发。重置、停用或删除立即撤销对应上传会话，已接收的任务继续处理。会话最长 8 小时，服务重启后重新验证；每 IP 每 15 分钟最多 10 次登录尝试。
 
-## 附录 C：自动通道（给运维）
+### C.4 存储与发布顺序
 
-正式服务部署在本机 `/root/skill-update`，通过 systemd 的 `skill-update.service` 常驻运行，Nginx 提供 HTTPS。网页和 CLI 共用持久化任务队列；完整接收后写入私有 OSS inbox 并立即唤醒 worker，每分钟补扫一次。直接向内部 bucket 的 `inbox/` 放 ZIP 也会被补扫处理。
-
-没有审批，`skillpack.cjs check` 就是文件关口，`scripts/skills/inbox-worker.cjs` 负责发布。网页会展示逐包报告，不把上传进度完成或进程退出成功当作发布成功。
-
-**存储布局**（bucket 名、域名由运维定，不写死）：
-
-```
-内部 bucket（私有）                          公开 bucket（公共读，挂自定义域名 + CDN）
-  inbox/          上传到这里                    skills/index.json                  唯一会变的文件，缓存 60 秒
-  archive/<id>/<version>.zip  合格包存档        skills/<id>/<version>/demo.mp4     发布后不再改，长缓存
-  rejected/       不合格的包                    skills/<id>/<version>/poster.jpg
-  failed/         处理出错的包（移回 inbox/ 重试）
-  reports/        每个包的处理结果
-  index-history/  每次发布前的旧索引（回滚用）
+```text
+私有 bucket                              公开 bucket
+  inbox/                                 skills/index.json
+  archive/<id>/<version>.zip              skills/<id>/<version>/demo.mp4
+  rejected/                              skills/<id>/<version>/poster.jpg（或 png/webp）
+  failed/
+  reports/
+  index-history/
 ```
 
-**当前部署怎么跑**：
+网页和 CLI 完整接收后原子入队，本机记录为 `data/jobs/<任务编号>/job.json`，暂存原包为同目录的 `package.zip`。上传到 OSS 的文件用任务 UUID 命名，同名提交不会互相覆盖；校验使用原始文件名。已接收的网页和 CLI 任务按提交时间串行处理。
+
+一个包的发布顺序：
+
+1. 下载并检查包结构、清单、视频、封面与 ZIP 安全；不合格写拒绝原因。
+2. 读取当前索引，检查版本与已有存档；普通重复版本、较旧版本以及存档覆盖请求拒绝。
+3. 原包存入私有 `archive/`，上传公开视频和封面。
+4. 旧索引备份到 `index-history/`，最后更新公开 `index.json`。
+5. 移除 inbox 对象，写唯一报告并回写逐包任务结果。索引历史也使用唯一名称。
+
+若公开位置缺少首份索引，worker 停止并保留 inbox，不凭空创建空索引。现有生产索引已经初始化；仅全新环境才需要使用 `skillpack.cjs export` 准备首份索引。
+
+只给直接 OSS 提交者写 inbox、读 reports 的权限；worker 读写私有 bucket、写公开 `skills/`；官网只需读取公开索引。skill 本体和原包始终不进入公开位置。
+
+### C.5 故障与恢复
 
 ```sh
 systemctl status skill-update
 journalctl -u skill-update --since today
 skill-update status
+curl -fsS https://skill-update.automage.cn/healthz
 ```
 
-现有服务使用 Node 22 和官方 `ali-oss` SDK，通过适配器复用 worker，不依赖另装 ossutil。工具与 schema 一起部署，不需要运行时读取官网仓库。不要再启动第二份 cron worker。
+- 接收上限：单包 300 MiB、最多 3 个并发接收、待处理最多 50 项；磁盘不足时拒绝接收。ZIP 校验限制目录边界与实际解压量，拒绝危险路径、重复路径和链接文件，不执行包内代码。
+- 重启后恢复待处理任务；上传中断需重新提交。若索引已更新但确认中断，仅线上版本与私有存档 SHA-256 都匹配时才认定完成，存档不同则拒绝。
+- 基础设施失败按第 5 节重试；单个 OSS 命令超时 120 秒，worker 总运行上限 30 分钟。校验拒绝需修包，不能通过重试绕过规则。
+- 发布成功后本机暂存原包删除；失败或拒绝原包保留 7 天后清理。任务元数据和 OSS 报告保留，页面展示最新 100 条。
+- 官网未更新时先确认任务为 published，再检查公开索引、缓存和官网环境变量；不要重复上传相同版本。
 
-**其他机器独立使用 worker 时的替代方式**：Node 18+、ossutil 2.x（已配好凭证）和官网仓库，可用 crontab 每分钟一次；不能与上述常驻服务同时启用：
+### C.6 域名与证书维护
+
+上传站点使用本机 `/etc/letsencrypt/live/skill-update.automage.cn/` 证书，`certbot.timer` 自动续期，成功后 reload Nginx。正式证书已签发，有效期至 2027-01-08。
+
+截至 2026-10-10，模拟续期仍未通过：Let's Encrypt staging 报告 HTTP-01 challenge 返回 403，外部原因尚未确定；正式签发、本机及公网人工探针成功。运维需复验，不能将定时任务已配置当作模拟续期已通过：
 
 ```sh
-* * * * * cd /path/to/automage--homepage && node scripts/skills/inbox-worker.cjs \
-  --private oss://<内部bucket> --public oss://<公开bucket>/skills >> /var/log/skill-inbox.log 2>&1
+certbot renew --cert-name skill-update.automage.cn --dry-run --no-random-sleep-on-renew
 ```
 
-- 第一次先加 `--dry-run`：只读取和检查，不写任何东西，确认 ossutil 的参数在你们的版本上都能用。
-- 想加敏感词表，用 `--denylist <文件>`，一行一个词。公开文案里出现这些词就不合格。
-- 只在一台机器上跑。同一台机器上，上一轮没跑完时这一轮会自动跳过。常驻服务通过自身串行队列和 worker 锁协调执行。
+失败时结合 `/var/log/letsencrypt/letsencrypt.log` 与 Nginx 日志排查外部访问链路。该选项只关闭手动检查的随机等待，自动定时续期沿用默认调度。
 
-**一个包的处理顺序**（任何一步失败，官网都不会指向不存在的文件）：
+资源域名 `skills.automage.cn` 另走阿里云 CDN，不能用上传站点的本机证书配置替代。已交接的 CDN 设置包括海外加速、HTTPS 回源、Range 回源、inline 响应和对应缓存策略；该域名通过将 HTTP-01 文件写入公开 OSS 验证，续期后更新 CDN 证书。维护工具包存于私有 `operations/20261009/https-maintenance-kit.zip`，迁移或修复前应恢复该工具包并核实实际执行机器与任务。首批来源包和溯源记录分别保存在私有 `source-packages/20261009/`、`bootstrap/20261009/provenance.json`；原始来源包不是新交付格式，不放回 inbox。
 
-1. 下载到临时目录，用 `skillpack.cjs check` 检查。不合格：移到 `rejected/`，写报告。
-2. 读线上的 `index.json`，生成新条目。版本已发布过、或者比线上的旧：同样移到 `rejected/`。
-3. 原包存到 `archive/<id>/<version>.zip`。
-4. 上传视频和封面：`max-age=31536000, immutable`。
-5. 线上旧索引备份到 `index-history/`，然后上传新的 `index.json`：`max-age=60`。
-6. 从 `inbox/` 删掉，写报告。
+## 附录 D：接口与验证（给 agent 和维护者）
 
-**例外**：
+网页 API 与 CLI 共用队列。上传、任务查询和密码管理接口需要认证；写接口核验 Origin，不启用跨域。本机 CLI 经受限 Unix socket 授权。
 
-- 线上一份 `index.json` 都没有时，worker 停下，`inbox/` 原样不动。第一份索引由 `skillpack.cjs export` 生成，worker 不会凭空建一份，免得把全站清空。
-- 其他意外错误：包移到 `failed/`，报告里写错误。
+| 接口 | 输入或行为 |
+|---|---|
+| `POST /api/login` | JSON `{password, admin?: boolean}`，设置安全会话 Cookie |
+| `POST /api/uploads` | ZIP 原始请求体，`X-File-Name` 为 URI 编码文件名；返回 HTTP 202 与任务编号 |
+| `GET /api/jobs`、`GET /api/jobs/:id` | 查询当前密码项的任务；管理员可查询全部 |
+| `POST /api/jobs/:id/retry` | 重试处理失败的任务 |
+| `GET /api/admin/passwords` | 管理员查询命名密码列表 |
+| `POST /api/admin/passwords` | JSON `{action,id?,name?}`；action 为 add、disable、delete、reset 或 reset-all |
+| `POST /api/logout`、`GET /api/session` | 退出或查询会话 |
+| `GET /healthz` | 健康检查 |
 
-**权限**：
+本地验证从仓库根目录执行：
 
-- 上传的人只能写 `inbox/`，读 `reports/`。
-- worker 的账号读写内部 bucket，写公开 bucket 的 `skills/`。
-- 官网服务器只读公开的 `skills/index.json`。
+```sh
+node --test apps/skill-update/test/*.test.cjs tests/skill-kit.test.cjs tests/skill-inbox.test.cjs tests/skill-index.test.cjs
+```
 
-**手动操作**：用 `skillpack.cjs`，见第 6 节。手动改线上 `index.json` 之前，先确认 `inbox/` 是空的，免得和 worker 同时改。
+需要验证真实 OSS 时，先配置服务端授权，再显式运行隔离检查：
 
+```sh
+node apps/skill-update/test/oss-smoke.cjs
+```
 
-**结果与恢复**：网页和 CLI 使用唯一任务编号保存逐包状态，OSS 报告和索引历史也采用唯一名称。重启后恢复待处理任务；若索引已经提交但确认中断，核对线上版本及私有原包 SHA-256 后才能判定成功。普通重复版本提交仍拒绝，下架后也不能覆盖已存档版本。基础设施失败可在网页或 `skill-update retry <任务编号>` 重试，校验拒绝需修改后重新提交。
+隔离检查会在两个 bucket 的独立 UUID 前缀写入测试对象并清理，核对正式索引未变，不向官网添加测试条目。验收需覆盖合格发布、重复/较旧版本拒绝、损坏与危险 ZIP、密码撤销、任务隔离、批量提交、网络失败和中断恢复。浏览器检查桌面与手机、登录、上传后刷新查询、密码管理、文档下载与视频播放；发布成功依据仍是逐包结果和索引更新。

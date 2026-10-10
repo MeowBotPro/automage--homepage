@@ -513,7 +513,7 @@
   - 去掉构建期变量 `NEXT_PUBLIC_SKILL_VIDEO_BASE` 和 `src/lib/skill-video.ts`。
 - **工具**：`scripts/skills/skillpack.cjs`，命令有 check / stage / unlist / inspect / export，只依赖 Node；`scripts/skills/prepare-backfill-media.sh` 处理存量视频。
 - **规范**：`docs/skill-delivery/README.md`、`skill.schema.json`、`template/churn-autopsy/`。
-- **运维交接**：`docs/skill-delivery/ops-handoff-20261009.md`。
+- **交付与运维指南**：统一维护在 `docs/skill-delivery/README.md`。
 
 **验证**：
 - tsc 通过；eslint 0 个错误（对 `.cjs` 关闭了 no-require-imports）；测试 25 个全部通过，新增 11 个。
